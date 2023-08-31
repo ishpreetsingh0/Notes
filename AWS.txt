@@ -1,0 +1,63 @@
+AWS
+
+aws code commit:
+a fully controlled, secure, scalable, source code management service  by aws. it is an aws hosted continous integration service.
+
+aws code build:
+aws-hosted continous intergration service.
+
+aws code deploy:
+automates deployment of an application to various compute services, such as EC2.
+
+aws code pipeline:
+automates all stages of software delivery. we can call it fully managed continous delivery service.
+
+aws code star:
+here developer can run tests, build and perform deployment activities very efficiently. this tool configures other developer tools needed for software development lifecycle by itself to do continous delivery.
+
+aws code artifact:
+a fully managed repository artifacts. here software packages can be stored and publish securely.
+
+aws cloud9:
+a colud-based code editor or intergrated development environment IDE where source code can be written, edit and run . it also helps to debug the application's source code.
+
+aws x-ray:
+a fully managed debugging and analyzing tools by aws to debug and analyze product software built by using microservices architecture.
+
+aws fis:
+fault injector simulator runs fault injection experiments to build improvements in performance of application.
+
+
+
+compilation, unit testing , code coverage and build
+Same CI/CD 
+developer system -> 
+AWS codecommit (source code repo) -> 					-----
+AWS code build ->  i) Compilation of source code 	-> S3		    |
+                   ii) Unit testing						    |		this all comes under AWS code pipeline
+                   iii) Check Code coverage			  	    |
+                   iv) Build the source code 				    |
+AWS code deploy ->                                                -----
+EC2
+
+ IAM user with the following permissions:      
+AWS CodeCommitFullAccess          
+AWS CodeBuildAdminAccess             
+AWS CodeDeployFullAccess                         
+AWS CodePipelineFullAccess       
+AWS CodeStarFullAccess         
+AmazonS3Full Access          
+EC2FullAccess
+IAM Full Access
+
+
+In User Data choose As text and write the commands given below.
+#!/bin/bash
+sudo yum -y update
+sudo yum install -y ruby
+sudo yum install -y wget
+yum install -y aws-cli
+cd /home/ec2-user
+wgethttps://aws-codedeploy-us-west-2.s3.us-west-2.amazonaws.com/latest/install 
+sudo chmod +x ./install
+sudo ./install auto

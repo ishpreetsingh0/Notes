@@ -1,0 +1,19 @@
+Azure Devops (SAAS)
+
+
+LIFE CYCLE OF A PRODUCT
+
+Plan > code(GIT) > Build(MAVEN) > Test > Deploy(CLOUD PROVIDER) > Manage > Monitor (NAGIOS) > Feedback > ----
+|                                                                                        								    |
+^------------------------------------------------------------------------------------------------------------
+
+
+dev.azure.com
+
+Basic you need a organization to start with in that organization you can create projects.
+
+Build agent : helps to build the code
+Build output (.jar, .exe, .zip etc)
+
+Build Pipeline			Release Pipeline
+code - steps - artifact  	test - staging - production

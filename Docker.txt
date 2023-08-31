@@ -1,0 +1,1249 @@
+Docker
+playground: https://www.docker.com/play-with-docker/
+docker install and start 
+
+yum -y update
+
+yum install -y docker
+
+systemctl enable docker
+
+systemctl start docker
+
+systemctl status docker
+
+docker version
+
+Container commands
+The following is a list of commands that can be used to work with the containers throughout their life cycle.
+
+1. To create a container:
+
+$ docker run <image>
+2. To run a container in the interactive mode:
+
+$ docker run -it <image>
+3. To run a container in the background:
+
+$ docker run <image> -d
+4. To attach to a container running in the background:
+
+$ docker attach <containerID>
+5. To get the statistics of a running container:
+
+$ docker stat <containerID>
+6. To see the processes withing a container:
+
+$ docker top <containerID>
+7. To stop a running container:
+
+$ docker stop <containerID>
+8. To kill the processes inside a container:
+
+$ docker kill <containerID>
+9. To remove a container:
+
+$ docker rm <containerID>
+10. To list all the containers in the Docker host:
+
+$ docker ps -a
+ 
+-d  deattach mode is used to run containers in background.
+
+ To view only the IDs of the running containers:
+
+$ docker ps -q
+
+$ docker logs <container id>
+
+Step 2: Fetch the log of the same container dynamically by executing the following command.
+
+$ docker logs --tail 5 --follow <container_name>
+The above command dynamically prints the recent 5 logs of the container.
+
+Stop one of the containers using <docker stop> command.
+
+$ docker stop <container id>
+
+Stop few containers using <docker kill> command.
+
+$ docker kill <container id>
+
+Use the --name option with <docker run> command to provide the name we want to give our container. Run a jpetazzo/clock container with the name "timeclock".
+
+$ docker run -d --name timeclock jpetazzo/clock
+
+
+Q/A
+
+"docker logs" command can retrieve the logs of
+All containers irrespective of the state 
+
+Any stopped container can be attached to by executing the "docker attach" command.
+False 
+
+Multiple attachments can be made to a container from different sessions.
+True 
+
+Detaching from a container
+Keeps the container running in the background 
+
+How do you check the number of running containers on the host?
+docker ps 
+
+Which of the following commands have to be used to stop a background container immediately?
+docker kill 
+
+A container launched by executing the above command is currently in which state?
+Running 
+
+
+Docker images are made up of layers, one stacked on the other conceptually. Each layer refers to certain instructions that was given while creating the Docker image (through a Docker file).
+
+In fact, when we built our first container, we noticed the images being pulled from the registry in the form of layers.
+
+Namespaces of Docker images
+The Docker images can be pushed/pulled from/to a Docker registry using the Docker client. There are three kinds of namespaces used while referring to a Docker image.
+
+1. Official images- Name of the image is used.
+
+Eg., CentOS, Ubuntu, etc.,
+
+2. Images inside a repository- <repository_name>/<image_name>
+
+Eg., jpetazzo/clock, weaveworks/scope
+
+3. Images from a self-hosted registry - <path_of_the _registry>:<port>/<repository_name>/<image_name>
+
+Eg., registry.mylab.com:5000/my-private/image
+
+Docker file
+A Dockerfile is a simple configuration file following a specific syntax. The Dockerfile contains the step by step instructions that are necessary to build a docker image. These instructions are available as commands that need to be run to assemble the final Docker image. Each of the instructions are added in the form of layers and each layer is the delta of the previous layer.
+
+We can create a Dockerfile by easily creating a text file and editing it using a text editor of our choice. "Dockerfile" is the default name for the file used widely. But it can be named anything of our choice. A sample Docker file where a docker image is built from a parent image is shown below:
+
+FROM ubuntu:18.04
+COPY . /app
+RUN make /app
+CMD python /app/app.py
+
+
+Build an image interactively
+Let us build our Docker image that has to be shared with the trainees, in order for them to be able to practice webserver configuration with ease. Follow the below steps to do the same.
+
+Step 1: Make sure you have the parent image in the Docker host. In this case, it is CentOS 8. If not, pull one from the registry.
+$ docker pull centos:8
+Status: Downloaded newer image for centos:8
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+centos              8                   831691599b88        13 days ago         215MB
+Step 2: Launch a CentOS:8 container.
+$ docker run -it centos:8
+Step 3: As matter of fact, we want the Apache web server package to be readily installed for the trainees to practice. Check whether "httpd" package is installed.
+
+[root@4914a0cea58c /]# rpm -q httpd
+package httpd is not installed
+Step 4: Install the "httpd" package in the container using the yum repository. (Make sure the yum repository is configured.)
+
+[root@4914a0cea58c /]# yum install -y httpd
+Complete!
+Step 5: Check for the installed package.
+
+[root@4914a0cea58c /]# rpm -q httpd                                                                                                                         10/11
+httpd-2.4.37-21.module_el8.2.0+382+15b0afa8.x86_64                                                         
+The httpd package is successfully installed.
+
+This change done inside the container is written on the writable layer of the container.
+
+To inspect the changes made to the filesystem of the container, execute the "docker diff <container_id>". This gives the difference between the container's current filesystem and the original image
+
+$ docker diff 4914a0cea58c                                                                                                                                   2/11
+C /etc                                                                                                                                                       3/11
+C /etc/gshadow                                                                                                                                               4/11
+.
+.
+A /var/log/dnf.librepo.log
+A /var/log/dnf.log
+A /var/log/httpd
+
+We can see a list of files/directories prefixed with either C or A.
+
+C - indicates files/directories that have been changed.
+
+A - indicates files/directories that have been added.
+
+Step 7: To add our changes as a new layer and to create a new image with this added layer, execute "docker commit" command. The output of this command is the image ID of our new Docker image.
+
+$ docker commit 4914a0cea58c
+sha256:9ac3092f21147e8ff78ba2dfa38ccdd0b179ba96bdacf0f718510177be2ed2bb
+We have successfully created our own first docker image. The big alphanumeric output is the ID of the new image.
+
+Step 8: List out the available image to see whether the new image has been added to the lot.
+
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+<none>              <none>              9ac3092f2114        2 minutes ago       254MB
+centos              8                   831691599b88        13 days ago         215MB
+Step 9: Name the newly created docker image with an appropriate tag.
+$ docker tag 9ac3092f2114 centoswithhttpd:1
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+centoswithhttpd     1                   9ac3092f2114        5 minutes ago       254MB
+centos              8                   831691599b88        13 days ago         215MB
+
+Step 10: Launch a container with the new image to see the changes.
+
+$ docker run -it centoswithhttpd:1
+[root@cae890485c74 /]# rpm -q httpd
+httpd-2.4.37-21.module_el8.2.0+382+15b0afa8.x86_64
+As we can see, the new centos image has "httpd" pre-installed in it unlike the base image.
+
+The image is now ready to be shared with trainees for practice. Instead of sharing it individually, this image can be uploaded to a private registry where the users with access, can use this image. More on this later.
+
+
+Create a Private Docker registry
+Follow the below steps to create local private docker registry.
+
+Step 1: Run a registry container in your Docker host. We are going to expose a port of the container to the port of our host machine.
+
+$ docker run -d -p 5000:5000 --name registry registry:2
+
+-p - to specify the ports.
+
+registry - name of the container.
+
+registry:2 - tagging the image with this name.
+
+Step 2: Check the list of docker images.
+
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+registry            2                   2d4f4b5309b1        12 days ago         26.2MB
+ubuntu              latest              16508e5c265d        22 months ago       84.1MB
+
+We have ubuntu:latest image in our Docker host. We will try to upload this to our private docker registry. Before that, the image has to be tagged appropriately.
+
+Step 3: Tag the ubuntu image as follows.
+
+$ docker tag ubuntu localhost:5000/ubuntu
+$ docker images
+REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE
+registry                2                   2d4f4b5309b1        12 days ago         26.2MB
+ubuntu                  latest              16508e5c265d        22 months ago       84.1MB
+localhost:5000/ubuntu   latest              16508e5c265d        22 months ago       84.1MB
+
+localhost:5000 - name of the private docker registry
+
+ubuntu - name of the repository where the image is going to be pushed.
+
+Specify a tag if needed.
+
+Step 4: Push the newly tagged image to our private docker registry.
+
+$ docker push localhost:5000/ubuntu
+The push refers to repository [localhost:5000/ubuntu]
+
+Step 5: Delete both the ubuntu images present in our Docker host now.
+
+$ docker rmi ubuntu:latest
+
+$ docker rmi localhost:5000/ubuntu
+
+List the docker images to make sure there are  no ubuntu images currently.
+
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+
+Step 6: Pull the ubuntu image from our private docker registry.
+
+$ docker pull localhost:5000/ubuntu
+
+Status: Downloaded newer image for localhost:5000/ubuntu:latest
+Check the image list to find the ubuntu image.
+
+$ docker images
+REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE
+registry                2                   2d4f4b5309b1        12 days ago         26.2MB
+localhost:5000/ubuntu   latest              16508e5c265d        22 months ago       84.1MB
+
+Likewise, we will be able to push and pull Docker images within our organisation using the private Docker registry as long as the registry container is running in the environment.
+
+Build an Apache web server application
+If you have followed every resource of this course till here, You would now able to launch any containerized application on your own, test it and expose it to the outside world. In a way of consolidation what you have learnt till now, Let us go ahead and create an Apache web server application in Docker.
+
+In this demo, The Apache web server will be hosted on a CentOS machine. We will start this demo right from creating a Docker Image for the application,
+
+Step 1: We will build the image for our application with CentOS as the parent image. Make sure the CentOS image is present in the Docker Host.
+
+$ docker pull centos
+Using default tag: latest
+latest: Pulling from library/centos
+6910e5a164f7: Pull complete
+Digest: sha256:4062bbdd1bb0801b0aa38e0f83dece70fb7a5e9bce223423a68de2d8b784b43b
+Status: Downloaded newer image for centos:latest
+Step 2: We have the parent image now. After this, the process can be carried out in two ways. We can either build the web server image using a Dockerfile or in the interactive way. Since interactive way involves a lot of manual commands, we will choose the Docker file method over it. Let us create a Dockerfile first. Create a new directory "webserver" and create a new text file, "Dockerfile".
+
+$ mkdir webserver
+$ cd webserver
+$ touch Dockerfile
+$ ls
+Dockerfile
+Step 3: In the webserver directory, create an index.html file for the webserver. This file will be copied from the host to the Docker image when we build it.
+
+$ vim index.html
+$ cat index.html
+<html>
+<body>
+<h1>Welcome to Webserver!<h1>
+<p>You have successfully hosted a web application</p>
+</body>
+</html>
+Step 4: Edit the Docker file as per our requirement using appropriate Dockerfile commands.
+
+FROM centos:latest
+MAINTAINER IMSAcademy
+RUN yum -y install httpd
+COPY index.html /var/www/html/
+CMD [“/usr/sbin/httpd”, “-D”, “FOREGROUND”]
+EXPOSE 80
+FROM - specifies the parent image, centos.
+
+MAINTAINER - owner of this Dockerfile.
+
+RUN - commands to be run.
+
+COPY - file that has to be copied from host to the image.
+
+CMD - the commands to be run as soon as the container is launched.
+
+/usr/bin/httpd - starts the webservice.
+
+-D FOREGROUND - argument which is used to run the webserver in the background.
+
+EXPOSE - specifies the port number where the webserver is running. The default webserver port number 80 is used.
+
+Step 5: Build the docker image. Also, add a tag to the image as below.
+
+$ docker build -t webserver:1 ./webserver
+
+-t sepcifies the tag of the new image.
+
+./webserver is the directory where the Dockerfile resides.
+
+Step 6: List the Docker images to see the newly created image.
+
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+webserver           1                   aabd34dad820        11 seconds ago      254MB
+centos              latest              831691599b88        2 weeks ago         215MB
+Step 7: We are now good to run a container that is going to host a web application, as we wanted. Expose the port 80 of the container to port 80 of the host so that the web service is available to the outside world too.
+
+$ docker run -dit -p 80:80 webserver:1
+5a78ab508974139be4c652f16ee17738dff07d8dc9ca45f37889904b51a5f556
+-d runs the container in the background
+
+80:80 exposes the container's port no.80 to the Docker host's port no.80.
+
+Step 8: Let us test the web application we just deployed by accessing it in a web browser. You can also use the command below.
+
+elinks http://192.168.10.10:80
+192.168.10.10 is the IP address of the Docker host.
+
+You can see the web page you created on your web browser now. We have successfully deployed a web application to the world using Docker. Docker, as flexible as we know it is, allows us to even deploy multi-tier applications without any uncertainty in maintaining the containers.
+
+Q/A
+A Docker image is 
+Immutable 
+
+The thin writable layer which stores all the changes made to a container during its runtime is called
+Container layer 
+
+Which is the default registry contacted by the Docker engine when pulling an image?
+DockerHub 
+
+docker run -it centos
+Assuming that there are no centos images present in the Docker host, what happens when the above command is executed?
+Docker pulls the image from the registry and launches the container. 
+
+When an image is aliased using the "docker tag" command with no tag specified, what tag does the image take by default?
+Latest 
+
+Which command is used to remove the tags of an image?
+docker rmi 
+
+Which command is used to build a new docker image interactively?
+docker commit 
+
+Which keyword is used in Dockerfile to specify the command to be executed once the container is run?
+CMD 
+
+Before pushing a Docker image to a DockerHub repository, the image must be named as?
+<hub_id>/<repo_name>:<tag> 
+
+
+
+
+Introduction to Docker compose
+Most project architectures require applications that include more than one container to be built and run at the same time. For example, building a web application requires two or more separate containers such as a web server and a database and a proxy to be up and running, in such scenarios building, running and connecting the containers using individual docker CLI commands on each container is time-consuming, cumbersome.
+
+Docker compose solves this problem by allowing the user to define and run these multi-container applications using a single docker compose command.
+Thus docker compose can be defined as “a tool for defining and running multi-container docker applications.”
+
+ Compose uses YAML file format for defining containers and their configurations.   The “docker-compose.yml” is the default YAML file under which the containers configurations should be written. The user can define as many number of container instances the application requires inside the docker-compose file.
+
+Executing a single docker-compose command will pull, build and run all containers defined inside the docker-compose.yml file.
+
+Docker Compose Features
+The following features of Docker Compose make it a powerful and effective tool.
+
+1. Multiple isolated environments on a single host
+Compose uses the project name (the directory name under which the docker-compose file is created) to isolate application environments from each other inside a single host machine. This helps to build as many isolated applications required within a single host.
+
+2. Only recreate containers that have changed
+Compose caches the configuration used to create a container, so when the service or application is restarted, compose re-uses the existing containers and recreate only the containers whose configurations have been changed.
+
+3. Preserve volume data when containers are created
+Compose preserves and copies the data volumes from old containers to new containers, when the existing containers are recreated.
+
+4.  Variables and moving a composition between environments
+Compose supports variables to be declared in compose file, thereby enabling user to create more customized application with user defined environmental variables.
+
+Common use cases
+Docker Compose can be used in all environments i.e., production, development, staging, testing, etc., However, the most common use cases of Docker Compose are listed below:
+
+1. Development environments
+Developing software requires applications to run in an isolated environments and interact with its service dependencies such as caches, queues, database, API, etc. The docker compose tool can be used to create such environments where the applications and dependencies can interact.
+
+2. Automated testing environments
+Automated end-to-end testing requires an isolated environment to run tests. Compose provides a convenient way to create and destroy isolated testing environments for the test suite
+
+3. Single host deployments
+Compose can be used to deploy a remote Docker Engine. The Docker Engine may be a single instance provisioned with Docker Machine or an entire Docker Swarm cluster.
+
+
+Working with Docker Compose
+Docker Compose can be run on Mac, Windows, Windows Server 2016 and Linux systems. Follow the below steps to install Docker Compose on your system.
+
+Prerequisites
+Before installing Docker Compose, make sure Docker Engine is installed in your machine since Docker compose depends on Docker Engine.
+
+In case you are using Docker Desktop for Mac or  Windows, Docker Compose comes preinstalled with the Desktop installation.
+
+Docker compose can run by root user. To run Docker Compose using a non-root user, make sure that the user has sudo privilege.
+
+Installation
+The below instructions can be followed if you want to install Docker Compose on a Linux system.
+
+Step 1: In order to fulfill Prerequisite no.3, log in to the machine where the Docker daemon is running as a root user ( or a user with root privilege).
+
+$ whoami
+root
+Step 2: Download the  the binaries present the GitHub compose repository page, with the help of curl utility. We are downloading the latest stable version of Docker compose (v1.26.1).
+
+$ curl -L "https://github.com/docker/compose/releases/download/1.26.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+Step 3: Apply executable permissions for the docker-compose Binary files.
+
+$ chmod +x /usr/local/bin/docker-compose
+Step 4: Verify the installation by checking the version of docker-compose.
+
+$ docker-compose version
+docker-compose version 1.26.1, build f216ddbf
+docker-py version: 4.2.2
+CPython version: 3.7.7
+OpenSSL version: OpenSSL 1.1.0l  10 Sep 2019
+To uninstall Docker Compose if you have installed using the above steps:
+
+$  rm /usr/local/bin/docker-compose
+
+Running Docker Compose as non-root user
+As mentioned earlier, Docker Compose usually run by root user. If you want to run it as any non-root user, follow the below steps:
+
+Step 1: Create an user "compose" and set the password.
+
+$ useradd compose
+$ passwd compose
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+Step 2: Create a group name "docker" and add the user to the "docker" group.
+
+$ groupadd docker
+$ usermod -aG docker compose
+Step 3: Run the following command to activate the changes to the Docker group.
+
+$ newgrp docker
+Step 4: Login as "compose" user  and verify the docker-compose version.
+
+$ su - compose
+$ docker-compose version
+
+Following the above steps enable us to run docker-compose as a non-root user without escalating the privilege.
+
+Compose file structure
+To start creating containerized application using Compose, the user should create a .yml extension  file called docker-compose.yml in the present working directory. When docker-compose commands are executed in the terminal, by default Compose searches for the docker-compose.yml file in the current working directory to build and start the containerized applications. The User can create as many number of default docker-compose.yml file, but each one should be under a different directory/project name.
+
+Thus, the default path for compose file is   ./docker-compose.yml.Compose file structure and syntax
+
+The contents inside docker-compose file is organized under 2 levels:
+
+Top level keys
+Service level keys
+Top level key
+These are the basic building blocks of a compose file. There are 4 primarily used top level keys.
+
+Version: - specifies the compose file syntax version. There are several versions of compose file formats, starting with 1.x,2.x, 3.x. The latest release is 3.7
+
+Services: - defines the configurations and dependencies of the containers that as be started as a part of application stack. Each service should have a unique name inside the compose file. The minimum information needed to be specified inside each service name to start the container is the image name.
+
+Volumes: - used to specify named volumes that would mount a linked path present in the host machine with the file or directory inside container to store container data outside the container so that the data is persistent even if container crashes, also used to share volumes between two or more services.
+
+Networks: - It is used to specify and configure networks needed for the services. It allows user to change the settings of the default network or connect to an external network or to define application-specific networks.
+
+Q/A
+Q1
+Which of the following defines a Data Volume?
+Host Network 
+
+Q2
+Alex is working on Docker and creating a network using the below command 
+$ docker network create my-network 
+What type of the network will be created? 
+bridge 
+
+Q3
+John is working on Docker and wants to find, what are the containers are connected to the bridge network my-network? 
+docker network inspect my-network 
+
+Q4
+
+Which of the command will attach a running container to network? 
+
+i) docker network connect my-network container1
+ii) docker run -itd --network=my-network container1
+both i & ii 
+-----------------------------------------------------------
+
+
+Docker Compose:
+
+Working with Docker Compose
+Docker Compose can be run on Mac, Windows, Windows Server 2016 and Linux systems. Follow the below steps to install Docker Compose on your system.
+
+Prerequisites
+Before installing Docker Compose, make sure Docker Engine is installed in your machine since Docker compose depends on Docker Engine.
+
+In case you are using Docker Desktop for Mac or  Windows, Docker Compose comes preinstalled with the Desktop installation.
+
+Docker compose can run by root user. To run Docker Compose using a non-root user, make sure that the user has sudo privilege.
+
+Installation
+The below instructions can be followed if you want to install Docker Compose on a Linux system.
+
+Step 1: In order to fulfill Prerequisite no.3, log in to the machine where the Docker daemon is running as a root user ( or a user with root privilege).
+
+$ whoami
+root
+Step 2: Download the  the binaries present the GitHub compose repository page, with the help of curl utility. We are downloading the latest stable version of Docker compose (v1.26.1).
+
+$ curl -L "https://github.com/docker/compose/releases/download/1.26.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   638  100   638    0     0   1722      0 --:--:-- --:--:-- --:--:--  1724
+100 11.6M  100 11.6M    0     0  5671k      0  0:00:02  0:00:02 --:--:--  9.8M
+Step 3: Apply executable permissions for the docker-compose Binary files.
+
+$ chmod +x /usr/local/bin/docker-compose
+Step 4: Verify the installation by checking the version of docker-compose.
+
+$ docker-compose version
+docker-compose version 1.26.1, build f216ddbf
+docker-py version: 4.2.2
+CPython version: 3.7.7
+OpenSSL version: OpenSSL 1.1.0l  10 Sep 2019
+To uninstall Docker Compose if you have installed using the above steps:
+
+$  rm /usr/local/bin/docker-compose
+ Running Docker Compose as non-root user
+As mentioned earlier, Docker Compose usually run by root user. If you want to run it as any non-root user, follow the below steps:
+
+Step 1: Create an user "compose" and set the password.
+
+$ useradd compose
+$ passwd compose
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+Step 2: Create a group name "docker" and add the user to the "docker" group.
+
+$ groupadd docker
+$ usermod -aG docker compose
+Step 3: Run the following command to activate the changes to the Docker group.
+
+$ newgrp docker
+Step 4: Login as "compose" user  and verify the docker-compose version.
+
+$ su - compose
+$ docker-compose version
+docker-compose version 1.26.1, build f216ddbf
+docker-py version: 4.2.2
+CPython version: 3.7.7
+OpenSSL version: OpenSSL 1.1.0l  10 Sep 2019
+Following the above steps enable us to run docker-compose as a non-root user without escalating the privilege.
+Compose file structure
+To start creating containerized application using Compose, the user should create a .yml extension  file called docker-compose.yml in the present working directory. When docker-compose commands are executed in the terminal, by default Compose searches for the docker-compose.yml file in the current working directory to build and start the containerized applications. The User can create as many number of default docker-compose.yml file, but each one should be under a different directory/project name.
+
+Thus, the default path for compose file is   ./docker-compose.yml.Compose file structure and syntax
+
+The contents inside docker-compose file is organized under 2 levels:
+
+Top level keys
+Service level keys
+Top level key
+These are the basic building blocks of a compose file. There are 4 primarily used top level keys.
+
+Version: - specifies the compose file syntax version. There are several versions of compose file formats, starting with 1.x,2.x, 3.x. The latest release is 3.7
+
+Services: - defines the configurations and dependencies of the containers that as be started as a part of application stack. Each service should have a unique name inside the compose file. The minimum information needed to be specified inside each service name to start the container is the image name.
+
+Volumes: - used to specify named volumes that would mount a linked path present in the host machine with the file or directory inside container to store container data outside the container so that the data is persistent even if container crashes, also used to share volumes between two or more services.
+
+Networks: - It is used to specify and configure networks needed for the services. It allows user to change the settings of the default network or connect to an external network or to define application-specific networks.
+
+Service level keys
+These keys are used under the top-level keys for specifying the dependencies, configurations and environmental variables, etc. required to start the services. The mainly used service level keys are:
+
+Image: used to specify the image from which containers are created.
+
+Port: Using service level key called ports, a container port number can be mapped with host machine port number in the following manner “<host port number>: <container port number>”
+
+Build:  used instead of image key to Specify the location of Dockerfile that will be used to build this container
+
+Restart: Docker containers exit by default if no process is running in them. This restart key tells the container to restart if the container exits.
+
+Environment:  used to specify the environment variables for a service
+
+Networks:  used to define an application specific networks and configurations.
+
+Volumes: used to map the volume in the host machine with the container’s volume in the following format.  < host machine volume path: container’s volume>
+
+Container_name: used to give user defined container name.
+
+Depends_on: used to specify the service names on which the current service depends.
+
+Getting started with Docker Compose
+In this demo, we will build a simple web application running on Docker Compose. The application uses a tomcat web server and nginx proxy server. Before proceeding, make sure you have Docker engine and Docker compose installed in your machine.
+
+Step 1: Create the setup
+
+Create a working directory for this application. And make it as the current working directory.
+
+$ mkdir compose
+$ cd compose
+Step 2: Create a Dockerfile
+
+Create a Dockerfile that will build a tomcat image with all the dependencies of the application. In the "tomcat" directory, create a file "Dockerfile" and add the following content using any editor of your choice.
+
+$ cat Dockerfile
+FROM tomcat
+
+This tells Docker to:
+
+Build the image using tomcat as the parent image.
+
+Step 3: Create a Compose file
+
+The two services have to be defined in a docker-compose file. Create a docker-compose.yml file in the current directory of our application and add the following content.
+
+$ cat docker-compose.yml
+version : '2'
+services:
+ web_server:
+  build: .
+ proxy_server:
+  image: nginx
+Version of the docker-compose.yml file is mentioned as 2. If we are working with clustered applications, version 3 is mandatory. But for simple docker-compose applications, version 2 is enough.
+
+Web service:
+
+web_server is built from the custom Dockerfile present in the current working directory, since service level build key is specified. The new image is tagged as <directory_name>_<service_name> and is used to run the container.
+
+Nginx service:
+
+proxy_server is built using nginx image locally or from the Docker registry, since service level image key is specified. 
+
+Step 4: Validate the compose file. Execute the following command to do the same.
+
+$ docker-compose config
+services:
+  proxy_server:
+    image: nginx
+  web_server:
+    build:
+      context: /compose
+version: '2.0'
+
+Note: Execute the above command with -q, if you want to silently validate.
+
+Step 5: Build and run the application with Docker Compose.
+
+This command immediately spins up two containers as mentioned in the file.
+
+$ docker-compose up
+Creating network "compose_default" with the default driver
+Building web_server
+Step 1/1 : FROM tomcat
+latest: Pulling from library/tomcat
+e9afc4f90ab0: Pull complete
+989e6b19a265: Pull complete
+af14b6c2f878: Pull complete
+5573c4b30949: Pull complete
+fb1a405f128d: Pull complete
+612a9f566fdc: Pull complete
+cf63ebed1142: Pull complete
+fbb20561cd50: Pull complete
+76c915a2cfb7: Pull complete
+a2c2864c3363: Pull complete
+Digest: sha256:11f247df062558074169fb92a54033ab2eb6563bda9765b3a9e53106db3c2f4a
+Status: Downloaded newer image for tomcat:latest
+ ---> 6055d4d564e1
+Successfully built 6055d4d564e1
+Successfully tagged compose_web_server:latest
+WARNING: Image for service web_server was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+Pulling proxy_server (nginx:)...
+latest: Pulling from library/nginx
+8559a31e96f4: Pull complete
+8d69e59170f7: Pull complete
+3f9f1ec1d262: Pull complete
+d1f5ff4f210d: Pull complete
+1e22bfa8652e: Pull complete
+Digest: sha256:21f32f6c08406306d822a0e6e8b7dc81f53f336570e852e25fbe1e3e3d0d0133
+Status: Downloaded newer image for nginx:latest
+Creating compose_proxy_server_1 ... done
+Creating compose_web_server_1   ... done
+Attaching to compose_web_server_1, compose_proxy_server_1
+web_server_1    | NOTE: Picked up JDK_JAVA_OPTIONS:  --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED
+proxy_server_1  | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+proxy_server_1  | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+proxy_server_1  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+proxy_server_1  | 10-listen-on-ipv6-by-default.sh: Getting the checksum of /etc/nginx/conf.d/default.conf
+proxy_server_1  | 10-listen-on-ipv6-by-default.sh: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+proxy_server_1  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+proxy_server_1  | /docker-entrypoint.sh: Configuration complete; ready for start up
+web_server_1    | 07-Jul-2020 11:05:10.373 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version name:   Apache Tomcat/9.0.37
+web_server_1    | 07-Jul-2020 11:05:10.393 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server built:          Jun 30 2020 20:09:49 UTC
+web_server_1    | 07-Jul-2020 11:05:10.394 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version number: 9.0.37.0
+web_server_1    | 07-Jul-2020 11:05:10.395 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Name:               Linux
+web_server_1    | 07-Jul-2020 11:05:10.396 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Version:            4.14.67-1-lts
+web_server_1    | 07-Jul-2020 11:05:10.397 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Architecture:          amd64
+web_server_1    | 07-Jul-2020 11:05:10.397 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Java Home:             /usr/local/openjdk-11
+web_server_1    | 07-Jul-2020 11:05:10.398 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Version:           11.0.7+10
+web_server_1    | 07-Jul-2020 11:05:10.398 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Vendor:            Oracle Corporation
+web_server_1    | 07-Jul-2020 11:05:10.404 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_BASE:         /usr/local/tomcat
+web_server_1    | 07-Jul-2020 11:05:10.406 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_HOME:         /usr/local/tomcat
+web_server_1    | 07-Jul-2020 11:05:10.479 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.lang=ALL-UNNAMED
+web_server_1    | 07-Jul-2020 11:05:10.481 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.io=ALL-UNNAMED
+web_server_1    | 07-Jul-2020 11:05:10.482 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED
+web_server_1    | 07-Jul-2020 11:05:10.483 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.config.file=/usr/local/tomcat/conf/logging.properties
+web_server_1    | 07-Jul-2020 11:05:10.496 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+web_server_1    | 07-Jul-2020 11:05:10.498 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djdk.tls.ephemeralDHKeySize=2048
+web_server_1    | 07-Jul-2020 11:05:10.500 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.protocol.handler.pkgs=org.apache.catalina.webresources
+web_server_1    | 07-Jul-2020 11:05:10.501 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dorg.apache.catalina.security.SecurityListener.UMASK=0027
+web_server_1    | 07-Jul-2020 11:05:10.501 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dignore.endorsed.dirs=
+web_server_1    | 07-Jul-2020 11:05:10.502 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.base=/usr/local/tomcat
+web_server_1    | 07-Jul-2020 11:05:10.502 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.home=/usr/local/tomcat
+web_server_1    | 07-Jul-2020 11:05:10.520 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.io.tmpdir=/usr/local/tomcat/temp
+web_server_1    | 07-Jul-2020 11:05:10.521 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent Loaded Apache Tomcat Native library [1.2.24] using APR version [1.6.5].
+web_server_1    | 07-Jul-2020 11:05:10.521 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true].
+web_server_1    | 07-Jul-2020 11:05:10.522 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+web_server_1    | 07-Jul-2020 11:05:10.532 INFO [main] org.apache.catalina.core.AprLifecycleListener.initializeSSL OpenSSL successfully initialized [OpenSSL 1.1.1d  10 Sep 2019]
+web_server_1    | 07-Jul-2020 11:05:12.032 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["http-nio-8080"]
+web_server_1    | 07-Jul-2020 11:05:12.216 INFO [main] org.apache.catalina.startup.Catalina.load Server initialization in [2701] milliseconds
+web_server_1    | 07-Jul-2020 11:05:12.438 INFO [main] org.apache.catalina.core.StandardService.startInternal Starting service [Catalina]
+web_server_1    | 07-Jul-2020 11:05:12.441 INFO [main] org.apache.catalina.core.StandardEngine.startInternal Starting Servlet engine: [Apache Tomcat/9.0.37]
+web_server_1    | 07-Jul-2020 11:05:12.477 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
+web_server_1    | 07-Jul-2020 11:05:12.523 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in [305] milliseconds
+^CGracefully stopping... (press Ctrl+C again to force)
+Stopping compose_web_server_1   ... done
+Stopping compose_proxy_server_1 ... done
+As you can see, the terminal is occupied. To come out of it, press Ctrl+C. But doing this also stops our containers. Execute 'docker ps' to check
+
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS             NAMES
+Always, compose up the containers in the background. 
+
+$ docker-compose up -d
+Starting compose_proxy_server_1 ... done
+Starting compose_web_server_1   ... done
+Now, check the list of containers.
+
+$ docker ps
+CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS               NAMES
+40d2b2ae3c77        compose_web_server   "catalina.sh run"        3 minutes ago       Up About a minute   8080/tcp            compose_web_server_1
+e6a7df2dba55        nginx                "/docker-entrypoint.…"   3 minutes ago       Up About a minute   80/tcp              compose_proxy_server_1
+The names of the container is being named as <directory_name>_<service_name>.
+
+Step 6: To bring down the containers:
+
+$ docker-compose down
+Stopping compose_web_server_1   ... done
+Stopping compose_proxy_server_1 ... done
+Removing compose_web_server_1   ... done
+Removing compose_proxy_server_1 ... done
+Removing network compose_default
+
+Check the list of containers running.
+
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS             NAMES
+docker-compose down command has stopped and deleted both the containers.
+
+Note: If the default way of naming the containers as <directory_name>_<service_name> has to be overridden, use the -p option while building up the containers. -p option is used to add the project name as part of the containers' names.
+
+$ docker-compose -p project1 up -d
+Creating network "project1_default" with the default driver
+Building web_server
+Step 1/1 : FROM tomcat
+ ---> 6055d4d564e1
+Successfully built 6055d4d564e1
+Successfully tagged project1_web_server:latest
+WARNING: Image for service web_server was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+Creating project1_proxy_server_1 ... done
+Creating project1_web_server_1   ... done
+Check the names of the containers now.
+
+$ docker ps
+CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS               NAMES
+a5519a63e611        project1_web_server   "catalina.sh run"        25 seconds ago      Up 23 seconds       8080/tcp            project1_web_server_1
+f5d4926cb109        nginx                 "/docker-entrypoint.…"   25 seconds ago      Up 22 seconds       80/tcp              project1_proxy_server_1
+The names of the containers are now <project_name>_<service_name>.
+
+As we have seen in the demo, a simple docker-compose command is enough to perform the operations of docker pull or docker build, docker create and docker run internally.
+
+Container network drivers
+Docker containers have their own network namespaces. This means that their network resources stand isolated from the host or other containers. Communication outside the container is not possible usually. But the fact that Docker containers can be connected together and even connected with non-Docker instances is what makes them so powerful.
+
+Container network drives come into picture here. These network drivers offer the containers, network functionality and communication with the outside environment up to a certain degree.
+
+The Docker Engine supports many different network drivers. The built-in drivers include:
+
+bridge (default)
+
+none
+
+host
+
+container
+
+The network driver can be selected with the use of the following command.
+
+# docker run --net none
+We will discuss these network drivers in the upcoming modules.
+Bridge network driver
+Bridge network driver is the default network driver a container gets. This is the type of network that gets created, if no driver is specified. This implies that, by default, the container gets a virtual eth0 interface. (In addition to its own private lo loopback interface.)
+
+
+
+The interface is provided by a veth pair.
+
+An isolated network is created for the container and it is connected to the Docker bridge to connect it to the host’s network.
+
+The interface is named docker0 by default.
+
+The container’s addresses are allocated on a private, internal subnet. By default, Docker uses 172.17.0.0/16 subnet.
+
+Outbound traffic goes through an iptables MASQUERADE rule and Inbound traffic goes through an iptables DNAT rule.
+
+The container can have its own routes, iptables rules, etc.
+
+ 
+None network driver
+The none network driver is used to disable all networking.
+
+
+
+To create this, the container is started as follows:
+
+# docker run --net none
+When none network driver is created, the container gets only the loopback address, not eth0.
+
+The container cannot send or receive network traffic.
+
+This is used when we are planning to use an isolated/untrusted network driver.
+
+Host network driver
+Host network drivers are used by standalone containers. The network isolation between the Docker host and the container is removed and the container uses the host’s network interfaces.This implies that, multiple containers on the same host will communicate like how processes on the host communicates instead of using a private/isolated network for communication.
+
+
+
+To use the host network driver, the container is started as follows: 
+
+# docker run --net host
+ ​​​It can bind any address, any port.
+Network traffic doesn't have to go through NAT, bridge, or veth.
+Used by performance sensitive applications such as VOIP, gaming, streaming etc.,
+
+Container network driver
+Container network driver is used when we want to re-use the network stack of another container.
+
+To use the container network driver, the container is started as follows:
+
+# docker run --net container
+The container will share with this other container, the same interfaces, IP address(es), routes, iptables rules, etc.
+
+These containers communicate with each other over their lo interface. (i.e. one can bind to 127.0.0.1 and the others can connect to it.)
+
+Container Network Model
+The CNM was introduced in Engine 1.9.0 (November 2015).
+
+The Container Network Model standardizes the process of using multiple network drivers for providing network to the containers.
+
+The CNM has two interfaces for IPAM plugins and network plugins.
+
+IPAM plugin APIs - to allocate/deallocate IP addresses to containers and to create/ delete address pools.
+
+Network plugin APIs – to create/delete networks and to add/remove containers in the network.
+
+The CNM adds the notion of a network, and a new top-level command to manipulate and see those networks.
+
+# docker network ls
+ 
+
+Components of a container network
+Conceptually, a container network is a virtual switch. A CNM has 5 main objects:
+
+Network controller
+
+Driver
+
+Network
+
+Endpoint
+
+Sandbox
+
+The container’s network can be local (to a single Engine) or global (spanning multiple hosts) with a subnet associated to it.
+
+The container’s network is managed by a driver.
+
+Docker will allocate IP addresses to the containers connected to a network.
+
+Containers can be connected to multiple networks and given network specific names and aliases.
+
+Docker engine resolves the names and aliases using the DNS resolver.
+
+A new multi-host driver, overlay, is available out of the box. More drivers can be provided by
+
+plugins (OVS, VLAN...)
+
+The IPAM and network plugins are used by the CNM to allocate IP addresses to containers, to add containers to a network and for other networking purposes.
+
+Creating and working with a network
+In this demo, we will see how to create a new network and work with it.
+
+STEP 1: Create a network
+Let us now create a new network with the name “newnet”.
+
+# docker network create newnet
+
+
+The newly created network can be checked using the following command:
+
+# docker network ls
+
+STEP 2: Place container on the network
+We will now create a new nginx container, “new1” and connect it to the network “newnet”.
+
+# docker run -d --name new1 --net newnet nginx
+
+STEP 3: Create another container
+Create a new centos container and connect it to the same network “newnet”
+
+# docker run -ti --net newnet centos
+
+
+We are now inside the container environment. Let us try to ping the container “new1”, which is in the same network(newnet) as this container.
+
+# ping -c 2 web1
+
+
+We can see that from this new container, we can resolve and ping the other one, using its assigned name. Docker Engine uses dynamic resolver to resolve these names.
+
+Using the container network model, the containers inside the same network are able to communicate with each other.
+
+What are volumes?
+Now that we are comfortable with creating a container, starting it, stopping it and a few other actions, we will have a deeper look at what is happening inside a container. Containers, as we know, have their filesystem. What happens to the data inside the container once the container is destroyed? Can we share data from one container to another?
+
+Once a container is destroyed, its filesystem is destroyed too thereby making it impossible to persist the data inside the container.
+
+Docker offers two ways to solve this problem:
+
+1.Bind mounts:
+In bind mount, a directory in the host machine is mapped to a directory in the container filesystem. This directory does not get affected if the container gets destroyed. It can exist anywhere in the host machine making it vulnerable and available to processes outside the container.
+
+2. Docker Volumes:
+Docker volumes are the preferred mechanism to persist data inside the container and to share data among other containers. Volumes are also stored in the host filesystem but it is completely managed by Docker.
+
+Volumes are often found to be a better option than persisting data in the container’s writable layer. Because, volumes’ contents exist outside the container’s lifecycle and they do not increase the size of the container
+
+Working with volumes
+Docker volumes can be declared in two ways:
+
+Declaring volume inside the Docker file with a volume instruction.
+
+Declaring volume while running “docker run” command with -v flag (which will be dealt with in the upcoming demos).
+
+In both the cases, the directory will be a volume inside the container.
+
+Significance of volumes
+Volumes are the special directories inside a container that can be used to achieve the following:
+
+Sharing data between multiple containers
+
+Sharing a directory/file between host and container.
+
+Achieve native disk I/O performance by bypassing the copy-on-write system.
+
+Bypassing copy-on-write to leave some files out of docker commit.
+
+Understanding volumes
+The logs of any container can be checked using the "docker logs" command. These logs are originally present inside the container and retrieved by the Docker engine when the "docker logs" command is executed. The location of these logs inside the container varies according to the container that is getting launched. 
+
+As mentioned above, the logs of a container can be checked using "docker logs" command which communicates with the container and gives us the result. Effectively, using docker volumes, we can access these logs present inside the container from the Docker host itself, This behaviour of Docker volumes is not restricted to accessing the logs of a container. It can be configured as to access any content present inside the container.
+
+The following demo involves running two Nginx containers and check their access logs present inside the container using docker command and using volumes.
+
+I. Using docker command
+STEP 1: Start a Nginx container
+Start a Nginx container. Before starting the container, make sure that there is no other container running in port no.80 (which is the default port for http service).
+
+$ docker run --name "nginxsrv1" -d -p 7000:80 nginx
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+8559a31e96f4: Pull complete
+1cf27aa8120b: Pull complete
+67d252a8c1e1: Pull complete
+9c2b660fcff6: Pull complete
+4584011f2cd1: Pull complete
+Digest: sha256:a93c8a0b0974c967aebe868a186e5c205f4d3bcb5423a56559f2f9599074bbcd
+Status: Downloaded newer image for nginx:latest
+f081814e27cd3401e89d39482f932c85423607d98b14e70683ee4426d46d11ea
+Check whether the Nginx container is up and running.
+
+$ docker ps -l
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS                  NAMES
+f081814e27cd        nginx               "/docker-entrypoint.…"   About a minute ago   Up 59 seconds       0.0.0.0:7000->80/tcp   nginxsrv1
+STEP 2: Check the access log
+The access log of a container is present inside the container and it can be checked by using the following docker command.
+
+$ docker logs --tail 1 --follow f081814e27cd
+/docker-entrypoint.sh: Configuration complete; ready for start up
+
+While this command is up, connect to http://192.168.10.2:7000. (192.168.10.2 is the IP address of the Docker host used for this demo.)
+
+$ docker logs --tail 1 --follow f081814e27cd
+/docker-entrypoint.sh: Configuration complete; ready for start up
+172.17.0.5 - - [13/Jul/2020:05:13:18 +0000] "\x16\x03\x01\x00\xC7\x01\x00\x00\xC3\x03\x03d}\xB9}\xA0E]\xAAI\xFEg\x087\xC0\xCE\x8A7\x0C\xEC\x02\xAD\x07\x07`\x106\x82\x01w\xC9y\xFF E\x1F\xA6\xE7\xA2Z\x7F\x1AqQ\xDEq"400 157 "-" "-" "-"
+172.17.0.5 - - [13/Jul/2020:05:13:18 +0000] "GET / HTTP/1.1" 200 612 "https://2886795291-ollie08.environments.katacoda.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36" "34.93.163.13, 35.201.124.219, 130.211.2.72, 35.186.156.29, 172.17.0.6"
+172.17.0.2 - - [13/Jul/2020:05:13:20 +0000] "\x16\x03\x01\x00\xC7\x01\x00\x00\xC3\x03\x03o#\xB6\x0C0z\x910zl\x10\x9E.S\xE6\x5C\xEDE\xFE5.6\xF3\xFD\x19\xCE\xE0\xCCy\x1Dk7 \xB2\xA3_\xE5\xF7z\xDF_\x95\xBA\xE2\xFF\xA7Hy$-\xF3\x94l\x02:)\x0F*%\x9CU\xD5b\x9C\xD7\x00 \xC0/\xC00\xC0+\xC0,\xCC\xA8\xCC\xA9\xC0\x13\xC0\x09\xC0\x14\xC0" 400 157 "-" "-" "-"
+2020/07/13 05:13:20 [error] 27#27: *4 open() "/usr/share/nginx/html/favicon.ico" failed (2: No such file or directory), client: 172.17.0.2, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "2886795291-7000-ollie08.environments.katacoda.com", referrer: "https://2886795291-7000-ollie08.environments.katacoda.com/"
+172.17.0.2 - - [13/Jul/2020:05:13:20 +0000] "GET /favicon.ico HTTP/1.1" 404 555 "https://2886795291-7000-ollie08.environments.katacoda.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36" "34.93.163.13, 35.201.124.219, 130.211.2.75, 35.186.156.29, 172.17.0.6"
+Using the docker command, you will be able to see the access logs of the container which is present inside the container. But for this, we have to access the container everytime. Using docker volumes, we can access the content present inside a container without even accessing it.
+
+II. Using docker volumes
+In this demo, we are going to mount a local directory in the Docker host in a directory inside the Docker container. The content of the directory inside the container can now be accessed through the local directory in the Docker host. This magic is done by using the concept of bind mounts in Docker.
+
+STEP 1: Create a directory 
+Create am empty local directory in the Docker host. 
+
+$ mkdir -p  /var/tmp/nginx/logs
+$ ls -l /var/tmp/nginx/logs
+total 0
+Step 2: Start an Nginx container
+
+Now, start an Nginx container with the newly created directory in the Docker host (/var/tmp/nginx/logs) mounted as the log directory of the container (/var/log/nginx). To do this, execute the following command.
+
+# docker run --name "nginxsrv2" -d -p 8000:80 \-v /var/tmp/nginx/logs:/var/log/nginx docker.io/nginx
+
+When you check the contents of the local directory now, you will notice that it got autopopulated with two log files which are actually present inside the container's log directory.
+
+# ls -l /var/tmp/nginx/logs
+STEP 2: Check the access log
+Connect to http://192.168.10.2:8000. (192.168.10.2 is the IP address of the Docker host used for this demo.)
+
+Check the access logs of the container from the local directory of the Docker host.
+
+# tailf /var/tmp/nginx/logs/access.log
+The above scenario implies that using bind mount, you could access the logs of the container from the local directory of the Docker host. Likewise, volumes can be shared from host to container and also across multiple containers.
+
+Sharing volume from host to containers
+Docker volumes allows us to share data from host to containers. In this demo, we will launch an Nginx container with a directory from host which contains the index file required for the web server, mounted as the index directory of the container.
+
+STEP 1: Create a directory in Docker host
+Create a local directory in the Docker host.
+
+$ mkdir -p apps/website/nginx/html
+Step 2: Launch two Nginx containers
+Run two Nginx containers by mounting the newly created directory inside the container. This directory will contain the index page required for the web service inside the container.
+
+$ docker run --name "nginxsrv3" -d -p 9000:80 -v /apps/website/nginx/html:/usr/share/nginx/html nginx
+f7a361634c4e87e62831396ffae31eb39dd6f140ce0b7b384d0791c48118552d
+$ docker run --name "nginxsrv4" -d -p 9001:80 -v /apps/website/nginx/html:/usr/share/nginx/html nginx
+7fc80488e849ea885a15fb7133211d1ebb54ee2a12d94a06b18c4602fa6a1213
+Check whether your new containers are up and running.
+
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
+7fc80488e849        nginx               "/docker-entrypoint.…"   26 seconds ago      Up 25 seconds       0.0.0.0:9001->80/tcp   nginxsrv4
+f7a361634c4e        nginx               "/docker-entrypoint.…"   53 seconds ago      Up 51 seconds       0.0.0.0:9000->80/tcp   nginxsrv3
+STEP 3: Access the web page
+
+Create an index file under the local directory in the Docker host, /apps/website/nginx/html/index.html.
+
+$ echo "This is from the Nginx server" > apps/website/nginx/html/index.html
+Now, access the web pages using the link, http://192.168.10.2:9000
+
+You are now able to see the web page using the html page present the html page present in the local directory of the host.
+
+Sharing volume across containers
+Volumes can be shared across containers. We can start a container with the same volumes as that of another one.  The new container will have the same volumes, in the same directories. They both will contain the same thing and remain in sync. Technically, they are the same directories in the host.
+
+In docker, this can be done using the –volumes-from command.
+
+Follow the steps below in order to share volumes across containers.
+
+STEP 1: Creating an independent volume
+Create an independent volume in the docker host machine. This is the volume that we are going to share it with containers.
+
+# docker volume create --name Volume1
+Now, we have created an independent volume that can be attached to any number of containers.  But the objective behind sharing volumes across containers is technically to share the data present in the volume of one container across other containers.
+
+STEP 2: Attach it to a container
+Attach the independent volume, Volume1 to a container.
+
+# docker run -ti --rm -v Volume1:/container_volume1 centos
+In the above command,
+
+--rm is used so that the container gets automattically deleted when exited from it.
+
+-v is used to mount the volume created. Following it, the volume name must be given, which is Volume1 here.
+
+/container_volume1 is the absolute path in the container where we want the volume to appear inside the container.
+
+If this directory is not present inside the container, it will be created when the command runs. If it is present, the data will be hidden by the mounted volume.
+
+Execute the following command to check the mount.
+
+# df -h /container_volume1
+STEP 3: Write some data
+Now that the volume is successfully mounted inside the container, let us add some data to it.
+
+# echo "This is in Volume1" > /container_volume1/ Volume1.txt
+Exit from the container now.(Press CTRL-P + CTRL -Q).
+
+STEP 4: Inspecting the volume
+We have exited the container now which implies that the container would have been deleted (since –rm option is used).
+
+Execute the following command to inspect the volume.
+
+# docker volume inspect Volume1
+
+
+Check the directory in the host as well.
+
+# ls -l /var/lib/docker/volumes/Volume1/_data
+
+
+We can also check the data on the host at the path listed as the mountpoint. We should avoid altering it as it can cause data corruption if applications or containers are unaware of changes.
+
+STEP 5: Attach the volume to a new container
+Now, we will attach the volume, Volume1 to a new container.
+
+# docker run --rm -ti -v Volume1:/container_volume1 centos
+Execute the following command to check the mount.
+
+# df -h /container_volume1
+
+
+In order to check whether the cvolume is shared successfully, let us try to access the file we created in previous steps, Volume1_file.txt.
+
+# cat /container_volume1/Volume1.txt
+
+
+We are able to access the file created in the volume when it was attached to the previous container. This proves that docker volumes persist data.
+
+In the coming demo, we will see how to create a volume along with the container creation.
+
+Mounting read-only volumes
+In the previous demo, we mounted volumes of a container inside another container and both the containers were able to read and write from the data volume. Now, we will try to mount read-only volumes.
+
+Step 1: Create a new container with Volume4
+Run a new centos container, Container6 and mount the volumes from Container4 as read-only volumes using the following command.
+
+$ docker run -ti --name=Container6 --volumes-from Container4:ro centos
+[root@ee3937e795d4 /]#
+Step 2: Access the files inside container_volume4
+Try to read the file created by us in the previous demo from Container4 and Container5.
+
+[root@ee3937e795d4 /]#  cat /container_volume4/Container4.txt
+This file is created in Container4
+[root@ee3937e795d4 /]#  cat /container_volume4/Container5.txt
+This is written from Container5
+Step 3: Delete any file inside container_volume4
+Now try to delete any of these files or write some data to the them.
+
+[root@ee3937e795d4 /]# rm /container_volume4/Container4.txt
+rm: remove regular file '/container_volume4/Container4.txt'? y
+rm: cannot remove '/container_volume4/Container4.txt': Read-only file system
+[root@ee3937e795d4 /]#  echo "This is written from Container6" >> /container_volume4/Container5.txt
+bash: /container_volume4/Container5.txt: Read-only file system
+From the above screenshots, it is evident that we are able to access contents of /container_volume4. However since /container_volume4 is mounted as a read-only volume, there is no way Container6 can make any changes to it.
+
+Along with mounting volumes to multiple containers, Docker also allows us to mount multiple volumes to a single container, which is being dealt with in the upcoming demo.
+
+Mounting multiple volumes
+Dealing with docker volumes also demands us to know the fact that multiple volumes can be mounted on a container. Some of those volumes can be mounted in read-only mode as well.
+
+For this purpose, let us create few independent volumes, Volume5, Volume6 and Volume7. We will also attach these new independent volumes and volume from Container4 in read-only mode to our container.
+
+STEP 1: Create new volumes
+Create Volume5, Volume6 and Volume7 as follows:
+
+$ docker volume create --name Volume5
+Volume5
+$ docker volume create --name Volume6
+Volume6
+$ docker volume create --name Volume7
+Volume7
+ 
+STEP 2: Attach multiple volumes
+Run a new centos container, Container7. Attach the newly created independent volumes to it. Along with those volumes, attach volumes from Container4 in read-only mode.
+
+$ docker run -ti --name=Container7 --volumes-from Container4:ro -v Volume5:/container_volume5 -vVolume6:/container_volume6 -v Volume7:/container_volume7 centos
+[root@11145f163084 /]#
+Check the list of docker volumes present using the following command.
+
+$ docker volume ls
+DRIVER              VOLUME NAME
+local               Volume1
+local               Volume2
+local               Volume3
+local               Volume4
+local               Volume5
+local               Volume6
+local               Volume7
+Thus, Docker lets us mount multiple volumes inside a container.
+
+Understanding the lifecycle of a docker volume.
+Docker volumes can be created independently or created along with container creation.
+
+Containers can be created with the same volumes as another container.
+
+Multiple volumes can be attached to a container.
+
+Docker volume cannot be created if it is used by a container.
+
+Docker volumes continue to stay even if the container gets removed.
+
+Docker is responsible for logging, monitoring, and backup of the volumes.
+

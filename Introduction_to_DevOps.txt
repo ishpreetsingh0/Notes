@@ -1,0 +1,152 @@
+Introduction to Devops
+
+1 Why Devops
+2 What is Devops
+3 Aspects for adoption of Devops
+4 Stages of Devops
+5 Demo
+
+Waterfall model: Requirement analysis,Designing,Coded,testing,deployment
+
+Agile Methodology:planning,Implement,Inspect,Adapt,planning
+
+Quick time to market,ROI.
+
+Agile is a time-boxed,iterative approach to software delivery that builds incrementally from the start of the project.
+
+Values Of Agile:
+
+1.Individual And Interactions over processes and tools
+2.Working software over comprehensive documentation
+3.Customer Collabaration Over contract negotiation
+4.Responding to change Over following a plan
+
+Deliver working software from a couple of weeks to a couple of months.
+working software is the primary measure of progress
+
+
+Flavors of Agile:
+1.Scrum:Used in development projects
+2.Kanban:Used in maintenance projects
+3.Extreme programming:Used along with other flavors of Agile
+4.Lean:Used in manufacturing environments
+
+
+Continous Integration:A software development practice that requires members of the team to integrate their work frequently.
+
+
+Aspects for adoption of devops
+1.People:
+   a)Seperate Dev and Ops team:Interventions planned at regular intervals.
+   b)One with Ops extension:Ops team members can be a part of dev team.
+   c)Pure Devops:Each team member is capable of selecting any item & work on it.
+
+Product Owner:Responsible for aligning Operations & development on business goal & vision,maintains Product backlog
+Release manager: Overall responsibility of release management.
+Scrum Master: Ensures Problem free execution by both dev and ops team.
+
+2.Process:
+       a)Dev and Ops Seperate:Dev-Scrum,Ops-ITIL
+       b)Dev and ops seperate but following similar process:Dev-Scrum,Ops-Kanban-Two different product backlogs,but single Product Owner.
+       c)Unified Process:Scrumban-Single devops team
+       
+     
+3.Technology:
+
+IDE-Eclipse
+Source Code Repo-Git-Version control
+Static Code Analysis-Sonarqube
+Unit testing-Junit
+Code Coverage-Jacoco
+Build Automation - Maven
+Artifact repository- Jfrog repository
+Continous Integration-Jenkins
+Functional Testing-Selenium
+Performance testing - Jmeter
+Environment provisioning - Ansible
+CD automation- jenkins
+Release mgmt:Jenkins
+Infrastructure:Internal Cloud
+Monitoring-ElK stack
+
+
+  
+
+
+
+
+
+Devops:[Dev(Dev+QA)+Ops(Release mgmt,Deployment mgmt,Infra mgmt,Support,Security)]
+
+Collabaration,automation
+
+(planning,Build,Test,Release,Deployment,Operations & Monitoring)->Devops methodology.
+
+
+Code Analysis,Unit testing,Code Coverage,Build,Environment provisioning for testing,QA,Deployment to pre-production,Release management,
+Environment provisioning for production,Deployment and release to production.
+
+
+
+Stages of devops:Version Control,Continous Integration,Continous Delivery,Continous Deployment
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Key activities and their automation
+Source Code Management (Code Version Control)
+
+Version control software keeps track of every modification to the code in a special kind of database. If a mistake is made, developers can turn back the clock and compare earlier versions of the code to help fix the mistake while minimizing disruption to all team members. Distributed version control systems are gaining popularity
+
+Example: Git, TFS, BitBucket, Mercurial
+
+Code Analysis tools ensures that the code written by developers follows the right coding standards. The project team selects the rules that need to be followed by the code. Alerts are raised based on settings when the rules are violated.
+
+Example: Sonarqube, FxCop (integrated with Visual Studio)
+
+Automated Unit Testing Tools are used to test the code by running testing code
+
+Code Coverage help in checking the coverage of the code by the test cases written
+
+Examples : Cobertura, JaCoCo, Open Cover
+
+Automated Build help in automating the sequence of build activities
+
+Examples : Maven,Gradle,MSBuild
+
+Binary artifact repositories help in baselining and version controlling the binary files
+
+Examples : Artifactory,Nexus 
+
+Continuous integration tools help in orchestration of the build in an automated fashion
+
+Examples : Jenkins, Bamboo,TFS 
+
+Automated functional testing help in writing and executing automated functional test cases
+
+Examples : Selenium 
+
+Automated performance testing help in writing and executing automated performance test cases
+
+Examples : JMeter
+
+Automated security testing help in writing and executing automated security test cases[M1] 
+
+Examples : Appscan
+
+Automated deployment help in automated deployment of application to different environments 
+
+Examples : uDeploy, XLDeploy,CARA
+
+Environment management help in automated provisioning, management of infrastructure (virtual/cloud)
+
+Examples : Openstack,Chef,Puppet
+
+Release management help in automated management of releases
+
+Examples : uRelease,XLRelease,CARA
+
+You can refer to the prerequisite course DevOps CICD- Open source tool chain for more details
+
+
+

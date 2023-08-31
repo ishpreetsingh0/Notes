@@ -1,0 +1,3495 @@
+KUBERNETES
+
+As more and more number of applications move to cloud, the architecture and distributions of these applications evolve. This requires a proper set of tools and skills to manage them. Managing micro-services across virtual machines and each of them having multiple containers will become complicated quickly.
+
+How do we reduce this complexity?
+
+The solution for this is container orchestration.
+
+Container orchestration is about managing the containers lifecycle, mainly for large scale deployments. Some of the popular container orchestration tools are Kubernetes, Docker Swarm, and Apache Mesos. Most of administrators and developers go with container orchestration.
+
+
+Kubernetes is an open source and production-ready container orchestration platform, with accumulated experience of Google, that is combined with best of the ideas from various communities.
+
+The solution for this is Kubernetes and containers. They provide tools that we need to move quickly and along with that it provides high availability. This is accomplished by their features like Immutability,Declarative configuration and self healing capability. 
+
+Declarative configuration (Declarative configuration) 
+ Imperative configuration, here the desired state of the system is achieved by executing a series of instructions. Imperative commands define the action.
+In case of declarative configuration there is declaration of desired state. Basically in declarative configuration we define desired state.
+To understand this approach better let us take a scenario, Assume there is a task of creating two replicas of an application. If we go by Imperative configuration, it would say "run app1, run app2" whereas Declarative configuration would be "replicas=2".
+
+, Infrastructure Abstraction  
+When the applications are built by developers in terms of container images and are deployed in terms of portable Kubernetes APIs, applications transfer between environments is just a matter of sharing declarative configuration.,
+
+
+ Decoupling 
+Here in decoupling, the components are separated from each other by service load balancers and defined APIs. Isolation of each part of a system is done by load balancers and APIs.
+Easier scaling of programs in a service is done via load balancers and APIs help in scaling development teams, because APIs between microservices limits the communication overhead between teams., 
+
+
+Self-Healing When kubernetes receives the desired state configuration, it will not match current state to desired state in one go. There will be continuous actions to ensure that desired state is matched. Since the action is taken continuously, if there is system failure it will ensure that it's resolved and desired state is attained. 
+ ,
+
+ Immutability 
+If we see the traditional software systems they have mutable infrastructure. Here in this case any changes or updates are applied as incremental updates.In case of mutable infrastructure the current state will not be represented as single artifact, it will be represented as accumulation of updates and changes. Here once we make changes or any updates to the system, it becomes very difficult to rollback.
+Now if we consider immutable architecture, here whenever there is a change or  an update a complete new image is built. we are just creating new image and not changing anything in the existing one, so if the change or update is not successful you can always go back to your previous image. , 
+
+
+Container Orchestration
+Container orchestration is about managing the containers lifecycle, mainly for large scale deployments. Some of the popular Container orchestration tools are Kubernetes, Docker Swarm, and Apache Mesos. Most of administrators and developers go with containeWhat is a Deployment?
+Deployments represents a set of multiple pods that are identical,with no unique identities. Multiple replicas of our application can be run using deployment. In case any instances fails or becomes unresponsive, deployment automatically replaces those instances. Deployment provides self-healing mechanism in order to address machine failure or maintenance.
+
+Kubernetes Deployments:
+Containerized applications can be deployed on top of Kubernetes cluster, we have to create a Kubernetes Deployment configuration for that. How to create and update instances of the application are instructed by Deployment. Once the deployment is created, Kubernetes schedules the application that are in the deployment and these applications run on individual nodes. Kubernetes Deployment controller manages Deployments. Deployments uses pod template.
+
+Pod template will have specification for the pods and it determines how the pod should look like, what application should run inside the containers and much more.
+
+If there is a change in Deployment's Pod template, automatically new pods are created one at a time.
+
+Creating Deployments
+Deployments can be created using following commands.
+
+kubectl run
+
+kubectl apply
+
+kubectl create 
+
+Kubernetes features that supports automatic management of deployed software’s/applications:
+Self Healing: Kubernetes Restarts the containers that fail, for containers that don't respond to user defined health checks it kills them, when nodes die it replaces and reschedules the container.
+
+Automated rollouts and rollbacks: Changes to the applications or its configuration are rolled out progressively, while monitoring application health in order to ensure that it doesn't kill all  of our instances at the same time. In case something goes wrong in the  new deployment,  Kubernetes will rollback the change.
+
+Horizontal scaling: Scaling the application up and down using simple commands, with an UI or based on CPU usage autoscaling .
+
+Automatic bin packing: Places containers automatically based on its resource requirements and other constraints, without sacrificing availability.r orchestration.
+
+Q/A
+Jack wants to automatically scale instances of an application based on demand from clients. What is the best solution? 
+Setup Kubernetes cluster, create deployment and configure Horizontal scalingontal 
+
+Jhon wants to create containers, which of the following service's will help him?
+Docker 
+
+Kubernetes schedules pods to nodes
+Based on load Kubernetes distributes traffic.
+Kubernetes does auto scaling of pods.
+--------------------------------------------------------------------------------
+
+Kubernetes has just five basic components:
+Three Master Components :
+API Server
+Controller manager
+Scheduler
+Two Node Components :
+Kubelet
+Proxy
+The Master Node's
+The Kubernetes logic is a collection of services:
+The API server (our point of entry to everything!)
+Core services like the scheduler and controller manager
+etcd(a highly available key/value store; the "database" of Kubernetes)
+Kubernetes logic is like  the brain.
+All these services together form what is called the "master".
+These services can run in containers or straight on host machine(that's an implementation detail)
+etcd service can be run on separate machines ( i.e. first schema) or co-located ( i.e. second schema) 
+At least one master is needed, but we can have more masters (for high availability)
+The Worker Node's
+The nodes executing our containers run another collection of services:
+a container Engine (like Docker,rkt,kata etc)
+kubelet(the "node agent")
+kube-proxy (it's a necessary but not a suﬃcient network component for nodes)
+Nodes were formerly called  as "minions"
+It is always recommended to not run applications on the node's that run master components (Except when you are using small development clusters)
+
+What do kubernetes components do?
+API Server
+It provides a forward facing REST interface into the kubernetes control plane and datastore.
+Interaction of kubernetes with all  the clients and other applications is strictly through the API Server.
+Four APIs are exposed through API server:
+Kubernetes API
+Extensions API
+Autoscaling API
+Batch API.
+These components are used for communicating with the Kubernetes cluster and for executing container cluster operations.
+The API Server is the only component that connects to etcd server.
+Every other component to work with cluster state or access, must go through the API Server.
+It handles authentication and authorization, admission control, mutation and request validation in addition it acts as front-end to the backing data store. It is like a gatekeeper to the cluster.
+Scheduler
+The responsibility of Scheduler is to monitor the resource utilization of each node and scheduling the containers according to resource availability.
+Default scheduler uses bin packing.
+Requirements can include: general hardware requirements, labels, affinity/anti-affinity, and various other custom resource requirements.
+Controller Manager
+Serves as the primary daemon which manages all the core component control loops.
+Through the API server, it monitors the current state of the applications  that are deployed on Kubernetes and it makes sure that desired state is met.
+etcd
+Its a distributed, consistent key-value store and released as an open source by CoreOS.
+Its used for:
+Configuration management,
+service discovery
+coordinating distributed work
+Kubernetes uses etcd as the persistence storage of all of its API objects (what nodes exist in the cluster, what pods should be running, which nodes they are running on, etc).
+Etcd implements a watch feature, it provides an event-based interface for monitoring changes to keys asynchronously. Through these systems clients are allowed to perform a lightweight subscription for the changes to parts of the key namespace. Once a key is changed, “watchers” get notified immediately. In the context of Kubernetes, this is a crucial feature as the API Server component relies heavily on this to get notified and calls the appropriate business logic components in order to move the current state towards the desired state.
+Kubelet
+It Acts as the node agent  and manages the lifecycle of every pod on its host.
+It uses of the pod specification in order to create containers and manage them.
+Kubelet understands YAML container manifests which it can read from several sources:
+File path
+HTTP Endpoint
+etcd watch acting on any changes
+HTTP Server mode accepting container manifests over a simple API.
+Kube-proxy
+It runs in each node and manages the network rules on each node.
+Performs load balancing or connection forwarding for Kubernetes cluster services.
+It uses proxy modes rules for doing simple load balancing, TCP, UDP stream forwarding and round robin TCP, UDP forwarding.
+Available Proxy Modes:
+Userspace
+Iptables
+IP Virtual Server  (ipvs) - default if supported
+
+What is Etcd?
+Etcd is an open-source distributed key-value store.
+For many of the distributed systems it serves as the backbone. It is used to store and manage the critical information that is needed to keep distributed systems running. Prominently it manages the configuration data, metadata and state data.
+Containerized environments have complex data management requirements, as we scaleup the complexity increases further more. Kubernetes makes the process simple by coordinating tasks such as configuration, load balancing, health monitoring, deployment, service discovery and job scheduling across cluster. In order to achieve this coordination, there is a need of data store that provides the  true status of the system, clusters, pods and all the application instances that are within them at any given point of time. Etcd is the data store that fulfills this requirement.
+In case of Kubernetes cluster, an etcd instance can be deployed as Pod on the masters, or in order to add an additional level of security and flexibility it can be deployed in external cluster.
+Kubernetes Etcd’s watch functionality to monitor changes to the actual or the desired state of its cluster. Whenever they are different, Kubernetes makes changes to align the two states. Everytime read by the kubectl command the data is retrieved from the data that is stored in Etcd, any change made by kubectl command  will add or update entries in Etcd data store.
+Etcd properties:
+Fully Replicated: The entire data store is available on every node in a cluster.
+Highly Available: Etcd is designed to avoid single points of failure and, tolerate hardware failures and network issues.
+Consistent and Reliable: Every data read returns the most recent write across cluster. Using the Raft algorithm the store is properly distributed.
+Simple: Using standard HTTP/JSON  tools, any application, from simple web apps to complex container orchestration engines can read and write data to etcd.
+Secure: Implements automatic TLS with optional client certificate authentication.
+Fast: Etcd is benchmarked at 10,000 writes per second.
+
+Why we need kubernetes scheduler?
+In current scenario wherein at a particular instance of time there are requests for n number of instances of application and multiple servers are being used to spawn them, it becomes necessary to place right instance in right server by checking various parameters like resource requirements, hardware and software constraints,policy constraints, data locality and much more.
+On top of this there is also a need to balance the load.
+Manually doing this will be a huge task, which is tedious and we are bound to miss on various parameters.
+Then what is the solution for this?
+The solution to this is Kubernetes scheduler.
+What is Kubernetes scheduler?
+Kubernetes scheduler is a part of Kubernetes container orchestration platform. Scheduler makes sure that Pods are mapped to the Nodes.
+Scheduler basically controls Performance, capacity and availability in kubernetes cluster.
+In Kubernetes cluster containers are placed inside pods and pods are placed inside Nodes. API sets requirements that are specific to a workload. Scheduler attempts to place each Pod created by Kubernetes on one of the nodes based on resource availability.
+For high availability instances pods can be deployed across nodes.
+Kube-scheduler
+The  default scheduler for Kubernetes is kube-scheduler. Design of kube-scheduler is such that we can write our own scheduling component and use it.
+For all the newly created and unscheduled pods, kube-scheduler finds an optimal node for these pods to run on. Container in pods will have different requirements for resources and even the pods also will have different requirements. Therefore, based on specific scheduling requirements the nodes will be selected.
+Scheduling decisions are based on various factors like individual and collective resource requirements, affinity and anti-affinity specifications, hardware and software constraints,policy constraints, data locality and much more.
+How does node selection happen?
+Node selection is  a 2-step operation:
+Filtering
+Scoring
+Filtering step will find all the nodes where its feasible to schedule a specific pod, once this step is done a list is ready with suitable nodes. After this step if list is empty, then that particular pod is not schedulable until required resource is available.
+Scoring is the step, where the nodes from list in previous step get scores based on which one is most suitable for pod placement.
+kube-scheduler will assign the Pod to the Node that has the highest score. If more than one node have equal scores, kube-scheduler selects one node from the list randomly.
+
+Cluster:
+Cluster is a  loosely or tightly connected set of computers that work together. They work as a single system. Clusters use nodes to perform the tasks. They are usually managed by masters.
+Kubernetes Cluster is a group of machines that act as one.
+Note: The Masters and Nodes can be have different specifications.
+Kubernetes Nodes – Masters and Nodes (after K8S install)
+
+ Kubernetes Cluster Capacity – After Installation
+Kubernetes Cluster Capacity is basically summation  of capacity of each worker-node in Kubernetes cluster. 
+Kubernetes High Level Architecture: 10000 Feet:
+Here we can see that request will come to Kubernetes cluster through API calls/CLI/UI from end user. Based on the requests, API will store the user data and other details in the form of key-value pair in ETCD database in master and based on the resource availability in the nodes, scheduler will schedule the pods in appropriate nodes according to information received from API . Controller manager will make sure the desired amount of pods is up, that is it matches desired state to current state. Kubelet (node agent) ensures the containers described in the PodSpecs are running and healthy in the nodes.
+ 
+Q/A
+Which of the following are Kubernetes node components?
+Kubelet (Its an node agent.)
+Kube-proxy (Its a networking component)
+
+What is the job of Scheduler?
+Make sure that Pods are mapped to the Nodes. 
+
+Which kubernetes component does coordination of tasks such as configuration, load balancing, health monitoring, deployment, service discovery and job scheduling across cluster?
+etcd (Etcd is the data store that fulfills this requirement.)
+
+Installation of Kubernetes Cluster:
+Inorder to leverage the orchestration features of Kubernetes to manage applications, we are going to create a 3-node Kubernetes cluster with 1 Master Node and 2 Worker Nodes. Let us see the steps to be followed in general.
+
+Install container platform (Ex: docker) on all nodes
+
+Install Kubernetes binaries on all nodes
+
+Initialize and start kubelet service on all nodes
+
+Perform kubeadm init command on master node to initialize cluster
+
+Install network solution (Ex: flannel, weave, calico etc.) on master node
+
+Join worker nodes to the cluster using kubeadm join command
+
+Now the cluster is set up and ready to accept work load.
+
+The above mentioned steps will work if you are using stand-alone machines or VMs with Internet connectivity. For the lab that we are going to use, Internet is not available; three VMs are provisioned. For this restricted lab setup, the docker images as well as Kubernetes binaries are pre-downloaded. Let us see in-detail how to set up the cluster.
+
+Step 1:  Install all the pre-requisites (on all nodes).
+
+Check and confirm the all hostnames and make sure that IP address is matching with eth0
+
+Install network tools, bind tools, wget
+
+Disable firewalld, networkmanager and iptables
+
+enable legacy network services
+
+disable Selinux
+
+load and enable br_netfilter module (bridge-netfilter)
+
+$ hostname
+$ cat /etc/hosts
+$ cat /etc/resolv.conf
+#output
+search podx.example.com 
+nameserver 172.20.13.125
+step 2: Install docker as the container platform, enable and start the service (on all nodes). 
+
+$ systemctl enable docker
+$ systemctl start docker
+$ systemctl status docker
+
+Load all the docker images that we need for lab.
+#specify the path where images are downloaded
+$ cd /root/Kubernetes-1.16.2/images/
+#load the docker images
+$ sh -x import_main_k8s_images.sh
+
+Verify that all images are imported.
+$ docker images
+
+Step 4: Kubernetes v1.8.0 onwards, if swap memory is enabled the Kubelet will fail to start. Disable swap memory, then install Kubernetes binaries. (on all nodes)
+
+$ cd /root/Kubernetes-1.16.2/binary/
+$ yum install -y *.rpm
+$ swapoff -a
+
+Step 5: Enable and start the kubelet service and verify it (on master node).
+
+$ systemctl enable kubelet
+$ systemctl start kubelet
+$ systemctl status kubelet
+
+Step 6: Initialize the Kubernetes Master node by using the kubeadm init command to initialize the cluster (on master node).
+
+$ kubeadm init --pod-network-cidr=10.244.0.0/16 --kubernetes-version=1.16.2 | tee k8s-install.log
+
+To start using your cluster, you need to run the following as a regular user:
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+..
+Then you can join any number of worker nodes by running the following on each as root:
+kubeadm join 192.168.122.162:6443 --token m1qx7i.xxxxxxx \
+--discovery-token-ca-cert-hash yyyyyyyyyyyyyyyyy
+Note down the join token. This is needed to join worker nodes to the master nodes to form Kubernetes cluster.
+
+Now let us verify the status of kubelet again.
+
+$ systemctl status kubelet
+
+Currently we have initialized the k8s cluster; we can start interacting with the cluster using the ‘kubectl’ command. For this we need the environment to be setup with the details of the k8s Cluster. The ‘kubeadm init’ command outputs the details of how to do it.
+
+$ mkdir -p $HOME/.kube
+$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+Let us now view the initial status of the cluster. 
+
+$ kubectl get nodes
+#output
+NAME                            STATUS      ROLES    AGE     VERSION
+k8s-master.pod6.example.com     NotReady    master   5m44s   v1.16.2
+$ kubectl get pods --all-namespaces 
+#output
+NAMESPACE     NAME                                                  READY   STATUS    RESTARTS   AGE
+kube-system   coredns-5644d7b6d9-2tdjc                              0/1     Pending   0          7d20h
+kube-system   coredns-5644d7b6d9-5bbnb                              0/1     Pending   0          7d20h
+kube-system   etcd-k8s-master.pod6.example.com                      1/1     Running   0          7d20h
+kube-system   kube-apiserver-k8s-master.pod6.example.com            1/1     Running   0          7d20h
+kube-system   kube-controller-manager-k8s-master.pod6.example.com   1/1     Running   0          7d20h
+kube-system   kube-proxy-gnrkb                                      1/1     Running   0          7d20h
+kube-system   kube-scheduler-k8s-master.pod6.example.com            1/1     Running   0          7d20h
+We see that the Master is in “NotReady” state and that the k8s cluster DNS is in “Pending” status. Let us check the /var/log/message to find the reason.
+
+$ tail /var/log/messages
+#output
+k8s-master kubelet: E1101 21:53:04.753158 9291 kubelet.go:2187] Container runtime network not ready:
+NetworkReady=false reason:NetworkPluginNotReady message:docker: network plugin is not ready: cni config uninitialized
+k8s-master kubelet: W1101 21:53:09.177339 9291 cni.go:237] Unable to update cni config: no networks
+found in /etc/cni/net.d
+We have to install network solution so that pods can communicate with each other. The network must be deployed before any applications. Also, kube-dns which is a helper service, will not start up before a network is installed.
+
+Step 7: Since kubeadm only supports Container Network Interface (CNI) based networks, let us set up flannel overlay network.(On master node)
+
+$ cd /root/Kubernetes-1.16.2/yamls-for-1.16.2
+$ kubectl apply -f kube-flannel.yml
+
+$ kubectl get nodes
+#output
+NAME                            STATUS      ROLES    AGE     VERSION
+k8s-master.pod6.example.com     Ready       master   5m44s   v1.16.2
+$ kubectl get pods --all-namespaces 
+#output
+NAMESPACE     NAME                                                  READY   STATUS    RESTARTS   AGE
+kube-system   coredns-5644d7b6d9-2tdjc                              1/1     Running   0          7d20h
+kube-system   coredns-5644d7b6d9-5bbnb                              1/1     Running   0          7d20h
+kube-system   etcd-k8s-master.pod6.example.com                      1/1     Running   0          7d20h
+kube-system   kube-apiserver-k8s-master.pod6.example.com            1/1     Running   0          7d20h
+kube-system   kube-controller-manager-k8s-master.pod6.example.com   1/1     Running   0          7d20h
+kube-system   kube-proxy-gnrkb                                      1/1     Running   0          7d20h
+kube-system   kube-scheduler-k8s-master.pod6.example.com            1/1     Running   0          7d20h
+We see that the master node is in ‘Ready’ state and the service are in ‘Running’ state. You can check the /var/log/message to verify. 
+
+ Step 8: Enable and start the kubelet service and verify it (on worker nodes).
+
+$ systemctl enable kubelet
+$ systemctl start kubelet
+$ systemctl status kubelet
+[Service is in activating state] 
+ 
+
+Step 9: Join the worker nodes to cluster by performing kubeadm join command (from step 6) (on worker nodes).
+
+$ kubeadm join --token a355e6.xxxxx 10.0.2.180:6443 --discovery-token-ca-certhash yyyyyyyyy
+
+Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
+Verify the status of cluster on the master node.
+
+$ kubectl get nodes
+#output
+NAME                            STATUS   ROLES    AGE     VERSION
+k8s-master.pod6.example.com     Ready    master   7d20h   v1.16.2
+worker-node1.pod6.example.com   Ready    <none>   7d20h   v1.16.2
+worker-node2.pod6.example.com   Ready    <none>   7d20h   v1.16.2
+$ kubectl get pods --all-namespaces
+#output
+NAMESPACE     NAME                                                  READY   STATUS    RESTARTS   AGE
+kube-system   coredns-5644d7b6d9-2tdjc                              1/1     Running   0          7d20h
+kube-system   coredns-5644d7b6d9-5bbnb                              1/1     Running   0          7d20h
+kube-system   etcd-k8s-master.pod6.example.com                      1/1     Running   0          7d20h
+kube-system   kube-apiserver-k8s-master.pod6.example.com            1/1     Running   0          7d20h
+kube-system   kube-controller-manager-k8s-master.pod6.example.com   1/1     Running   0          7d20h
+kube-system   kube-flannel-ds-amd64-2jk52                           1/1     Running   0          7d20h
+kube-system   kube-flannel-ds-amd64-l5dqd                           1/1     Running   0          7d20h
+kube-system   kube-flannel-ds-amd64-rsdf4                           1/1     Running   0          7d20h
+kube-system   kube-proxy-gnrkb                                      1/1     Running   0          7d20h
+kube-system   kube-proxy-kz4zq                                      1/1     Running   0          7d20h
+kube-system   kube-proxy-x7nqk                                      1/1     Running   0          7d20h
+kube-system   kube-scheduler-k8s-master.pod6.example.com            1/1     Running   0          7d20h
+
+Now we have successfully set up a 3-node Kubernetes cluster.
+
+Q/A
+What is the command to initialize Kubernetes Master?
+kubeadm init (This command will initialize kubernetes master node.)
+
+Gary is trying setup kubernetes cluster with two nodes and one master, but after initializing master he is not getting master status as ready. What might be the possible issue?
+Need to install additional networking component. (An additional overlay networking component will make master status as ready)
+
+Which command can be used to check node status?
+kubectl get nodes 
+----------------------------------------------------------
+
+Why Dashboard:
+Kubernetes Dashboard is a web UI, where all kubernetes resources can be viewed. 
+Kubernetes Dashboard can be used as an alternative to "kubectl" command for deploying containerized applications to a  cluster, troubleshoot the containerized applications and much more.
+Kubernetes Dashboard gives an overview of applications that are running on a cluster.
+Using the Dashboard we can create or modify Kubernetes resources.
+It reports the status of the resources in the cluster.
+It detects errors that have occurred in the resources.
+We are going to deploy the dashboard with three commands:
+	One for running the dashboard (using kubectl create)
+	One command to bypass authentication for the dashboard (using kubectl create)
+	One for making the dashboard available from outside (using NodePort)
+
+Installing and Running the Kubernetes Web UI (Dashboard)
+We need to create a deployment,a service, need a secret, a service account, a role and a role binding for the dashboard
+All of these can be defined in a YAML file.
+Yaml file is mentioned below:
+
+[root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# cd /root/Kubernetes-1.16.2/yamls-for-1.16.2
+[root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# vi dashboard-v2.0.0-beta5-recommended.yaml                                                                                            labels:
+    k8s-app: dashboard-metrics-scraper
+  name: dashboard-metrics-scraper
+  namespace: kubernetes-dashboard
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s-app: dashboard-metrics-scraper
+  template:
+    metadata:
+      labels:
+        k8s-app: dashboard-metrics-scraper
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
+    spec:
+      containers:
+        - name: dashboard-metrics-scraper
+          image: docker.io/kubernetesui/metrics-scraper:v1.0.1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /
+              port: 8000
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 1001
+            runAsGroup: 2001
+      serviceAccountName: kubernetes-dashboard
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      # Comment the following tolerations if Dashboard must not be deployed on master
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+
+Step 1:Create the dashboard resources, with the following command: 
+[root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# kubectl create -f dashboard-v2.0.0-beta5-recommended.yaml
+namespace/kubernetes-dashboard created
+serviceaccount/kubernetes-dashboard created
+service/kubernetes-dashboard created
+secret/kubernetes-dashboard-certs created
+secret/kubernetes-dashboard-csrf created
+secret/kubernetes-dashboard-key-holder created
+configmap/kubernetes-dashboard-settings created
+role.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrole.rbac.authorization.k8s.io/kubernetes-dashboard created
+rolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+deployment.apps/kubernetes-dashboard created
+service/dashboard-metrics-scraper created
+deployment.apps/dashboard-metrics-scraper created
+
+Step 2: Granting rights to the dashboard and bypassing authentication for the dashboard.
+
+We need to execute below script.
+
+[root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# cat dashboard-v2.0.0-beta5-admin-service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dashboard-admin
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: dashboard-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: dashboard-admin
+  namespace: kube-system
+
+Now lets run the script.
+
+[root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# kubectl create -f dashboard-v2.0.0-beta5-admin-service-account.yaml
+serviceaccount/dashboard-admin created
+clusterrolebinding.rbac.authorization.k8s.io/dashboard-admin created
+
+Checking if the service is created.
+
+[root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# kubectl -n kubernetes-dashboard get svc
+NAME                        TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)         AGE
+dashboard-metrics-scraper   ClusterIP   10.108.45.67   <none>        8000/TCP        9d
+kubernetes-dashboard        NodePort    10.108.14.63   <none>        443:31234/TCP   9d
+
+Step 3: Getting the details of dashboard admin token.
+
+[root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# kubectl -n kube-system get secret | grep dashboard-admin
+dashboard-admin-token-jzd6j                      kubernetes.io/service-account-token   3      5m45s
+[root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# kubectl -n kube-system get secret | grep dashboard-admin
+dashboard-admin-token-jzd6j                      kubernetes.io/service-account-token   3      13m
+[root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# kubectl -n kube-system describe secret dashboard-admin-token-jzd6j
+Name:         dashboard-admin-token-jzd6j
+Namespace:    kube-system
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: dashboard-admin
+              kubernetes.io/service-account.uid: 36911055-2b85-4357-a838-018a220f3aad
+Type:  kubernetes.io/service-account-token
+Data
+====
+ca.crt:     1025 bytes
+namespace:  11 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Imp4Q0sycXM2N2VsTkI4Um9pZW1VVDFqVVJjRzh0TTlQTGdabDRDTnZBZ1UifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkYXNoYm9hcmQtYWRtaW4tdG9rZW4tanpkNmoiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGFzaGJvYXJkLWFkbWluIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiMzY5MTEwNTUtMmI4NS00MzU3LWE4MzgtMDE4YTIyMGYzYWFkIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmRhc2hib2FyZC1hZG1pbiJ9.u2A2X10wHp3Un7jc2DBdtcOkEVRScsim8dxNrQbfNZbg6sOBgQN3JgXMgsJPBtLeNClm1usV0o5t0aVh_GtWj5o32K4x6_RDG7FqJBpeIkQ7xXpMLUjoIiYVeQv1zFzoT81p7itZdgWG1hmksoAtayKG7zDLz2J0WVCIVmh_qScLDNWm-m6__5X3qpzisvvhYsmnUWBQTnYLnjR7tHSqJG6oQ8nFULK_vChKJckbYv_rA-Qwj21UkShWJwOQODHMC2X51gF4ph2OihLijKFAwRvNjquJY9KYl6KiIUBQFpR_fe58DIjKFmskI3X-VpiR_3drSXGmcvg271wfIHkZHQ
+
+
+Step 4: Accessing the Dashboard.
+
+[root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# echo $PODSURL:31234/
+https://k8s-master.pod1.example.com:31234/
+We can access the dashboard from any browser using below link:
+https://k8s-master.pod1.example.com:31234/
+or
+https://<IP address>:31234/
+ Provide the value of “Token” from "step 3" and click on“Sign In”.
+
+Q/A
+Q1 of 3
+
+Which of the following can be performed using kubernetes dashboard?
+
+Creation of resources
+Modification of resources
+Status monitoring
+	All of the above (We can create, modify and monitor status of resources using Kubernetes Dashboard.)
+Q2
+Kubernetes dashboard  detects errors that have occurred in the resources.
+True (Kubernetes dashboard gives a view of all resources their status and errors if any.)
+Q3
+Mary has setup Kubernetes dashboard on master, she wants to access it from outside. How can it be accessed ?
+Using node port and token (We need to expose a nodeport to be accessible from outside.)
+------------------------------------------------------------------------
+
+
+Kubernetes objects are persistent entities in the Kubernetes system. Kubernetes uses these entities to represent the state of the cluster. Specifically, they can describe,
+
+What containerized applications are running and on which nodes
+The resources available to those applications
+The policies around how those applications behave, such as restart policies, upgrades, and fault-tolerance 
+Kubernetes contains a number of abstractions that represent the state of your system i.e. deployed containerized applications and workloads, their associated network and disk resources, and other information about what your cluster is doing. 
+
+The basic Kubernetes objects include:
+
+Namespace
+Pod
+Service
+Volume
+Kubernetes also contains higher-level abstractions that rely on controllers to build upon the basic objects, and provide additional functionality and convenience features. These include:
+
+ReplicaSet
+Deployment
+DaemonSet
+StatefulSet
+Job
+Let us understand these objects further. Let us begin with Kubernetes Namespaces.
+
+You will create Kubernetes objects such as pods, services, deployments for various applications and for different purposes (development, testing and production). You can logically isolate all these objects according to the your logical categorization with in a namespace (like a house). Especially when you use the Kubernetes system to manage your enterprise application, you can create your own namespace to isolate (scope) the objects, define access policy and limit resource allocation. 
+
+ 
+
+Namespaces provide a scope for Kubernetes object names. Many objects such as pods, services and deployments are namespaces, while some (like nodes) are not.
+
+ 
+
+When a Kubernetes cluster is initialized, it has three implicit namespaces: kube-system, kube-public and default.
+
+[root@k8s-master|/root/yamls]# kubectl get namespace
+NAME                   STATUS   AGE
+default                Active   27h
+kube-public            Active   27h
+kube-system            Active   27h
+
+default - The default namespace for objects with no other namespace
+kube-system - The namespace for objects created by the Kubernetes system
+kube-public - This namespace is created automatically and is readable by all users (including those not authenticated). This namespace is mostly reserved for cluster usage
+Names of resources need to be unique within a namespace, but not across namespaces. Namespaces can not be nested inside one another and each Kubernetes resource can only be in one namespace.
+
+Namespaces are a way to divide cluster resources between multiple users (via resource quota).
+
+It is not necessary to use multiple namespaces just to separate slightly different resources, such as different versions of the same software: use labels to distinguish resources within the same namespace (Labels topic will be discussed later). Namespaces are intended for use in environments with many users spread across multiple teams, or projects. For clusters with a few to tens of users, you should not need to create namespaces at all. Start using namespaces when you need the features they provide.
+
+Let us see the demo on viewing a namespace.
+
+You can list the current namespaces in a cluster using "kubectl get ns" command as well.
+
+To get the summary of a specific namespace:
+
+[root@k8s-master|/root/yamls]# kubectl get namespaces kube-system
+NAME          STATUS   AGE
+kube-system   Active   28h
+
+A namespace can be in one of two phases:
+
+Active - the namespace is in use
+Terminating - the namespace is being deleted, and can not be used for new objects
+To get detailed information of a specific namespace:
+
+[root@k8s-master|/root/yamls]# kubectl describe ns kube-system
+Name:         kube-system
+Labels:       <none>
+Annotations:  <none>
+Status:       Active
+No resource quota.
+No resource limits.
+We will discuss about label and annotations in the next section.
+
+Note that these details show both resource quota (if present) as well as resource limit ranges.
+
+Resource quota tracks aggregate usage of resources in the Namespace and allows cluster operators to define hard resource usage limits that a Namespace may consume.
+
+A limit range defines min/max constraints on the amount of resources a single entity can consume in a Namespace.
+
+Let us now see how to create a Namespace.
+
+You can create a new namespace in 2 methods.
+
+using YAML file (declarative method)
+create namespace command (imperative method)
+For example, you will create two Kubernetes namespaces to hold the objects.
+
+An organization is using a shared Kubernetes cluster for development and production use cases.
+
+The development team would like to maintain a space in the cluster where they can get a view on the list of Pods, Services, and Deployments they use to build and run their application. In this space, Kubernetes resources come and go, and the restrictions on who can or cannot modify resources are relaxed to enable agile development.
+
+The operations team would like to maintain a space in the cluster where they can enforce strict procedures on who can or cannot manipulate the set of Pods, Services, and Deployments that run the production site.
+
+Let us see the demo on creating a namespace.
+
+Let us create a namespace using both the methods. 
+
+Method 1:
+
+Step 1: Create a new YAML file called dev-namespace.yaml (declarative) with below content
+
+[root@k8s-master|/root/yamls]# cat dev-namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev-namespace
+
+Step 2: Run "kubectl apply" command with the yaml file to create a new namespace as shown below
+
+[root@k8s-master|/root/yamls]# kubectl apply -f dev-namespace.yaml
+namespace/dev-namespace created
+Step 3: View the newly created namespace
+[root@k8s-master|/root/yamls]# kubectl describe ns dev-namespace
+Name:         dev-namespace
+Labels:       <none>
+Annotations:  kubectl.kubernetes.io/last-applied-configuration:
+                {"apiVersion":"v1","kind":"Namespace","metadata":{"annotations":{},"name":"dev-namespace"}}
+Status:       Active
+No resource quota.
+No resource limits.
+Method 2:
+You can also create namespace named prod-namespace using below command (imperative).
+Step 1: Run "kubectl create" command to create a new namespace "prod-namespace"
+[root@k8s-master|/root/yamls]# kubectl create namespace prod-namespace
+namespace/prod-namespace created
+Step 2: View the newly created namespace
+[root@k8s-master|/root/yamls]# kubectl describe ns prod-namespace
+Name:         prod-namespace
+Labels:       <none>
+Annotations:  <none>
+Status:       Active
+No resource quota.
+No resource limits.
+Imperative and declarative methods will be discussed later in detail.
+Let us see the demo on creating a Pod (container) in the user-created namespace.
+
+Let us create a pod with image "nginx" on dev-namespace. Follow the steps mentioned below to create a namespace.
+
+Step 1: Create a yaml file with the following specification to create a Pod (nginx-container using nginx image)
+
+# /root/yamls/nginx-pod-in-dev-ns.yaml
+apiVersion: v1 
+kind: Pod
+metadata:
+  name: nginx-pod-in-dev-ns
+  namespace: dev-namespace
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx
+    ports:
+      - containerPort: 80
+Step 2: Run "kubectl create" command to create a Pod
+
+[root@k8s-master|/root/yamls]# kubectl create -f nginx-pod-in-dev-ns.yaml
+pod/nginx-pod-in-dev-ns created
+You can also ignore the namespace option in yaml file and mention the same while creating a Pod as shown below. In this example, this pod is created in "default" namespace. You can specify any valid namespace.
+
+[root@k8s-master|/root/yamls]# kubectl create -f nginx-pod-in-dev-ns.yaml --namespace=default
+pod/nginx-pod-in-dev-ns created
+Step 3: View the Pods in all the namespaces
+
+[root@k8s-master|/root/yamls]# kubectl get pods --all-namespaces | grep nginx
+default                nginx-pod-in-dev-ns                                   1/1     Running   0          117m
+dev-namespace          nginx-pod-in-dev-ns                                   1/1     Running   0          124m
+
+"nginx" Pod is running on 2 different namespaces with the same Pod name "nginx-pod-in-dev-ns".
+
+Note: If you try to create a Pod named "nginx-pod-in-dev-ns" in either default or dev-namespace again, it will throw an error "pods nginx-pod-in-dev-ns already exists".
+
+Step 4: View the pod created in user-created namespace
+
+[root@k8s-master|/root/yamls]# kubectl get pods --namespace=dev-namespace
+NAME                  READY   STATUS    RESTARTS   AGE
+nginx-pod-in-dev-ns   1/1     Running   0          36s
+Step 5: You can describe the pod (container) created in the user-created namespace by including the "--namespace" option
+
+[root@k8s-master|/root/yamls]# kubectl describe pod nginx --namespace=dev-namespace
+Name:         nginx-pod-in-dev-ns
+Namespace:    dev-namespace
+Priority:     0
+Node:         worker-node1.pod2.example.com/192.168.122.138
+Start Time:   Tue, 09 Jun 2020 11:41:07 +0000
+Labels:       <none>
+Annotations:  <none>
+Status:       Running
+IP:           10.244.1.6
+IPs:
+  IP:  10.244.1.6
+Containers:
+  nginx-container:
+    Container ID:   docker://12cce91f2fa5be2ba19a07ddf63f813b58f12f42bff4362e918e2c53008c627c
+    Image:          nginx
+    Image ID:       docker-pullable://registry.example.com:5000/nginx@sha256:e4f0474a75c510f40b37b6b7dc2516241ffa8bde5a442bde3d372c9519c84d90
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Tue, 09 Jun 2020 11:41:13 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-wm65t (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  default-token-wm65t:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-wm65t
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                                    Message
+  ----    ------     ----       ----                                    -------
+  Normal  Scheduled  <unknown>  default-scheduler                       Successfully assigned dev-namespace/nginx-pod-in-dev-ns to worker-node1.pod2.example.com
+  Normal  Pulling    58s        kubelet, worker-node1.pod2.example.com  Pulling image "nginx"
+  Normal  Pulled     54s        kubelet, worker-node1.pod2.example.com  Successfully pulled image "nginx"
+  Normal  Created    53s        kubelet, worker-node1.pod2.example.com  Created container nginx-container
+  Normal  Started    53s        kubelet, worker-node1.pod2.example.com  Started container nginx-container
+Note: You can change the newly created namespace as a default namespace using the below command
+
+$ kubectl config set-context --current --namespace <namespace>
+$ kubectl config view | grep namespace: --To check default namespace details
+Let us see the demo on deleting a namespace.
+
+ User-created namespace can be deleted using "kubectl delete namespace" command. Note that this will delete everything under the namespace.
+
+Let us delete the namespace dev-namespace.
+
+[root@k8s-master|/root/yamls]# kubectl delete namespace dev-namespace
+namespace "dev-namespace" deleted
+As mentioned, once the dev-namespace is deleted, Pods and other objects belong to this namespace will be also deleted automatically. You can see the "nginx" Pod that runs on only "default" namespace.
+
+[root@k8s-master|/root/yamls]# kubectl get pods --all-namespaces | grep nginx
+default                nginx-pod-in-dev-ns                                   1/1     Running   0          123m
+Let us next test your understanding on Kubernetes Namespaces.
+
+Q/A
+Q1 of 3
+
+Consider the below namespaces that exists in your Kubernetes cluster environment. Identify the namespaces that are managed by Kubernetes.
+
+[root@k8s-master|/root/yaml]# kubectl get ns
+NAME                   STATUS   AGE
+default                Active   17d
+kube-public            Active   17d
+kube-system            Active   17d
+prod-ns                Active   12s
+ 
+
+default, kube-public, kube-system (Kubernetes has three implicit namespaces: kube-system, kube-public and default.)
+
+Q2
+
+As per the requirement, you have created the following prod and dev namespaces in the Kubernetes cluster environment to manage the Kubernetes objects in the respective namespaces. 
+
+Namespace "prod-ns" is created using the below command.
+
+[root@k8s-master|/root/yaml]# kubectl create ns prod-ns
+namespace/prod-ns created
+Namespace "dev-ns" is created using the below command.
+
+[root@k8s-master|/root/yaml]# kubectl apply -f dev-ns-defn.yaml
+namespace/dev-ns created
+Now, you need to delete "prod-ns" namespace. Which of the following command(s) can be used to delete the same?
+
+(i). kubectl delete -f prod-ns.yaml
+
+(ii). kubectl delete ns prod-ns
+
+
+Only (ii) (As "prod-ns" namespace is created using imperative method, it can be deleted only by using "delete ns" option in kubectl command.)
+
+Q3
+
+Consider that you have created the following Kubernetes objects namespace and deployment in the same sequence. Assume that there is no deployment exist in the cluster now.
+
+[root@k8s-master|/root/yaml]# kubectl create ns prod-ns
+namespace/prod-ns created
+
+[root@k8s-master|/root/yaml]# kubectl create ns dev-ns
+namespace/dev-ns created
+
+[root@k8s-master|/root/yaml]# kubectl create deploy prod-c1 --image nginx --namspace=prod-ns
+deployment.apps/prod-c1 created
+
+[root@k8s-master|/root/yaml]# kubectl create deploy dev-c1 --image nginx --namepace=dev-ns
+deployment.apps/dev-c1 created
+
+[root@k8s-master|/root/yaml]# kubectl create deploy prod-c2 --image nginx 
+deployment.apps/prod-c2 created
+How many deployment(s) will be listed for the below command?
+
+[root@k8s-master|/root/yaml]# kubectl get deploy
+ 
+
+1 (This command will list deployments that exist in the "default" namespace alone. )
+
+
+POD
+
+Assume you need to deploy some web application which has various small piece of services such as frontend (python docker image), backend (mysql docker image) and log-monitor (fluentd docker image). You need to create a separate container for each service and connect all these services together to make the application running. Container is a lightweight and portable executable image that contains software and all of its dependencies.
+
+In Kubernetes cluster, you will deploy this application in the form of containers on the set of machines (worker nodes). However, Kubenetes does not create the container directly on the cluster nodes, container will be encapsulated into a Kubernetes object known as pod. A pod is an single instance of an application. It is the smallest object in the Kubernetes.
+
+A Pod is the basic execution unit of a Kubernetes application–the smallest and simplest unit in the Kubernetes object model that you create or deploy. A Pod represents processes running on your cluster. Cluster is a set of worker machines, called nodes, that run containerized applications. Every cluster has at least one worker node.
+A Pod encapsulates an application's container, storage resources, a unique network identity (IP address), as well as options that govern how the containers should run. A Pod represents a unit of deployment: a single instance of an application in Kubernetes, which might consist of either a single container or a small number of containers that are tightly coupled and that share resources.
+
+Pods in a Kubernetes cluster can be used in two main ways.
+Pods that run a single container
+The "one-container-per-Pod" model is the most common Kubernetes use case. In this case, you can think of a Pod as a wrapper around a single container, and Kubernetes manages the Pods rather than the containers directly.
+
+Pods that run multiple containers that need to work together
+A Pod might encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. This topic will be discussed in Foundation course in detail.
+
+Each Pod is meant to run a single instance of a given application. If you want to scale your application horizontally (to provide more overall resources by running more instances), you should use multiple Pods, one for each instance. In Kubernetes, this is typically referred to as replication. Replicated Pods are usually created and managed as a group by a workload resource and its controller.
+
+Let us launch a pod using simpleservice:0.5.0 image. Make sure you have this image on all the nodes using the "docker images" command. Follow the steps mentioned below to create a Pod.
+
+Step 1: Create a Pod by running "kubectl run" command. Here "simplesrv" is the name of the pod
+[root@k8s-master|/root]# kubectl run simplesrv --image=mhausenblas/simpleservice:0.5.0 --port=9876
+deployment.apps/simplesrv created
+You can also a pod using "kubectl create deployment" command. Deployment object will be discussed as a separate topic later.
+$ kubectl create deployment simplesrv --image=mhausenblas/simpleservice:0.5.0
+
+Step 2: View the Pod status using "kubectl get pods" command
+[root@k8s-master|/root]# kubectl get pods
+NAME                         READY   STATUS    RESTARTS   AGE
+simplesrv-788dbc5d76-9jg2n   1/1     Running   0          54s
+
+Step 3: You can view the node on which it runs using "-o wide" option 
+[root@k8s-master|/root]# kubectl get pods -o wide
+NAME                         READY   STATUS    RESTARTS   AGE    IP           NODE                            NOMINATED NODE   READINESS GATES
+simplesrv-788dbc5d76-9jg2n   1/1     Running   0          5m3s   10.244.2.3   worker-node2.pod2.example.com   <none>           <none>
+This pod runs on worker-node2 with the IP address 10.244.2.3.
+
+Step 4: You can view the detailed information about the Pod using describe command
+[root@k8s-master|/root]# kubectl describe pod simplesrv-788dbc5d76-9jg2n
+
+Let us access the Pod that is created from both master and worker nodes. Follow the steps mentioned below to access the Pod.
+
+Step 1: Access the Pod from Master node by using the IP address of the pod along with the port number of the service as shown below 
+[root@k8s-master|/root]# curl 10.244.2.3:9876/info ; echo
+{"host": "10.244.2.3:9876", "version": "0.5.0", "from": "10.244.0.0"}
+Here, "10.244.2.3" is Pod IP address of "simplesrv". "10.244.0.0" is cluster IP address of the master.
+
+Step 2: Ping the Pod IP from Master node
+[root@k8s-master|/root]# ping -c 2 10.244.2.3
+PING 10.244.2.3 (10.244.2.3) 56(84) bytes of data.
+64 bytes from 10.244.2.3: icmp_seq=1 ttl=63 time=1.05 ms
+64 bytes from 10.244.2.3: icmp_seq=2 ttl=63 time=0.781 ms
+--- 10.244.2.3 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.781/0.919/1.058/0.141 ms
+The container inside a Pod which is deployed on a worker-node2 is reachable from master node.
+
+Step 3: Access the Pod from the node where it runs (worker-node2)
+[root@worker-node2|/root]# curl 10.244.2.3:9876/info ; echo
+{"host": "10.244.2.3:9876", "version": "0.5.0", "from": "10.244.2.1"}
+"10.244.2.1" is cluster IP address of the worker-node2.
+
+Step 4: Access the Pod from from another node (worker-node1)
+[root@worker-node1|/root]#  curl 10.244.2.3:9876/info ; echo
+{"host": "10.244.2.3:9876", "version": "0.5.0", "from": "10.244.1.0"}
+"10.244.1.0" is cluster IP address of the worker-node1.
+
+Step 5: View the logs of the Pod
+[root@k8s-master|/root/yamls]# kubectl logs simplesrv-788dbc5d76-mqgmc
+2020-06-09T02:20:44 INFO This is simple service in version v0.5.0 listening on port 9876 [at line 142]
+If you want to know the logs of the specific Pod, you can use "kubectl logs <pod_name>" command. 
+
+You can also create a Pod by writing a yaml definition file with the Pod specification. The most important way to create a Pod is by using the "Pod" object (kind directive in the file below). With this method, the Pod will be created as is and, if it crashes, it won't start again automatically. Follow the steps mentioned below to create a Pod using yaml file.
+
+ 
+
+Step 1: Below yaml file has the specifications to create 2 containers named "simplesrv" and "shell" using "simpleservice" and "centos" images respectively.
+
+# /root/yamls/pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: twocontainers
+spec:
+  containers:
+  - name: simpelsrv
+    image: docker.io/mhausenblas/simpleservice:0.5.0
+    ports:
+    - containerPort: 9876
+  - name: shell
+    image: docker.io/centos:7
+    command:
+      - "bin/bash"
+      - "-c"
+      - "sleep 10000"
+Step 2: Now you can create a Pod using "kubectl apply" command
+
+[root@k8s-master|/root/yamls]# kubectl apply -f pod.yaml
+pod/twocontainers created
+Two containers have been created.
+
+Step 3: View the Pod created
+
+[root@k8s-master|/root/yamls]# kubectl get pods
+NAME            READY   STATUS    RESTARTS   AGE
+twocontainers   2/2     Running   0          47s
+[root@k8s-master|/root/yamls]# kubectl get pods -o wide
+NAME            READY   STATUS    RESTARTS   AGE   IP           NODE                            NOMINATED NODE   READINESS GATES
+twocontainers   2/2     Running   0          74s   10.244.2.5   worker-node2.pod2.example.co m   <none>           <none>
+
+This pod runs on worker-node2 with the IP address 10.244.2.5. This pod has 2 containers.
+
+Step 4: Describe the details of the Pod
+
+[root@k8s-master|/root/yamls]# kubectl describe pod twocontainers
+
+You can connect to the Pod similar to how you can connect to docker containers. You can use 'kubectl exec' command to connect to the container from master node.
+
+ 
+
+For example, you have created "shell" container (using centos image) using "twocontainers" pod. Let us connect to "shell" container and perform some OS related operations. In the below example, hostname, present working directory, files present in the current directory and content of the /etc/hosts have been viewed by running the respective OS commands.
+
+[root@k8s-master|/root/yamls]# kubectl exec twocontainers -c shell -i -t -- bash   
+# You have been connected to shell container. Perform some OS related operations
+[root@twocontainers /]# hostname
+twocontainers
+[root@twocontainers /]# hostname -i
+10.244.2.5
+[root@twocontainers /]# pwd
+/
+[root@twocontainers /]# ls
+anaconda-post.log  dev  home  lib64  mnt  proc  run   srv  tmp  var
+bin                etc  lib   media  opt  root  sbin  sys  usr
+[root@twocontainers /]# cat /etc/hosts
+# Kubernetes-managed hosts file.
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+fe00::0 ip6-mcastprefix
+fe00::1 ip6-allnodes
+fe00::2 ip6-allrouters
+10.244.2.5      twocontainers
+[root@twocontainers /]# curl -s localhost:9876/info ; echo
+{"host": "localhost:9876", "version": "0.5.0", "from": "127.0.0.1"}
+
+Now, let us check the CPU and memory usage of the pods.
+
+Step 1: You need to find the container IDs which can be retrieved from "describe pod" output as shown below
+
+[root@k8s-master|/root/yamls]# kubectl describe pod twocontainers | grep "Container ID:"
+    Container ID:   docker://20ec6ca0006f3b3fd9a462bf8cf9a07d989e455b960c4d3e9d7ad0         32acf742ba
+    Container ID:  docker://7a9ae1575e9e7678541143c0e8522c27d40927ceec8cb539605119e         5ed089b2d
+Step 2: View CPU and memory usage
+
+Switch to the worker-node on which the pod runs and view the resource usage. "twocontainer" pod is running on "worker-node2". Hence, switch to this node and view the usage as shown below. You need to enter the first few unique characters of the each container.
+
+[root@worker-node2|/root]# docker stats | egrep '(CONT|20ec6ca0006f|7a9ae1575e9e)'
+CONTAINER           CPU %               MEM USAGE / LIMIT       MEM %               NET I/O             BLOCK I/O           PIDS
+7a9ae1575e9e        0.00%               88 KiB / 1.795 GiB      0.00%               0 B / 0 B           14.1 MB / 0 B       1
+20ec6ca0006f        0.00%               10.04 MiB / 1.795 GiB   0.55%               0 B / 0 B           0 B / 0 B
+Let us now see the demo on how to limit the resource usage of the containers.
+
+You can use resource constraint for all the pods you launch. You can limit the amount of CPU and/or memory allocated to a container in a pod. Follow the steps mentioned below to limit the Pod resource.
+
+ 
+
+Step 1: Below Pod object yaml file contains the specification to create a pod named "constraintpod" with a single container "sise" using the image "simpleservice" with resource limit memory as "64Mi" and CPU as "50m"
+
+# /root/yamls/constraint-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: constraintpod
+spec:
+  containers:
+  - name: sise
+    image: docker.io/mhausenblas/simpleservice:0.5.0
+    ports:
+    - containerPort: 9876
+    resources:
+      limits:
+        memory: "64Mi"
+        cpu: "50m"
+Step 2: Create a Pod by running "kubectl create" command
+
+[root@k8s-master|/root/yamls]# kubectl create -f constraint-pod.yaml
+pod/constraintpod created
+
+Step 3: Describe the Pod IP address
+
+[root@k8s-master|/root/yamls]# kubectl get pods -o wide | grep constraintpod
+constraintpod   1/1     Running   0          56s   10.244.1.5   worker-node1.pod2.example.com   <none>           <none>
+"constraintpod" runs on worker-node1.
+
+Step 4: Describe the Pod resource
+
+[root@k8s-master|/root/yamls]# kubectl describe pod constraintpod | egrep '(Limits|cpu|memory|Requests)'
+    Limits:
+      cpu:     50m
+      memory:  64Mi
+    Requests:
+      cpu:        50m
+      memory:     64Mi
+
+Step 5: View the container ID of the Pod
+
+[root@k8s-master|/root/yamls]# kubectl describe pod constraintpod | grep "Container ID:"
+    Container ID:   docker://eeb8f6d1cf67b7235aa5849c23c90e12bac6f2cff3b91f5a6a622f9693807d0e
+Step 6: View the resource usage of the Pod from worker-node1
+
+[root@worker-node1|/root]# docker stats eeb8f6d1cf67b7235aa5849c23c90e12bac6f2cff3b91f5a6a622f9693807d0e
+CONTAINER                                                          CPU %               MEM USAGE / LIMIT    MEM %               NET I/O             BLOCK I/O           PIDS
+eeb8f6d1cf67b7235aa5849c23c90e12bac6f2cff3b91f5a6a622f9693807d0e   0.00%               10.04 MiB / 64 MiB   15.69%              0 B / 0 B           0 B / 0 B           1
+Now let us run some quick load test on the "twocontainers" pod (runs on worker-node2) and the "constraintpod" pod (runs on worker-node1) and see the difference.
+
+Step 7: Test "twocontainers" Pod from worker-node2 (10.244.2.5)
+
+[root@k8s-master|/root/yamls]# while true; do curl -s 10.244.2.5:9876/info -O /dev/null ; done
+After executing the above command, switch to worker-node2 and observe the resource usage as shown below. It will use the resources without any limit.
+
+[root@worker-node2|/root]# docker stats 7a9ae1575e9e7678541143c0e8522c27d40927ceec8cb539605119e5ed089b2d
+Step 8: Test "constraintpod" Pod from worker-node1 (10.244.1.5)
+
+[root@k8s-master|/root/yamls]# while true; do curl -s 10.244.1.5:9876/info -O /dev/null ; done
+After executing the above command, switch to worker-node1 and observe the resource usage as shown below. It will use the limited resources. If the tasks continues even after the limit, then the task will hang.
+
+[root@worker-node1|/root]# docker stats eeb8f6d1cf67b7235aa5849c23c90e12bac6f2cff3b91f5a6a622f9693807d0e
+Let us see the demo on how to debug the Pod.
+
+Once your application is running, you need to debug problems with it regularly. There are a number of ways to get more information about the pod. Let us create a Pod and understand some of errors that are raised in the pod creation.
+
+ 
+
+Step 1: Create a yaml file for creating a nginx pod. In the below code, version of the nginx image is mentioned as 1:12 intentionally which is not there in this cluster environment (IMAGE IS NOT PRESENT ON DOCKER HUB, thus it is throwing ERROR)
+
+[root@k8s-master|/root/yaml]# cat prod_nginx_pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod-prod
+  labels:
+    environment: prod
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.12
+    ports:
+    - containerPort: 80
+
+Step 2: Run the pod using "kubectl" command
+
+[root@k8s-master|/root/yaml]# kubectl create -f prod_nginx_pod.yaml
+pod/nginx-pod-prod created
+
+Step 3: View the status of the pod
+
+[root@k8s-master|/root/yaml]# kubectl get pods
+NAME             READY   STATUS             RESTARTS   AGE
+nginx-pod-prod   0/1     ImagePullBackOff   0          4s
+
+It is not created and the status shows as "ImagePullBackOff".
+
+Step 4: View the detailed information about the pod using describe command
+
+[root@k8s-master|/root/yaml]# kubectl describe pod nginx-pod-prod
+Name:         nginx-pod-prod
+Namespace:    default
+Priority:     0
+Node:         worker-node1.pod2.example.com/192.168.122.40
+Start Time:   Wed, 08 Jul 2020 04:52:07 +0000
+Labels:       app=nginx
+              environment=prod
+Annotations:  <none>
+Status:       Pending
+IP:           10.244.1.67
+IPs:
+  IP:  10.244.1.67
+Containers:
+  nginx:
+    Container ID:
+    Image:          nginx:1.12
+    Image ID:
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       ImagePullBackOff
+    Ready:          False
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-c2g4x (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             False
+  ContainersReady   False
+  PodScheduled      True
+Volumes:
+  default-token-c2g4x:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-c2g4x
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type     Reason          Age                  From                                    Message
+  ----     ------          ----                 ----                                    -------
+  Normal   Scheduled       <unknown>            default-scheduler                       Successfully assigned default/nginx-pod-prod to worker-node1.pod2.example.com
+  Normal   SandboxChanged  13m                  kubelet, worker-node1.pod2.example.com  Pod sandbox changed, it will be killed and re-created.
+  Warning  Failed          12m (x3 over 13m)    kubelet, worker-node1.pod2.example.com  Failed to pull image "nginx:1.12": rpc error: code = Unknown desc = Error: image nginx:1.12 not found
+  Warning  Failed          12m (x3 over 13m)    kubelet, worker-node1.pod2.example.com  Error: ErrImagePull
+  Normal   BackOff         11m (x7 over 13m)    kubelet, worker-node1.pod2.example.com  Back-off pulling image "nginx:1.12"
+  Normal   Pulling         11m (x4 over 13m)    kubelet, worker-node1.pod2.example.com  Pulling image "nginx:1.12"
+  Warning  Failed          3m4s (x43 over 13m)  kubelet, worker-node1.pod2.example.com  Error: ImagePullBackOff
+
+Analyze the "Events" section in the above output. It tried pulling the image nginx:1.12 and failed with the message "image nginx:1.12 not found".
+
+Step 5: You can also view the events as shown below
+
+[root@k8s-master|/root/yaml]# kubectl get events
+LAST SEEN   TYPE      REASON           OBJECT               MESSAGE
+34m         Normal    Pulling          pod/nginx-pod-prod   Pulling image "nginx:1.12"
+19m         Warning   Failed           pod/nginx-pod-prod   Error: ImagePullBackOff
+<unknown>   Normal    Scheduled        pod/nginx-pod-prod   Successfully assigned default/nginx-pod-prod to worker-node1.pod2.example.com
+15m         Normal    Pulling          pod/nginx-pod-prod   Pulling image "nginx:1.12"
+16m         Warning   Failed           pod/nginx-pod-prod   Failed to pull image "nginx:1.12": rpc error: code = Unknown desc = Error: image nginx:1.12 not found
+16m         Warning   Failed           pod/nginx-pod-prod   Error: ErrImagePull
+17m         Normal    SandboxChanged   pod/nginx-pod-prod   Pod sandbox changed, it will be killed and re-created.
+15m         Normal    BackOff          pod/nginx-pod-prod   Back-off pulling image "nginx:1.12"
+2m11s       Warning   Failed           pod/nginx-pod-prod   Error: ImagePullBackOff
+
+Let us also see few more issues which will be encountered while working with the pod.
+
+If the pod is in pending status
+
+If a pod is stuck in Pending it means that it can not be scheduled onto a node. Generally this is because there are insufficient resources i.e. the node in which it is scheduled exhausted the supply of CPU or Memory in the cluster. In this case you can try several things.
+
+Add additional nodes to the cluster
+Terminate unwanted pods to make room for pending pods
+Check that the pod is not larger than your nodes. For example, if all nodes have a capacity of cpu:1, then a pod with a request of cpu: 1.1 will never be scheduled
+The resource quota feature can be configured to limit the total amount of resources that can be consumed. 
+
+If the pod is in waiting status
+
+If a pod is stuck in the waiting state, then it has been scheduled to a worker node, but it can't run on that machine. Again, the information from "kubectl describe" is informative in this case. The most common cause of waiting pods is a failure to pull the image. There are three things to check.
+
+Make sure that you have the name of the image correct
+Have you pushed the image to the repository?
+Run a manual docker pull to see if the image can be pulled
+Keyword is misspelled
+
+If the keyword in the pod definition is misspelled, it is silently ignored when you run the pod. Often a section of the pod description is nested incorrectly, or a key name is typed incorrectly, and so the key is ignored. For example, if you misspelled "metadata" as "metdata" then the pod will be created but will not use the command line you intended it to use. You try creating the pod with the "--validate" option to view these errors. 
+
+Let us see the demo on deleting a Pod.
+
+Before proceeding with deleting a Pod, remember this "simplesrv" pod is created using "kubectl run" command. Now, let us try to delete this Pod and understand the output of the same.
+
+To delete the Pod:
+
+[root@k8s-master|/root]# kubectl delete pod simplesrv-788dbc5d76-9jg2n
+pod "simplesrv-788dbc5d76-9jg2n" deleted
+
+The above command shows that the Pod "simplesrv" has been deleted. Now view the Pods that are currently available as shown below.
+
+[root@k8s-master|/root]# kubectl get pods
+NAME                         READY   STATUS    RESTARTS   AGE
+simplesrv-788dbc5d76-9qrwm   1/1     Running   0          96s
+
+Still, you can see the Pod "simplesrv". Since 'kubectl run' creates a deployment, and this deployment will make sure that as per it's instruction, to keep one pod running. You can keep on deleting the pod and it will create a new pod for the same with new IP address and it may be launched on a new node.
+
+[root@k8s-master|/root]# kubectl get pods -o wide
+NAME                         READY   STATUS    RESTARTS   AGE     IP           NODE                            NOMINATED NODE   READINESS GATES
+simplesrv-788dbc5d76-9qrwm   1/1     Running   0          2m54s   10.244.2.4   worker-node2.pod2.example.com   <none>           <none>
+The output shows that the new Pod is created for "simplesrv" on worker-node2 with IP address "10.244.2.4".
+
+You can also view the deployment details as shown below.
+
+[root@k8s-master|/root]# kubectl get deployments
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+simplesrv   1/1     1            1           57m
+[root@k8s-master|/root]# kubectl get deployments -o wide
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES                            SELECTOR
+simplesrv   1/1     1            1           57m   simplesrv    mhausenblas/simpleservice:0.5.0   run=simplesrv
+
+We used "kubectl run"; this created a "deployment". Hence, you will have to delete the "deployment" to get rid of the pod. 
+
+To delete a deployment:
+
+[root@k8s-master|/root]# kubectl delete deployment simplesrv
+deployment.apps "simplesrv" deleted
+
+To view the Pod status:
+
+[root@k8s-master|/root]# kubectl get pods
+No resources found in default namespace.
+
+Pod has been deleted successfully. After running the delete commands, wait for few seconds and view the output.
+
+You can delete "twocontainers" Pod using delete command as it is created using "kubectl create" command. 
+
+[root@k8s-master|/root/yamls]# kubectl delete pod twocontainers
+pod "twocontainers" deleted
+Similarly, you can also delete "constraintpod" as well.
+
+Let us understand the various configuration methods available to manage Kubernetes objects.
+
+The kubectl command-line tool supports several different ways to create and manage Kubernetes objects. Below are the different approaches.
+
+Imperative commands
+
+Imperative object configuration
+
+Declarative object configuration
+
+Imperative Command:
+
+The user provides operations to the kubectl command as arguments. This is the simplest way to get started or to run a one-off task in a cluster as well as generate a definition template easily. Because this technique operates directly on live objects.
+
+Example:
+
+To run an instance of the nginx container by creating a Deployment object:
+
+$ kubectl run nginx --image nginx
+Do the same thing using a different syntax:
+
+$ kubectl create deployment nginx --image nginx
+Similar example have been seen in the previous slides while creating "simplesrv" Pod. 
+
+Let us see the demo on creating an object using imperative object configuration.
+
+In imperative object configuration, the kubectl command specifies the operation (create, replace, etc.), and at least one file name. The file specified must contain a full definition of the object in YAML or JSON format.
+
+Example:
+
+Create the objects defined in a configuration file:
+
+$ kubectl create -f nginx.yaml
+"twocontainers" Pod has been created with 2 containers named "simplesrv" and "shell" using this method in the previous slide.
+
+Delete the objects defined in two configuration files:
+
+$ kubectl delete -f nginx.yaml -f redis.yaml
+Update the objects defined in a configuration file by overwriting the live configuration:
+
+$ kubectl replace -f nginx.yaml
+Let us see the demo on generating yaml file using imperative object configuration.
+Let us see 3 examples in creating a Kubenetes objects in this demo.
+
+Example 1: Create Kubernetes deployment without creating a definition file
+
+Step 1: Below "kubectl create deployment" command will create a pod named "nginx-test-deploy" using nginx image
+
+[root@k8s-master|/root/yaml]# kubectl create deployment --image=nginx nginx-test-deploy
+deployment.apps/nginx-test-deploy created
+
+Step 2: View the deployment (pod) created
+
+[root@k8s-master|/root/yaml]# kubectl get pods
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-test-deploy-7d494598b4-q882x   1/1     Running   0          8s
+Example 2:
+
+Now, if wish to generate the yaml configuration file alone for deployment without creating it, use the below two options in combination to generate a resource definition file quickly, then modify and create resources as required, instead of creating the files from scratch.
+
+--dry-run By default as soon as the command is run, the resource will be created. If you simply want to test your command, then use the --dry-run option. This will not create the resource, instead, tell you whether the resource can be created and if your command is right
+-o yaml This will output the resource definition in YAML format on screen
+Below command shows the yaml configuration file for deployment on the screen.
+
+[root@k8s-master|/root/yaml]# kubectl create deployment --image=nginx ngix-dev-deploy --dry-run -o yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ngix-dev-deploy
+  name: ngix-dev-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngix-dev-deploy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ngix-dev-deploy
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
+
+Example 3: 
+
+If you wish to save the configuration definition in a file rather than showing it on the screen, you can run the below command. You can then edit the YAML file before creating the deployment.
+
+Step 1: Below "kubectl create deployment" command will create a manifest file named "nginx-dev-defn.yaml"
+
+[root@k8s-master|/root/yaml]# kubectl create deployment --image=nginx ngix-dev-deploy --dry-run -o yaml > nginx-dev-defn.yaml
+
+Step 2: View the created yaml file content
+
+[root@k8s-master|/root/yaml]# cat nginx-dev-defn.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ngix-dev-deploy
+  name: ngix-dev-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngix-dev-deploy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ngix-dev-deploy
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
+
+Let us see the demo on declarative object configuration.
+
+When using declarative object configuration, a user operates on object configuration files stored locally, however the user does not define the operations to be taken on the files such as create, update, and delete. These operations are automatically detected per-object by kubectl. This enables working on directories, where different operations might be needed for different objects.
+
+Example:
+
+It processes all object configuration files in the pod directory, and create or patch the live objects. You can first diff to see what changes are going to be made, and then apply.
+
+$ kubectl diff -f pod
+$ kubectl apply -f pod
+Let us see the lifecycle of the Pod.
+
+A Pod lifecycle has various states, conditions, policies, etc. A Pod's status field is a PodStatus object, which has a phase field. The phase of a Pod is a simple, high-level summary of where the Pod is in its lifecycle.
+
+Here are the possible values for phase:
+Pending , Running , Succeeded , Failed , Unknown .
+
+Q/A
+
+Q1
+You are required to host some web application on Kubernetes system. You need to create a container named "nginx-web" using nginx image. 
+Which of the following method(s) will help in creating the required nginx pod?
+Method 1:
+[root@k8s-master|/]# kubectl run nginx-web --image=nginx
+Method 2:
+[root@k8s-master|/]# kubectl create deploy nginx-web --image=nginx --dry-run -o yaml > nginx-web-defn.yaml (Wrong Syntax : [kubectl create deployment --image=nginx ngix-dev-deploy --dry-run -o yaml > nginx-dev-defn.yaml])
+[root@k8s-master|/]# kubectl apply -f nginx-web-defn.yaml
+
+Only Method 1 
+(Pod definition file can not be generated using imperative object method. Hence, only method 1 can be followed.)
+
+Q2
+As per the business requirement, pod named "nginx-web" using the below kubectl command for testing some web application deployment.
+[root@k8s-master|/]# kubectl run nginx-web --image=nginx
+deployment.apps/nginx-web created
+As the testing activity is over, now you need to delete the pod. Which of the following command will delete the same?
+
+(i) kubectl delete deploy nginx-web
+
+(ii) kubectl delete pod nginx-web
+
+Only (i) 
+
+Q3 
+You executed the below kubectl command to create the pods. The output of the command shows that it has created 2 pods named "centos-pod" and "simplesrv-pod".
+[root@k8s-master|/root/yamls]# kubectl apply -f pod
+pod/simplesrv-pod created
+pod/centos-pod created
+What do you infer from command's output?
+"pod" in the command is a name of the directory which has 2 pod definition files 
+("pod" is the name of the directory, hence kubectl apply command processes all the yaml files in it.)
+
+Labels and Selectors:
+
+Assume that in your Kubernetes environment, you have created the objects such as Pods, Deployments, Services, ReplicaSets to deploy various applications and its related components. These components may include front-end and back-end instances and monitoring agents with various versions.
+Note that services, replicasets will be discussed in a different resource.
+You need to view these components based on objects or application functionalities such as viewing all the running pods, database servers or front-end instances. Labels are the mechanism you can use to organize Kubernetes objects.
+
+Below diagram depicts that you can label and view the Kubernetes objects based on the need.
+
+Once the appropriate labels have been added in the key/value pairs form for the Kubernetes objects, you can also filter the objects based on the application functionalities. For example, you can view all the front-end and back-end pods as shown below.
+
+You can filter the objects using selectors. For example, application_name="InfyTel" and functionality="front-end".
+Let us further understand about labels.
+
+Labels are key/value pairs that are attached to Kubernetes objects, such as pods. Labels are intended to be used to specify identifying attributes of objects that are meaningful and relevant to users. Labels can be used to organize and to select subsets of objects. 
+
+Below are few commonly used labels:
+
+"release" : "stable", "release" : "beta"
+"environment" : "dev", "environment" : "qa", "environment" : "production"
+"tier" : "frontend", "tier" : "backend", "tier" : "cache"
+"partition" : "customerA", "partition" : "customerB"
+"track" : "daily", "track" : "weekly"
+"owner" : "teamCIS", "owner" : "teamDev"
+Labels can be attached to objects at creation time and subsequently added and modified at any time. Many objects can carry the same labels.
+
+Let us understand how to add the label to the Kubernetes objects.
+
+Syntax:
+
+Valid label values must be 63 characters or less and must be empty or begin and end with an alphanumeric character ([a-z0-9A-Z]) with dashes (-), underscores (_), dots (.), and alpha-numerics between.
+
+Example:
+
+Below is the configuration file for a Pod that has two labels environment: production and app: nginx. Below yaml file creates a Pod named label-demo with the nginx (web server) container to deploy web application in it. (Syntax in yaml file)
+lables:
+	environment: production
+	app: nginx
+Let us see few more demonstrations on labels.
+
+In this demonstration, three pods will be created to deploy web applications on nginx web server. These pods will be used for development, QA and production purpose. After creating the required Pods, it can be viewed and filtered based on the need using labels.
+
+Below are the steps you need to follow to complete the above task.
+
+Step 1: Create three yaml configurations files with different definition, especially labels. 
+
+[root@k8s-master|/root/yaml]# ls
+dev_nginx_pod.yaml  prod_nginx_pod.yaml  qa_nginx_pod.yaml
+Below are the configurations for the above listed yaml files.
+
+
+
+Step 2: Create all the pods by running the respective yaml as shown below.
+
+[root@k8s-master|/root/yaml]# kubectl apply -f prod_nginx_pod.yaml (environment: production)
+pod/label-demo-prod created
+[root@k8s-master|/root/yaml]# kubectl apply -f dev_nginx_pod.yaml (environment: development)
+pod/label-demo-dev created 
+[root@k8s-master|/root/yaml]# kubectl apply -f qa_nginx_pod.yaml (environment: quality)
+pod/label-demo-qa created
+Step 3: View the pods that are created. Only pods have been listed using "kubectl get pods --show-labels" command to view the labels
+
+[root@k8s-master|/root/yaml]# kubectl get pods --show-labels
+NAME                 READY   STATUS    RESTARTS   AGE   LABELS
+label-demo-dev       1/1     Running   0          17s   app=nginx,environment=development
+label-demo-prod      1/1     Running   0          31s   app=nginx,environment=production
+label-demo-qa        1/1     Running   0          5s    app=nginx,environment=quality
+
+Let us further understand how to filter the view using selector (condition).
+
+Labels selector are core grouping primitive in Kubernetes. They are used to select a set of objects. --selector option can be used with kubectl command to filter the objects.
+
+Kubernetes API currently supports 2 type of selectors:
+
+Equality-based selectors
+Set-based selectors
+1. Equality-based Selectors:
+
+It allows filtering by key and value. Matching objects should satisfy all the specified labels. Three kinds of operators are admitted =, ==, != in matching. The first two represent equality while the latter represents inequality.
+
+Example
+
+environment = production
+tier != frontend
+In the above example, the former selects all resources with key equal to environment and value equal to production. The latter selects all resources with key equal to tier and value distinct from frontend, and all resources with no labels with the tier key.
+
+2. Set-based Selectors:
+
+It allows filtering of keys according to a set of values. Three kinds of operators are supported: in, notin and exists (only the key identifier).
+
+Example
+
+environment in (production, qa)
+tier notin (frontend, backend)
+version
+!version
+The first example selects all resources with key equal to environment and value equal to production or qa
+The second example selects all resources with key equal to tier and values other than frontend and backend, and all resources with no labels with the tier key
+The third example selects all resources including a label with key version; no values are checked
+The fourth example selects all resources without a label with key version; no values are checked
+A label selector can be made of multiple requirements which are comma-separated. In the case of multiple requirements, all must be satisfied so the comma separator acts as a logical AND operator.
+
+Next, let us see the demo on selector.
+
+Follow the steps mentioned below to filter the pods based on the need. Three pods have been already created for production, development and QA purpose.
+
+Example 1: Equality-based 
+
+[root@k8s-master|/root/yaml]# kubectl get pods --selector environment=quality
+NAME            READY   STATUS    RESTARTS   AGE
+label-demo-qa   1/1     Running   0          42m
+[root@k8s-master|/root/yaml]# kubectl get pods -l environment=quality,app=nginx # --selector or -l
+NAME            READY   STATUS    RESTARTS   AGE
+label-demo-qa   1/1     Running   0          42m
+
+First command shows the pods that has the key "environment" with the value "quality". Consider there are multiple pods in the cluster for different applications such as nginx, mysql, apache. You can use apply multiple selectors using comma operator (similar to AND)
+
+Second command shows the pods that has the key "environment" with the value "quality" and key "app" with the value "nginx".
+
+Example 2: Set-based 
+
+If you wish to provide multiple values on the same key then you can use set-based operator. Below example shows all the pods that has the key "environment" with the values "production" or "development". You have to enclose the set-based selector with in a single quote.
+
+[root@k8s-master|/root/yaml]# kubectl get pods --selector 'environment in (production,development)'
+NAME              READY   STATUS    RESTARTS   AGE
+label-demo-dev    1/1     Running   0          53m
+label-demo-prod   1/1     Running   0          54m
+Example 3: Set-based with equality-based 
+
+Below command shows the pods that have the key "environment" with the values "production" or "development" and the key "app" with the value "nginx" which as both set-based and equality-based selectors.
+
+[root@k8s-master|/root/yaml]# kubectl get pods --selector 'environment in (production,development),app=nginx'
+NAME              READY   STATUS    RESTARTS   AGE
+label-demo-dev    1/1     Running   0          54m
+label-demo-prod   1/1     Running   0          54m
+Let us next understand what is annotations.
+
+You can use either labels or annotations to attach metadata to Kubernetes objects. Labels can be used to select objects and to find collections of objects that satisfy certain conditions. In contrast, annotations are not used to identify and select objects. The metadata in an annotation can be small or large, structured or unstructured, and can include characters not permitted by labels.
+
+Annotations, like labels, are key/value maps.
+in yaml file:
+	annotations:
+		buildVersion: 1.15
+		owner: CIS_RUN
+		contact: cictun@1234
+Few scenarios where to use annotations:
+
+Build, release, or image information like timestamps, release IDs, git branch, image hashes, and registry address
+Pointers to logging, monitoring, analytics, or audit repositories
+Client library or tool information that can be used for debugging purposes: for example, name, version, and build information
+User or tool/system provenance information, such as URLs of related objects from other ecosystem components
+Phone or pager numbers of persons responsible, or directory entries that specify where that information can be found, such as a team web site
+Let us see the demonstration on annotation.
+
+Below example yaml configuration file has the metadata of the objects through annotations and labels as well. Remember, you can select the objects using labels only. Annotations are added for defining additional information (metadata) about the Kubernetes object.
+
+[root@k8s-master|/root/yaml]# cat prod_nginx_pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: label-demo-prod
+  labels:
+    environment: production
+    app: nginx
+  annotations:
+    buildVersion: 1.25
+    owner: CISRUN
+    contact: cisrun@example.com
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+
+Let us next test your understanding on Kubernetes labels and selectors.
+
+Quiz - Kubernetes Objects - Labels and Selectors
+  
+7m 59s
+(Submitted)
+Q1 of 3
+
+You need to create a test container instance for running some web application on nginx. You write a below yaml definition file to create a Pod.
+-label was in spec area-
+What will be the OUTPUT of the below command?
+
+[root@k8s-master|/]# kubectl create -f test_nginx_pod.yaml
+ 
+It will throw an error 
+(Labels fields can not be a part of Pod specification in yaml file.)
+
+Q2 
+You have created multiple pods for various purpose such as backend, frontend, discovery, logging, etc. As there are hundreds of pods running in your cluster environment, you need to view the specific pods alone. You execute the below command to filter few pods.
+[root@k8s-master|/]# kubectl get pods --selector 'tier in (frontend, backend)'
+What will be the OUTPUT of the above command?
+
+It shows the pods that have the label value "frontend" or "backend" for the key "tier" 
+(Operator "in" in selector will perform logical OR operation. Hence, it includes both the values.)
+Q3 
+Below pod named "label-nginx-test" is created successfully with the labels and annotations defined. 
+[root@k8s-master|/root/yaml]# cat test_nginx_pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: label-nginx-test
+  labels:
+    environment: test
+    app: nginx
+  annotations:
+    buildVersion: 1.25
+    contact: cisrun@example.com
+spec:
+.....
+Now you wish to view the pods with the specific condition using "selector" field as shown below. What will be the OUTPUT of the below kubectl command?
+[root@k8s-master|/]# kubectl get pods --selector app=nginx,buildVersion=1.25
+ 
+It will show "No resources found in default namespace." 
+(Annotations can not be used to select the objects. You can use labels only.)
+
+
+Services
+
+Assume that there is a web application which has various piece of software components such as front-end instances (containers/pods), backend instances, monitoring instances, etc. All these pods that run on different nodes should connect with other pods to keep the application running.
+For example, consider an image-processing backend with 3 replicas. These replicas are exchangeable, the frontend system should not care about backend replicas or even if a Pod is lost and recreated. That said, each Pod in a Kubernetes cluster has a unique IP address, even Pods on the same Node, so there needs to be a way of automatically reconciling changes among Pods so that your applications continue to function.
+Each Pod gets its own IP address, however in a Deployment, the set of Pods running in one moment in time could be different from the set of Pods running that application a moment later.
+This leads to a problem, if some set of backend pods provides functionality to frontend pods inside your cluster, how do the frontend instances find out and keep track of which IP address to connect to, so that the frontend can use the backend part of the workload.
+Below diagram depicts the scenario mentioned above.
+
+A Service in Kubernetes is an abstraction which defines a logical set of pods and a policy by which to access them. It enables a loose coupling between dependent pods. It is created as an object like other Kubernetes objects.
+
+A Service routes traffic across a set of Pods. Services are the abstraction that allow pods to die and replicate in Kubernetes without impacting your application. Discovery and routing among dependent pods such as the front-end and back-end components in an application is handled by Kubernetes Services.
+
+How service discovers pods:
+
+Services match a set of pods using labels and selectors. Labels are key/value pairs attached to objects. For example, if you need to logically combine all the pods that runs with the labels "app":"app-a", you can a create a service definition as shown below. So that if any change in the IP address (if the pod is lost and recreated) of the pods which will be automatically discovered by the service through these label.
+
+# service-defn.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+spec:
+  selector:
+    app: app-a (label)
+.....
+Below diagram depicts the points mentioned above.
+
+Labels and selectors have been already discussed in a different resource. 
+Let us next understand the service types.
+
+A Kubernetes service can be implemented as one of the following 4 types.
+
+1. NodePort:
+It is the type of Kubernetes service that makes an internal pod or group of pods accessible to the external network by opening a specific port on the node machine
+From outside the cluster, one can contact the pod by using curl "<NodeIP>:<NodePort>"
+It exposes the port on every node in the cluster. Port can either be statically defined or dynamically taken from a range between 30000 and 32767  
+                                   
+2. ClusterIP:
+This is the default service type in Kubernetes
+This service type makes a pod or group of pods accessible to other pods within the internal network of the Kubernetes cluster
+Kubernetes proxy is used to access ClusterIP service from outside the cluster                                              
+
+3. LoadBalancer:
+This service type exposes the service externally using the load-balancer functionality of your cloud provider(GCP, AWS, Azure and OpenStack)
+Helps in load balancing the requests/traffic coming towards the  group of pods having connected to the service and having same working functionalities
+
+4. ExternalName:
+External Name is used to reference endpoints outside the cluster
+It is used to map the Service to the contents of the externalName field 
+It creates an internal CNAME DNS entry
+Note that, NodePort and ClusterIP types are discussed in this course.
+
+Let us next see the demo on how to create a NodePort Service.
+
+Service is a Kubernetes REST object similar to Pod. It is created as an instance in the Kubernetes cluster and the control plane automatically assigns a IP address and DNS. Using these addresses the external service as well as the pods running inside the cluster can connect and interact with each other.
+
+Let's start writing a Kubernetes Service specification file called "simple-service.yaml".
+
+Step 1: Create a file called "simple-service.yaml" and navigate inside that
+
+Service specification yaml file starts with apiVersion followed by kind, metadata and specs sections
+The apiVersion is set to "v1" and is enabled by default
+The kind  field is defined  as "Service"
+The metadata field will have a name of the service to be created. Labels can also be added here
+[root@k8s-master|/root/yamls]# vi simple-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-service
+
+Step 2: Next the "spec" field, as always this is the most crucial part of the file and that is where the actual definition of service lies
+
+It consists of type and ports and selector sub-fields. The type refers to the type of service to be created (NodePort, ClusterIP and LoadBalancer). In this demo, NodePort Service type is implemented.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-service
+spec:
+  type: NodePort
+
+Note: Service specification file without a type field under spec will create service of type Cluster IP by default
+
+Step 3: The next part of a spec is ports
+
+The first type of port ID is the target Port which points to the port number dedicated by the pod
+The second one is a port on the service object. By default it will be set to 80
+The third is NodePort set of the node machine used to connect to External clients/services. The node port range should be between 30000 and 32767
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8080
+      NodePort: 30180
+Step 4: The selectors in the definition file connects the service to the pods. The .spec.selector field acts a label selector. Pods which are already in the running state as well as any pods and deployments created in future having the same label will be automatically get connected that particular service
+
+For example, the .spec.selector field in the service specification file is mapped to label "app=service-impl-lab", meaning any running pods or future pods having label "service-impl-lab" will get connected to "simple-service" as endpoints.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80 (SERVICE PORT)
+      targetPort: 8080 (POD PORT)
+      nodePort: 30180 (NODE/CLUSTER)
+  selector:
+    app: service-impl-lab
+
+
+Step 5: Create a Service using kubectl create command
+
+[root@k8s-master|/root/yamls]# kubectl create -f simple-service.yaml
+service/simple-service created
+
+Step 6: View the Service that is created
+
+[root@k8s-master|/root/yamls]# kubectl get svc
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+kubernetes       ClusterIP   10.96.0.1        <none>        443/TCP        66m
+simple-service   NodePort    10.105.125.168   <none>        80:30180/TCP   7s
+
+Let us next see the demo on how to create a ClusterIP Service.
+
+Below is an example for ClusterIP Service. As mentioned, it makes a pod or group of pods accessible to other pods within the internal network of the Kubernetes cluster.
+
+Step 1: Create a yaml file as shown below
+
+[root@k8s-master|/root/yamls]# cat clusterip-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-cip-svc # Name of the service
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 3306 # Container Port
+      port: 3306 # Port on the Service itself, requests first comes to this port and is forwarded to the targetPort
+  selector:
+    app: db-tier
+
+Step 2: Create a Service using kubectl create command
+
+[root@k8s-master|/root/yamls]# kubectl create -f clusterip-svc.yaml
+service/db-cip-svc created
+
+Step 3: View the Service that is created
+
+[root@k8s-master|/root/yamls]# kubectl get svc
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+db-cip-svc       ClusterIP   10.110.14.44     <none>        3306/TCP       5s
+kubernetes       ClusterIP   10.96.0.1        <none>        443/TCP        74m
+simple-service   NodePort    10.105.125.168   <none>        80:30180/TCP   8m
+
+Step 4: Finally, delete all the Services that are created
+
+[root@k8s-master|/root/yamls]# kubectl delete svc db-cip-svc simple-service
+service "db-cip-svc" deleted
+service "simple-service" deleted
+Note: You can edit or describe the Service using kubectl edit/describe command.
+
+Let us next test your understanding on Service.
+
+Q/A
+Quiz - Kubernetes Objects - Services
+  
+9m 17s
+(Submitted)
+Q1
+Adam is working on an application which as a database pods running in back-end and web-server pods running as front-end. He as a Kubernetes Cluster administrator, wants the web-server pods to interact with database pods without exposing the back-end pods outside the cluster.
+Which Kubernetes Service should he use?
+
+ClusterIP 
+(ClusterIP is used to connect pods internally within the cluster.)
+
+Q2
+Which of the following statements are TRUE regarding Service specification file?
+Service specification file without a type field under spec will create service of type Cluster IP by default 
+The node port range should be between 30000 to 32767 
+(Correct, by default ClusterIP service is created.
+Correct, port number 30000 to 32767 is used by node machine)
+
+Q3
+From the below options select the situation when the client needs to use service manifest file without selector filed configured inside it?
+When client wants to map/point a particular service created to another service located in different namespaces or cluster. 
+During migrating workload into Kubernetes, the user wants to work only on a small proportion/sets of pods. 
+When client requires to use external database for production environment, but uses his own database while testing 
+(Correct, service without selectors helps to map services between different namespaces.
+Correct, its used during partial pod migration from one environment to other.
+Correct, it's used when the client wants to use his own test cases for testing in pods.)
+
+
+Replica Set
+A ReplicaSet in Kubernetes ensures the stable set of replica Pods running at any given time. Hence, it guarantees the availability of a specified number of identical Pods all the time. It ensures high availability and scalability.
+For scenario 1, ReplicaSet will automatically creates the pods in the existing or new node and ensures that the specified number of pods (7) running all time. Thus it ensure the high availability of the web application all the time as shown below.
+For scenario 2, as the web application's demand increases, you can scale the pods according to the need. Assume that you need to scale the replica to 9, then ReplicaSet will create the additional pods in the cluster to distribute the load on the pods evenly.
+Let us further understand how ReplicaSet works.
+
+Let us understand the various sections of ReplicaSet configuration file.
+
+A ReplicaSet is defined with below fields using which it creates and deletes the Pods as needed to reach the desired number.
+
+Selector -> specifies how to identify Pods it can acquire, a number of replicas indicating how many Pods it should be maintaining. Below selector code describes that ReplicaSet should identify all the pods that runs with the labels "myapp" and "frontend", also 3 replicas of the pod should be running all the time. It can also identify the pod that is not created by the replicaset.
+Pod template -> When a ReplicaSet needs to create new Pods, it uses its Pod template. It specifies the data of new Pods it should create to meet the number of replicas criteria. As per the configuration file mentioned below, it will nginx container with the label "myapp" and "frontend".
+Let us next see the demonstration on replicaset.
+
+ 
+
+Let us create a replicaset named "myapp-rc" with 3 nginx pods for hosting frontend web application. Follow the steps mentioned below to create and manage the replicaset.
+
+Step 1: create the yaml configuration file as per the requirement
+
+[root@k8s-master|/root/yaml]# cat rs.yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-rc
+  labels:
+    app: myapp
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+      tier: frontend
+  template:
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+        tier: frontend
+    spec:
+      containers:
+      - name: myapp-nginx-cont
+        image: nginx
+
+Step 2: Create the replicaset using kubectl command with the configuration file. Replicaset "myapp-rc" is created. You can also "kubectl apply" to create a replicaset
+
+[root@k8s-master|/root/yaml]# kubectl create -f rs.yaml
+replicaset.apps/myapp-rc created
+
+Step 3: View the replicaset and pods created as shown below. ReplicaSet "myapp-rc" contains 3 pods 2 in worker-node2 and 1 in worker-node1.
+
+[root@k8s-master|/root/yaml]# kubectl get replicaset
+NAME       DESIRED   CURRENT   READY   AGE
+myapp-rc   3         3         3       4s
+[root@k8s-master|/root/yaml]# kubectl get pods -o wide
+NAME             READY   STATUS    RESTARTS   AGE   IP            NODE                            NOMINATED NODE   READINESS GATES
+myapp-rc-55nzh   1/1     Running   0          37m   10.244.1.6    worker-node1.pod2.example.com   <none>           <none>
+myapp-rc-5fm6n   1/1     Running   0          37m   10.244.2.10   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-z54r2   1/1     Running   0          37m   10.244.2.11   worker-node2.pod2.example.com   <none>           <none>
+
+Step 4: You can also filter the pods with the selectors as shown below. You can view all the labels assigned to the Pod using "kubectl get pods --show-labels" command
+
+[root@k8s-master|/root/yaml]# kubectl get pods --selector app=myapp
+NAME             READY   STATUS    RESTARTS   AGE
+myapp-rc-55nzh   1/1     Running   0          38m
+myapp-rc-5fm6n   1/1     Running   0          38m
+myapp-rc-z54r2   1/1     Running   0          38m
+[root@k8s-master|/root/yaml]# kubectl get pods --selector tier=frontend
+NAME             READY   STATUS    RESTARTS   AGE
+myapp-rc-55nzh   1/1     Running   0          38m
+myapp-rc-5fm6n   1/1     Running   0          38m
+myapp-rc-z54r2   1/1     Running   0          38m
+
+Let us understand how these replicas are managed by replicaset.
+
+Assume that for some reason pod or the node in which it runs crashes, then the replicaset automatically create the pods to guarantee the availability of a specified number of identical pods.
+
+Step 1: View the existing pods. There are 3 replicas available now
+
+[root@k8s-master|/root/yaml]# kubectl get pods 
+NAME             READY   STATUS    RESTARTS   AGE
+myapp-rc-55nzh   1/1     Running   0          38m
+myapp-rc-5fm6n   1/1     Running   0          38m
+myapp-rc-z54r2   1/1     Running   0          38m
+
+Step 2: For this demo, pod "myapp-rc-55nzh" (runs in worker-node1) is deleted intentionally using "kubectl delete pod" command. Observe that there is a new pod named "myapp-rc-x8mfd" created in worker-node1 immediately to ensure 3 pods running always.
+
+[root@k8s-master|/root/yaml]# kubectl delete pod myapp-rc-55nzh
+pod "myapp-rc-55nzh" deleted
+[root@k8s-master|/root/yaml]# kubectl get pods -o wide
+NAME             READY   STATUS    RESTARTS   AGE     IP            NODE                            NOMINATED NODE   READINESS GATES
+myapp-rc-5fm6n   1/1     Running   0          49m     10.244.2.10   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-x8mfd   1/1     Running   0          7s      10.244.1.7    worker-node1.pod2.example.com   <none>           <none>
+myapp-rc-z54r2   1/1     Running   0          49m     10.244.2.11   worker-node2.pod2.example.com   <none>           <none>
+
+Let us see how to scale the pods.
+
+Assume that the demand of the web application increases during the specific period and you need to scale up the replicaset. Similarly, once the demand is over, you can scale down by updating the replicas field.
+
+The ReplicaSet Controller ensures that a desired number of Pods with a matching label selector are available and operational.
+
+You can scale the ReplicaSet in 3 methods.
+
+ReplicaSet configuration file
+In this method, update the field "replicas" with the new value and run kubectl with replace option as shown below.
+
+$ kubectl replace -f <yaml_file>
+scale option with kubectl command
+In this method, you can directly specify the new replicas value using "kubectl" command with "scale" option as shown below. You need not update the yaml file.
+
+$ kubectl scale --replicas=<n> -f <yaml_file>
+Horizontal Pod AutoScalers (HPA) 
+A ReplicaSet can also be a target for Horizontal Pod Autoscalers (HPA). That is, a ReplicaSet can be auto-scaled by an HPA. It automatically scales the number of pods in a replica set, deployment or replication controller based on observed CPU utilization or on some other application-provided metrics.
+
+Let us see the demonstration on scaling the ReplicaSet using configuration file.
+
+Follow the below steps to scale the replicaset using yaml file.
+
+Step 1: Create the yaml file replicaset named "myapp-rc" with 3 replicas for nginx container as shown below.
+
+[root@k8s-master|/root/yaml]# cat rs.yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-rc
+  labels:
+    app: myapp
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+      tier: frontend
+  template:
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+        tier: frontend
+    spec:
+      containers:
+      - name: myapp-nginx-cont
+        image: nginx
+
+[root@k8s-master|/root/yaml]# kubectl apply -f rs.yaml
+replicaset.apps/myapp-rc created
+Step 2: View the replicaset and pods
+
+[root@k8s-master|/root/yaml]# kubectl get replicaset
+NAME       DESIRED   CURRENT   READY   AGE
+myapp-rc   3         3         3       6s
+[root@k8s-master|/root/yaml]# kubectl get pods -o wide
+NAME             READY   STATUS    RESTARTS   AGE   IP            NODE                            NOMINATED NODE   READINESS GATES
+myapp-rc-6h2qd   1/1     Running   0          14s   10.244.2.14   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-vk98l   1/1     Running   0          14s   10.244.1.9    worker-node1.pod2.example.com   <none>           <none>
+myapp-rc-vtglk   1/1     Running   0          14s   10.244.1.10   worker-node1.pod2.example.com   <none>           <none>
+
+Step 3: In the yaml file, update "replicas" field value to scale the replicaset to maintain 5 identical replicas of the pods all the time. Then, run "kubectl replace" command scale up the replicaset
+
+[root@k8s-master|/root/yaml]# cat rs.yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-rc
+  labels:
+    app: myapp
+    tier: frontend
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: myapp
+      tier: frontend
+  template:
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+        tier: frontend
+    spec:
+      containers:
+      - name: myapp-nginx-cont
+        image: nginx
+
+[root@k8s-master|/root/yaml]# kubectl replace -f rs.yaml
+replicaset.apps/myapp-rc replaced
+
+Step 4: View the replicaset and pods 
+
+[root@k8s-master|/root/yaml]# kubectl get replicaset
+NAME       DESIRED   CURRENT   READY   AGE
+myapp-rc   5         5         5       2m49s
+[root@k8s-master|/root/yaml]# kubectl get pods -o wide
+NAME             READY   STATUS    RESTARTS   AGE     IP            NODE                            NOMINATED NODE   READINESS GATES
+myapp-rc-6h2qd   1/1     Running   0          2m52s   10.244.2.14   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-jn48p   1/1     Running   0          7s      10.244.2.16   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-l9t2d   1/1     Running   0          7s      10.244.2.15   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-vk98l   1/1     Running   0          2m52s   10.244.1.9    worker-node1.pod2.example.com   <none>           <none>
+myapp-rc-vtglk   1/1     Running   0          2m52s   10.244.1.10   worker-node1.pod2.example.com   <none>           <none>
+
+Let us see the next demo on scaling the replicaset using scale option.
+
+Follow the below steps to scale the replicaset using "kubectl scale --replicas" command as shown below.
+
+Step 1: Scale the replicaset myapp-rc with 7 pods directly, you need not update it yaml file
+
+[root@k8s-master|/root/yaml]# kubectl scale --replicas=7 -f rs.yaml
+replicaset.apps/myapp-rc scaled
+
+Step 2: There are 7 pods are running in the replicaset "myapp-rc"
+
+[root@k8s-master|/root/yaml]# kubectl get rs
+NAME       DESIRED   CURRENT   READY   AGE
+myapp-rc   7         7         7       13m
+[root@k8s-master|/root/yaml]# kubectl get pods -o wide
+NAME             READY   STATUS    RESTARTS   AGE   IP            NODE                            NOMINATED NODE   READINESS GATES
+myapp-rc-6h2qd   1/1     Running   0          13m   10.244.2.14   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-cn8m6   1/1     Running   0          28s   10.244.2.17   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-jn48p   1/1     Running   0          11m   10.244.2.16   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-l9t2d   1/1     Running   0          11m   10.244.2.15   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-vk98l   1/1     Running   0          13m   10.244.1.9    worker-node1.pod2.example.com   <none>           <none>
+myapp-rc-vtglk   1/1     Running   0          13m   10.244.1.10   worker-node1.pod2.example.com   <none>           <none>
+myapp-rc-zqrpx   1/1     Running   0          28s   10.244.1.11   worker-node1.pod2.example.com   <none>           <none>
+
+Step 3: You can scale down the replicaset once the demand is over. In the below example, it is scaled down to 4.
+
+[root@k8s-master|/root/yaml]# kubectl scale --replicas=4 -f rs.yaml
+replicaset.apps/myapp-rc scaled
+
+Step 4: View the replicaset it's pods
+
+[root@k8s-master|/root/yaml]# kubectl get rs
+NAME       DESIRED   CURRENT   READY   AGE
+myapp-rc   4         4         4       14m
+[root@k8s-master|/root/yaml]# kubectl get pods -o wide
+NAME             READY   STATUS    RESTARTS   AGE   IP            NODE                            NOMINATED NODE   READINESS GATES
+myapp-rc-6h2qd   1/1     Running   0          14m   10.244.2.14   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-l9t2d   1/1     Running   0          11m   10.244.2.15   worker-node2.pod2.example.com   <none>           <none>
+myapp-rc-vk98l   1/1     Running   0          14m   10.244.1.9    worker-node1.pod2.example.com   <none>           <none>
+myapp-rc-vtglk   1/1     Running   0          14m   10.244.1.10   worker-node1.pod2.example.com   <none>           <none>
+
+Let us see the HPA method to scale up/down replicaset.
+
+Follow the steps mentioned below to create and test HPA on replicaset.
+
+Step 1: To demonstrate Horizontal Pod Autoscaler, custom docker image php-apache is used. First, you start a deployment running the image and expose it as a service. Service will be discussed in the next section.
+
+[root@k8s-master|/root]# kubectl run php-apache --image=gcr.io/google_containers/hpa-example:run --requests=cpu=200m --expose --port=80
+service/php-apache created
+deployment.apps/php-apache created
+Step 2: View the pod and the service that is created
+
+[root@k8s-master ~]# kubectl get pods
+NAME                             READY     STATUS    RESTARTS   AGE
+php-apache-69df9d46d5-cqdqt      1/1       Running   0          21s
+[root@k8s-master ~]# kubectl get service
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP   38d
+php-apache   ClusterIP   10.102.193.18   <none>        80/TCP    21s
+
+Step 3: Now, you create the autoscaler using "kubectl autoscale" command. Below command will create a Horizontal Pod Autoscaler that maintains between 1 and 10 replicas of the Pods controlled by the php-apache deployment
+
+[root@k8s-master|/root]# kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
+horizontalpodautoscaler.autoscaling/php-apache autoscaled
+HPA will increase and decrease the number of replicas (via the deployment) to maintain an average CPU utilization across all pods of 50%.
+
+Step 4: Check the current status of autoscaler by running below command
+
+[root@k8s-master|/root]# kubectl get hpa
+NAME           REFERENCE               TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+php-apache     Deployment/php-apache   <unknown>/50%   1         10        1          97s
+
+Step 5: Let us see how the autoscaler reacts to increased load. You start a container, and send an infinite loop of queries to the php-apache service in a different terminal as shown below
+
+[root@k8s-master|/root]# kubectl run -i --tty load-generator --image=busybox:run /bin/sh 
+If you don't see a command prompt, try pressing enter.
+# while true; do wget -q -O- http://php-apache.default.svc.cluster.local; done
+OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!
+OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!
+OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!
+Step 6: Check the status of the hpa in the first terminal. As there is no much of load on the application, only one replica is running now
+
+[root@k8s-master ~]# kubectl get hpa
+NAME         REFERENCE               TARGETS     MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   77% / 50%   1         10        1          3m
+
+Step 7: Wait for the load to increase and view the status of the hpa and deployment after few more minutes. You can see that CPU consumption is increased to 355%, hence the number of replicas is also increased to 8 as shown below
+
+[root@k8s-master ~]# kubectl get hpa
+NAME         REFERENCE               TARGETS      MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   355% / 50%   1         10        8          15m
+
+ 
+
+[root@k8s-master ~]# kubectl get deployment php-apache
+NAME         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+php-apache   8         8         8            8           15m
+[root@k8s-master ~]# kubectl get pods | grep php
+php-apache-69df9d46d5-bnqbr      1/1       Running   0          3m
+php-apache-69df9d46d5-cqdqt      1/1       Running   0          15m
+php-apache-69df9d46d5-ftxvh      1/1       Running   0          7m
+php-apache-69df9d46d5-jd2mq      1/1       Running   0          11m
+php-apache-69df9d46d5-r99pp      1/1       Running   0          3m
+php-apache-69df9d46d5-s2qgg      1/1       Running   0          3m
+php-apache-69df9d46d5-wftmp      1/1       Running   0          3m
+php-apache-69df9d46d5-wllrd      1/1       Running   0          7m
+
+Based on the CPU utilization of the nodes, HPA is automatically scaling up/down the replicas of the pods.
+
+Step 8: Finally, you can reduce the load on the application by terminating the infinite loop (press Ctrl + C) and check the status of the hpa and pods after few mins
+
+[root@k8s-master ~]# kubectl get hpa
+NAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   0% / 50%   1         10        1          25m
+[root@k8s-master ~]# kubectl get deployment php-apache
+NAME         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+php-apache   1         1         1            1           25m
+
+As there is no load on the application, number of replicas is scaled down automatically.
+
+Let us see what is replication controller.
+
+A ReplicationController (RC) also ensures that a specified number of pod replicas are running at any one time. If there are too many pods, the ReplicationController terminates the extra pods. If there are too few, the ReplicationController starts more pods. With respect to working principle, RC is similar to replicaset (RS).
+
+Step 1: Create the RC yaml file as shown below to create a RC named "nginx-rc" with 3 pods
+
+[root@k8s-master|/root]# cat rc.yml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx-rc
+spec:
+  replicas: 3
+  selector:
+    app: nginx-app
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: nginx-app
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx
+        ports:
+        - containerPort: 80
+
+Step 2: Create a replication controller using kubectl command
+
+[root@k8s-master|/root]# kubectl apply -f rc.yml
+replicationcontroller/nginx-rc created
+
+Step 3: View the RC and it's pods
+
+[root@k8s-master|/root]# kubectl get rc
+NAME       DESIRED   CURRENT   READY   AGE
+nginx-rc   3         3         3       7s
+[root@k8s-master|/root]# kubectl get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+nginx-rc-2ptvd                    1/1     Running   0          9s
+nginx-rc-bxb2f                    1/1     Running   0          9s
+nginx-rc-r2kxx                    1/1     Running   0          9s
+You can further scale up/down the RC as shown in RS.
+
+Let us see the difference between replicaset and replication controller.
+
+RS is the next-generation RC that supports the new set-based label selector. Let us understand this with an example.
+ReplicaSet: it supports new set-based selector. gives more flexibility.
+tier in(frontend,backend)
+
+Replication Controller: only equality based selector.
+tier = frontend
+Let us see the next demo to delete the replicaset.
+
+If you wish decommission the replicaset environment, you can delete the entire replicaset as deleting a pod will automatically create another pod. 
+
+Any of the below commands can be used to delete the replicaset.
+
+Command 1: 
+
+[root@k8s-master|/root/yaml]# kubectl delete -f rs.yaml
+replicaset.apps "myapp-rc" deleted
+
+Command 2: 
+
+[root@k8s-master|/root/yaml]# kubectl delete replicaset myapp-rc
+replicaset.apps "myapp-rc" deleted
+
+Let us next test your understanding on Kubernetes ReplicaSet.
+
+
+Deployment
+
+Assume that you need to deploy the identical copies of the the nginx web server containers in the ReplicaSet environment. After creating the instances, you will update the instances if any changes are there in the application. Similarly, you will scale up or down the instance according to the load on the application.
+You can also rollback the changes if an unexpected error is occurred during the update. If you wish to change the pod template specification of the deployment or any other configurations, you can pause the changes and resume whenever required.
+Below diagram depicts the various operations that can be performed through deployment.
+
+Let us see the demo on creating a deployment.
+
+ 
+
+Configuration file for deployment is same as ReplicaSet configuration except the "kind". In this demo, "simple-webapp" application will be deployed on 2 replicas. You will access this simple web application after the deployment.
+
+Follow the steps mentioned below to create and view the deployment.
+
+Step 1: Create a yaml file to create a deployment named "simpleservice-deploy" with 2 nginx pods for hosting frontend web application server
+
+[root@k8s-master|/root/yamls]# cat deployment-simple-webapp-v1.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleservice-deploy
+spec:
+  replicas: 2
+  selector:
+   matchLabels:
+    app: simpleservice
+  template:
+    metadata:
+      labels:
+        app: simpleservice
+    spec:
+      containers:
+      - name: simpleservice
+        image: registry.example.com:5000/simple-webapp:v1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SIMPLE_SERVICE_VERSION
+          value: "1.0"
+Note that simple-webapp:v1 image is used for this deployment.
+
+Step 2: Create a deployment using "kubectl create or apply" command
+
+[root@k8s-master|/root/yamls]# kubectl create -f deployment-simple-webapp-v1.yaml
+deployment.apps/simpleservice-deploy created
+
+Step 3: You can view the status of the deployment as shown below. There are 2 replicas running for this deployment as per the definition
+
+[root@k8s-master|/root/yamls]# kubectl get deploy
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+simpleservice-deploy   2/2     2            2           10s
+[root@k8s-master|/root/yamls]# kubectl get rs
+NAME                             DESIRED   CURRENT   READY   AGE
+simpleservice-deploy-c7c8898bf   2         2         2       16s
+
+Step 4: View the pods as shown below
+
+[root@k8s-master|/root/yamls]# kubectl get pods -o wide
+NAME                                   READY   STATUS    RESTARTS   AGE   IP            NODE                            NOMINATED NODE   READINESS GATES
+simpleservice-deploy-c7c8898bf-cv7nb   1/1     Running   0          22s   10.244.2.69   worker-node2.pod2.example.com   <none>           <none>
+simpleservice-deploy-c7c8898bf-nsf95   1/1     Running   0          22s   10.244.1.68   worker-node1.pod2.example.com   <none>           <none>
+
+Each pod runs on a different node with its own IP address.
+
+Step 5: You can also deployment, replicaset and pods details altogether using "kubectl get all" command as shown below
+
+[root@k8s-master|/root/yamls]# kubectl get all
+NAME                                       READY   STATUS    RESTARTS   AGE
+pod/simpleservice-deploy-c7c8898bf-cv7nb   1/1     Running   0          17m
+pod/simpleservice-deploy-c7c8898bf-nsf95   1/1     Running   0          17m
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP          15d
+service/webapp       NodePort    10.97.3.30       <none>        8080:32112/TCP   13m
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/simpleservice-deploy   2/2     2            2           17m
+NAME                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/simpleservice-deploy-c7c8898bf   2         2         2       17m
+Note the IP address of the pod to access it.
+
+Step 6: Now you can access this application inside the cluster as shown below using "curl" command. The pod that runs on worker-node2 is accessed through its IP address
+
+[root@k8s-master|/root/yamls]# curl 10.244.2.69:8080
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Deployment Demonstration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    HTML{height:100%;}
+    BODY{font-family:Helvetica,Arial;display:flex;display:-webkit-flex;align-items:center;justify-content:center;-webkit-align-items:center;-webkit-box-align:center;-webkit-justify-content:center;height:100%;}
+    .box{background:#f2c341;color:white;text-align:center;border-radius:10px;display:inline-block;}
+    H1{font-size:10em;line-height:1.5em;margin:0 0.5em;}
+    H2{margin-top:0;}
+  </style>
+</head>
+<body>
+<div class="box"><h1>v1</h1><h2></h2>
+<p>The date today is : <b> 08-07-2020 </b> </p>
+<p>And the time is : <b> 10:26:49 </b> </p>
+<p>This is served from POD : <b> simpleservice-deploy-c7c8898bf-cv7nb </b> </p>
+<p>and the POD IP is :<b> 10.244.2.69 </b> </p>
+</div>
+</body>
+</html>
+
+Step 7: Now if you wish to access it from outside the cluster, then you need to expose it as a service. 
+
+[root@k8s-master|/root/yamls]# kubectl expose deployment simpleservice-deploy --type=NodePort --name=webapp
+Deployment "simpleservice-deploy" has been exposed as a service named "webapp". Service webapp has been created with the nodePort 32112 as shown below.
+
+[root@k8s-master|/root/yamls]# kubectl get services/webapp -o wide
+NAME     TYPE       CLUSTER-IP   EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+webapp   NodePort   10.97.3.30   <none>        8080:32112/TCP   27m   app=simpleservice
+
+Kubernetes Service will be discussed in a different resource in detail.
+
+Step 8: Export the nodePort of the service
+
+[root@k8s-master|/root/yamls]# export NODE_PORT=$(kubectl get services/webapp  -o go-template='{{(index .spec.ports 0).nodePort}}')
+
+A NodePort is an open port on every node of your cluster. Kubernetes transparently routes incoming traffic on the NodePort to your service, even if your application is running on a different node.
+
+Step 9: View the Pod URL with the nodePort that is exported. You can access the application through this URL
+
+[root@k8s-master|/root/yamls]# echo ${PODURL}:${NODE_PORT}/
+http://k8s-master.pod2.example.com:32112/
+
+Step 10: Open any browser and access the simple web application through this URL
+
+Let us see the next demo to scale a deployment.
+
+ 
+
+Assume that the load on the simple web application is increased due to high user base of the company. Then, you need to scale the deployment according to the need to balance the load. You can scale a deployment by using the following command.
+
+Step 1: Now 2 replicas of the pod run for deployment as shown below
+
+[root@k8s-master|/root/yamls]# kubectl get deploy
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+simpleservice-deploy   2/2     2            2           35m
+[root@k8s-master|/root/yamls]# kubectl get rs
+NAME                             DESIRED   CURRENT   READY   AGE
+simpleservice-deploy-c7c8898bf   2         2         2       35m
+[root@k8s-master|/root/yamls]# kubectl get pods -o wide
+NAME                                   READY   STATUS    RESTARTS   AGE   IP            NODE                            NOMINATED NODE   READINESS GATES
+simpleservice-deploy-c7c8898bf-cv7nb   1/1     Running   0          35m   10.244.2.69   worker-node2.pod2.example.com   <none>           <none>
+simpleservice-deploy-c7c8898bf-nsf95   1/1     Running   0          35m   10.244.1.68   worker-node1.pod2.example.com   <none>           <none>
+
+Step 2: Due to load, you need to add 2 more replicas in the deployment. Scale the deployment using "--replicas" field in "kubectl scale" command. It is similar to replicaset scaling
+
+[root@k8s-master|/root/yamls]# kubectl scale deployment.apps/simpleservice-deploy --replicas=4
+deployment.apps/simpleservice-deploy scaled
+Step 3: View the status of the deployment, replicaset and pods. There are 4 pods run in the replicaset as shown below
+
+[root@k8s-master|/root/yamls]# kubectl get all
+NAME                                       READY   STATUS    RESTARTS   AGE
+pod/simpleservice-deploy-c7c8898bf-2xvlb   1/1     Running   0          2m11s
+pod/simpleservice-deploy-c7c8898bf-b69zn   1/1     Running   0          2m11s
+pod/simpleservice-deploy-c7c8898bf-cv7nb   1/1     Running   0          37m
+pod/simpleservice-deploy-c7c8898bf-nsf95   1/1     Running   0          37m
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP          15d
+service/webapp       NodePort    10.97.3.30       <none>        8080:32112/TCP   33m
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/simpleservice-deploy   4/4     4            4           37m
+NAME                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/simpleservice-deploy-c7c8898bf   4         4         4       37m
+Step 4: View the pods with it's IP address and the node in which it runs
+
+[root@k8s-master|/root/yamls]# kubectl get pods -o wide                         NAME                                   READY   STATUS    RESTARTS   AGE     IP            NODE                            NOMINATED NODE   READINESS GATES
+simpleservice-deploy-c7c8898bf-2xvlb   1/1     Running   0          2m51s   10.244.1.69   worker-node1.pod2.example.com   <none>           <none>
+simpleservice-deploy-c7c8898bf-b69zn   1/1     Running   0          2m51s   10.244.2.70   worker-node2.pod2.example.com   <none>           <none>
+simpleservice-deploy-c7c8898bf-cv7nb   1/1     Running   0          38m     10.244.2.69   worker-node2.pod2.example.com   <none>           <none>
+simpleservice-deploy-c7c8898bf-nsf95   1/1     Running   0          38m     10.244.1.68   worker-node1.pod2.example.com   <none>           <none>
+
+Along with 2 existing pods i.e. cv7nb and nsf95, 2 more pods 2xvlb and b69zn are created newly.
+
+Le us next see the demonstration to update a deployment.
+
+Assume that there is a change in the simple web application that is already deployed. The existing instances should be upgraded with the new version of the simple-webapp image (v2 instead of v1). Follow the steps given below to update the deployment.
+
+Step 1: View the image used for the deployment "simpleservice-deploy" as shown below. It is simple-webapp:v1
+
+[root@k8s-master|/root/yamls]# kubectl get deploy -o wide
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS      IMAGES                                       SELECTOR
+simpleservice-deploy   4/4     4            4           43m   simpleservice   registry.example.com:5000/simple-webapp:v1   app=simpleservice
+
+Step 2: Create a yaml file using the new image "simple-webapp:v2" as shown below
+
+[root@k8s-master|/root/yamls]# cat deployment-simple-webapp-v2.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleservice-deploy
+spec:
+  replicas: 4
+  selector:
+   matchLabels:
+    app: simpleservice
+  template:
+    metadata:
+      labels:
+        app: simpleservice
+    spec:
+      containers:
+      - name: simpleservice
+        image: registry.example.com:5000/simple-webapp:v2
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SIMPLE_SERVICE_VERSION
+          value: "2.0"
+
+You can edit the image name of the current deployment configuration by running the below command.
+
+[root@k8s-master|/root/yaml]# kubectl set image deployment.app/simpleservice-deploy simpleservice=simple-webapp:v2 --record
+simpleservice -> is the name of the container.
+
+Alternatively, you can edit the Deployment and change .spec.template.spec.containers.image from simple-webapp:v1 to simple-webapp:v2 using "kubectl edit -f <deployment_name>" command to update the deployment.
+
+Step 3: Run the deployment 
+
+[root@k8s-master|/root/yamls]# kubectl apply -f deployment-simple-webapp-v2.yaml
+Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
+deployment.apps/simpleservice-deploy configured
+
+Step 4: You can check the status of the rollout as shown below
+
+[root@k8s-master|/root/yamls]# kubectl rollout status deploy/simpleservice-deploy
+deployment "simpleservice-deploy" successfully rolled out
+Step 5: View the status of the deployment or replicaset
+
+[root@k8s-master|/root/yamls]# kubectl get deploy -o wide
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS      IMAGES                                       SELECTOR
+simpleservice-deploy   4/4     4            4           58m   simpleservice   registry.example.com:5000/simple-webapp:v2   app=simpleservice
+
+[root@k8s-master|/root/yamls]# kubectl get rs
+NAME                              DESIRED   CURRENT   READY   AGE
+simpleservice-deploy-68bbcbc6bf   4         4         4       7m23s
+simpleservice-deploy-c7c8898bf    0         0         0       58m
+
+The older one "c7c8898bf" replicaset is automatically terminated once the new replicas are deployed using the latest version 2 as shown above.
+
+Step 6: Below are the pods new replicas created as part of the deployment
+
+[root@k8s-master|/root/yamls]# kubectl get pods -o wide
+NAME                                    READY   STATUS    RESTARTS   AGE   IP            NODE                            NOMINATED NODE   READINESS GATES
+simpleservice-deploy-68bbcbc6bf-2k62g   1/1     Running   0          11m   10.244.1.71   worker-node1.pod2.example.com   <none>           <none>
+simpleservice-deploy-68bbcbc6bf-7brcl   1/1     Running   0          11m   10.244.2.71   worker-node2.pod2.example.com   <none>           <none>
+simpleservice-deploy-68bbcbc6bf-gblr2   1/1     Running   0          11m   10.244.1.70   worker-node1.pod2.example.com   <none>           <none>
+simpleservice-deploy-68bbcbc6bf-xlclh   1/1     Running   0          11m   10.244.2.72   worker-node2.pod2.example.com   <none>           <none>
+
+Step 7: You can also view the history of the rollout as shown below. So far, 2 revisions happened on the deployment simpleservice-deploy 
+
+[root@k8s-master|/root/yamls]# kubectl rollout history deploy/simpleservice-deploy
+deployment.apps/simpleservice-deploy
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
+
+Step 8: Access the simple application through browser. You can see the change in the service on the same port as shown below
+
+
+
+Let us next see the demonstration to rollback the changes.
+
+Let us take the new version deployed in the previous demo. There are 2 revisions happened on simpleservice-deploy. For some reason if you wish to go back to the previous version i.e. you need to undo the deployment, follow the steps mentioned below.
+
+Step 1: View the current image used for the deployment and also revision happened
+
+[root@k8s-master|/root/yamls]# kubectl get deploy -o wide
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS      IMAGES                                       SELECTOR
+simpleservice-deploy   4/4     4            4           70m   simpleservice   registry.example.com:5000/simple-webapp:v2   app=simpleservice
+
+[root@k8s-master|/root/yamls]# kubectl rollout history deploy/simpleservice-deploy
+deployment.apps/simpleservice-deploy
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
+
+Step 2: Now explicitly roll back to a specific revision i.e. undo the deployment
+
+[root@k8s-master|/root/yamls]# kubectl rollout undo deploy/simpleservice-deploy --to-revision=1
+deployment.apps/simpleservice-deploy rolled back
+
+Step 3: View the status of the deployment or replicaset
+
+[root@k8s-master|/root/yamls]# kubectl get deploy -o wide                       
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS      IMAGES                                       SELECTOR
+simpleservice-deploy   4/4     4            4           71m   simpleservice   registry.example.com:5000/simple-webapp:v1   app=simpleservice
+
+See that the new replicaset "68bbcbc6bf" is replaced by older one "c7c8898bf" as shown below.
+
+[root@k8s-master|/root/yamls]# kubectl get rs
+NAME                              DESIRED   CURRENT   READY   AGE
+simpleservice-deploy-68bbcbc6bf   0         0         0       22m
+simpleservice-deploy-c7c8898bf    4         4         4       73m
+Step 4: View the new pods that are running. 4 new pods are created, each node has 2 pods
+
+[root@k8s-master|/root/yamls]# kubectl get pods -o wide
+NAME                                   READY   STATUS    RESTARTS   AGE   IP            NODE                            NOMINATED NODE   READINESS GATES
+simpleservice-deploy-c7c8898bf-fvzs2   1/1     Running   0          18s   10.244.1.72   worker-node1.pod2.example.com   <none>           <none>
+simpleservice-deploy-c7c8898bf-h2c95   1/1     Running   0          16s   10.244.1.73   worker-node1.pod2.example.com   <none>           <none>
+simpleservice-deploy-c7c8898bf-pzfhn   1/1     Running   0          18s   10.244.2.73   worker-node2.pod2.example.com   <none>           <none>
+simpleservice-deploy-c7c8898bf-xb2gf   1/1     Running   0          16s   10.244.2.74   worker-node2.pod2.example.com   <none>           <none>
+
+Step 5: View the rollout history
+
+[root@k8s-master|/root/yamls]# kubectl rollout history deploy/simpleservice-deploy
+deployment.apps/simpleservice-deploy
+REVISION  CHANGE-CAUSE
+2         <none>
+3         <none>
+
+Step 6: Access the simple application through browser. You can see the change in the service (older version - v1) on the same port as shown below
+
+Let us also see another demo on rollback.
+
+For some reason, if you wish to rollback the changes applied on the deployment, you can use "kubectl rollback undo" command. To simulate the issue in the update, here image nginx:1.17.1 is used and it does not exist in the worker-nodes. Follow the steps given below to rollback the deployment.
+
+Step 1: View the image used for the deployment "myapp-dep" as shown below. It is nginx:1.16.1
+
+[root@k8s-master|/root/yaml]# kubectl get deploy -o wide
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS         IMAGES                   SELECTOR
+myapp-dep   3/3     3            3           8s    myapp-nginx-cont   docker.io/nginx:1.16.1   app=myapp,tier=frontend
+[root@k8s-master|/root/yaml]# kubectl get rs
+NAME                  DESIRED   CURRENT   READY   AGE
+myapp-dep-b89fbcc48   3         3         3       12s
+[root@k8s-master|/root/yaml]# kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+myapp-dep-b89fbcc48-8jwd2   1/1     Running   0          14s
+myapp-dep-b89fbcc48-nfpm9   1/1     Running   0          14s
+myapp-dep-b89fbcc48-nlcn7   1/1     Running   0          14s
+Step 2: update the deployment to the image nginx:1.17.1
+
+[root@k8s-master|/root/yaml]# kubectl set image deployment.app/myapp-dep myapp-nginx-cont=nginx:1.17.1 --record
+deployment.apps/myapp-dep image updated
+myapp-nginx-container -> is the name of the container. 
+
+Step 3: You can check the status of the rollout as shown below
+
+[root@k8s-master|/root/yaml]# kubectl rollout status deployment.apps/myapp-dep
+Waiting for deployment "myapp-dep" rollout to finish: 1 out of 3 new replicas have been updated...
+Step 4: View the status of the deployment or replicaset
+
+[root@k8s-master|/root/yaml]# kubectl get deploy -o wide
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS         IMAGES         SELECTOR
+myapp-dep   3/3     1            3           3m45s   myapp-nginx-cont   nginx:1.17.1   app=myapp,tier=frontend
+[root@k8s-master|/root/yaml]# kubectl get rs
+NAME                  DESIRED   CURRENT   READY   AGE
+myapp-dep-b89fbcc48   3         3         3       3m54s
+myapp-dep-d599ff956   1         1         0       35s
+[root@k8s-master|/root/yaml]# kubectl get pods
+NAME                        READY   STATUS         RESTARTS   AGE
+myapp-dep-b89fbcc48-8jwd2   1/1     Running        0          3m56s
+myapp-dep-b89fbcc48-nfpm9   1/1     Running        0          3m56s
+myapp-dep-b89fbcc48-nlcn7   1/1     Running        0          3m56s
+myapp-dep-d599ff956-sg7rh   0/1     ErrImagePull   0          37s
+Look at the Pods created, you see that 1 Pod created by new ReplicaSet is stuck in an image pull loop. The Deployment controller stops the bad rollout automatically, and stops scaling up the new ReplicaSet. 
+
+To fix this, you need to rollback to a previous revision of Deployment that is stable.
+
+Step 5: Check the rollout history (revision) of a deployment as shown below
+
+[root@k8s-master|/root/yaml]# kubectl rollout history deployment.apps/myapp-dep
+deployment.apps/myapp-dep
+REVISION  CHANGE-CAUSE
+1         <none>
+2         kubectl set image deployment.app/myapp-dep myapp-nginx-cont=nginx:1.16.1 --record=true
+3         kubectl set image deployment.app/myapp-dep myapp-nginx-cont=nginx:1.17.1 --record=true
+You can also view the details of the specific revision using "--revision=2" in the above command.
+
+Step 6: Undo the current rollout and rollback to the previous revision
+
+[root@k8s-master|/root/yaml]# kubectl rollout undo deployment.apps/myapp-dep       
+deployment.apps/myapp-dep rolled back
+
+You can also rollback to a specific revision by specifying it with "--to-revision=2" in the above command.
+
+Step 7: Check whether the rollback was successful and the deployment is running as expected. The pod "myapp-dep-d599ff956" created as part of the version "nginx:1.17.1" is automatically deleted and deployment is back to nginx:1.16.1 image
+
+[root@k8s-master|/root/yaml]# kubectl get deploy -o wide
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS         IMAGES                   SELECTOR
+myapp-dep   3/3     3            3           12m   myapp-nginx-cont   docker.io/nginx:1.16.1   app=myapp,tier=frontend
+[root@k8s-master|/root/yaml]# kubectl get rs
+NAME                  DESIRED   CURRENT   READY   AGE
+myapp-dep-b89fbcc48   3         3         3       11m
+myapp-dep-d599ff956   0         0         0       8m31s
+[root@k8s-master|/root/yaml]# kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+myapp-dep-b89fbcc48-8jwd2   1/1     Running   0          11m
+myapp-dep-b89fbcc48-nfpm9   1/1     Running   0          11m
+myapp-dep-b89fbcc48-nlcn7   1/1     Running   0          11m
+
+Let us see the next demo on how to pause and resume deployment.
+
+You can pause a deployment before triggering one or more updates and then resume it. This allows you to apply multiple fixes in between pausing and resuming without triggering unnecessary rollouts.
+
+Step 1: You can pause the current deployment
+
+[root@k8s-master|/root/yaml]# kubectl rollout pause deployment.apps/myapp-dep
+
+Step 2: After pausing the deployment, you can do the required changes in the image, resource, etc. Few examples are listed below
+
+$ kubectl set image deployment.apps/myapp-dep myapp-nginx-cont=nginx:1.16.2
+$ kubectl set resources deployment.apps/myapp-dep -c=nginx --limits=cpu=250m,memory=512Mi
+Step 3: Once the changes are done, resume the deployment 
+
+[root@k8s-master|/root/yaml]# kubectl rollout resume deployment.apps/myapp-dep
+
+Step 4: Check the status of the rollout until it is done
+
+[root@k8s-master|/root/yaml]# kubectl get rs -w
+Note that you cannot rollback a paused Deployment until you resume it.
+
+Delete Deployment
+
+To delete the deployment, run the below command.
+
+[root@k8s-master|/root/yamls]# kubectl delete deploy simpleservice-deploy
+Let us next test your understanding on Kubernetes Deployment.
+
+Q/A
+Q1
+As part of deploying the backend application on the MariaDB container, below instance is running.
+[root@k8s-master|/root/yaml]# kubectl get deploy
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+mariadb-deploy   1/1     1            1           6s
+What will happen after the execution of the below kubectl command?
+[root@k8s-master|/]# kubectl delete pod mariadb-deploy
+ 
+Error "pods mariadb-deploy not found" 
+(Deployment can be deleted using "kubectl delete deploy" command.)
+
+Q2
+You need to view the ReplicaSet status that are already created in your Kubernetes cluster environment. You executed the below "kubectl" command to view the same. You can see that there are 2 different ReplicaSet exist with the same name as shown below.
+[root@k8s-master|/root/yamls]# kubectl get rs
+NAME                              DESIRED   CURRENT   READY   AGE
+simpleservice-deploy-68bbcbc6bf   0         0         0       22m
+simpleservice-deploy-c7c8898bf    4         4         4       73m
+What does the above OUTPUT imply?
+
+A new of version of the container image has been used to deploy the instances 
+(Once the new version of definition file is used for creating a deployment, it will delete the existing deployment.)
+
+Q3 
+As part of scaling the existing deployments that are used for hosting a web application, you execute the below command to scale the number of instances running in the deployment simpleservice-deploy. There are 3 instances already running 
+[root@k8s-master|/root/yamls]# kubectl get deploy
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+simpleservice-deploy   3/3     3            3           35m
+[root@k8s-master|/root/yamls]# kubectl scale deployment.apps/simpleservice-deploy --replicas=5
+What does the above command imply?
+
+It will create 2 more instances 
+("replicas" field is the kubectl command points total number of instances in the deployment.)
+
+DaemonSet
+
+So far, you have created a replicaset and deployments in the cluster environment. Assume that you need to deploy 5 identical copies of the web server pod on 3 node cluster. Then multiple pods run on the same node to ensure the desired number of pods (5) running at any given time.
+
+Assume that you have created an image to run the log collection or monitoring daemon on every node of a cluster, then you can create a DaemonSet to accomplish the same. If you are in a need to monitor the newly added node in the cluster without manually installing any agent related software separately, then you can use DaemonSet. It will automatically create a pod in the new node like replicaset or deployment and only one copy of the DaemonSet runs in every cluster node.
+
+Let us further understand about DaemonSet.
+
+A DaemonSet ensures that all or some nodes run a copy of a pod. As nodes are added to the cluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage collected. Deleting a DaemonSet will clean up the Pods it created.
+
+When to use of a DaemonSet:
+
+running a cluster storage daemon on every cluster node
+running a logs collection daemon on every cluster node
+running a node monitoring daemon on every cluster node
+Let us see the demonstration on how to create a DaemonSet.
+
+In this demo, DaemonSet named "myapp-ds" is created to deploy the fluentd pod to collect the logs on every node. Follow the steps mentioned below to create the same.
+
+Step 1: Create a yaml file for creating a DaemonSet as shown below, it is same as ReplicaSet except 2 "kind" and "replicas" fields. kind is of DaemonSet and replicas field is not applicable for DaemonSet
+
+[root@k8s-master|/root/yaml]# cat ds.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: myapp-ds
+  labels:
+    app: myapp-agent
+    agent: log-collect
+spec:
+  selector:
+    matchLabels:
+      app: myapp-agent
+      agent: log-collect
+  template:
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp-agent
+        agent: log-collect
+    spec:
+      containers:
+      - name: myapp-log-cont
+        image: docker.io/fluentd:latest
+
+Step 2: Run the DaemonSet
+
+[root@k8s-master|/root/yaml]# kubectl create -f ds.yaml
+daemonset.apps/myapp-ds created
+
+Step 3: You can view the DaemonSet
+
+[root@k8s-master|/root/yaml]# kubectl get ds -o wide
+NAME       DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE   CONTAINERS       IMAGES   SELECTOR
+myapp-ds   2         2         2       2            2           <none>          3s    myapp-log-cont   fluentd  agent=log-collect,app=myapp-agent
+
+Step 4: View the Pods of Deployment (created 3 replicas already) and DaemonSet. You can see multiple pods are running in the same node (node2) for deployment whereas only one pod runs in every node for DaemonSet
+
+[root@k8s-master|/root/yaml]# kubectl get pods -o wide
+NAME                        READY   STATUS    RESTARTS   AGE   IP               NODE                            NOMINATED NODE   READINESS GATES
+myapp-ds-7s44x              1/1     Running   0          12m   10.244.1.49      worker-node1.pod2.example.com   <none>           <none>
+myapp-ds-hrjr8              1/1     Running   0          12m   10.244.2.53      worker-node2.pod2.example.com   <none>           <none>
+myapp-dep-b89fbcc48-7lzrf   1/1     Running   0          13m   10.244.2.52      worker-node2.pod2.example.com   <none>           <none>
+myapp-dep-b89fbcc48-sgwmf   1/1     Running   0          13m   10.244.2.51      worker-node2.pod2.example.com   <none>           <none>
+myapp-dep-b89fbcc48-fjj56   1/1     Running   0          13m   10.244.1.48      worker-node1.pod2.example.com   <none>           <none>
+
+Let us next understand some more details about DaemonSet.
+
+Let us understand few DaemonSet fields.
+
+Pod selector:
+
+If the .spec.selector is specified, it must match the .spec.template.metadata.labels. Config with these not matching will be rejected by the API.
+
+Running pods on select nodes:
+
+As mentioned you can run the DaemonSet pods on all or some nodes in the cluster. If you need to create in the specific node, then you need to mention the node details using nodeSelector or nodeAffinity fields of the pod template, then the DaemonSet controller will create Pods on nodes which match that node selector or affinity. These two fields will be discussed later in Kubernetes Foundation course.
+
+Rolling update on a DaemonSet:
+
+You can also update the DaemonSet in Kubernetes version 1.6 or later. DaemonSet has 2 update strategy types.
+
+OnDelete:
+With OnDelete update strategy, after you update a DaemonSet template, new DaemonSet pods will only be created when you manually delete old DaemonSet pods. 
+
+RollingUpdate:
+This is the default update strategy. With RollingUpdate update strategy, after you update a DaemonSet template, old DaemonSet pods will be killed, and new DaemonSet pods will be created automatically, in a controlled fashion. 
+
+Refer Kubernetes documentation to know more about rolling update on a DaemonSet.
+
+Delete a DaemonSet:
+
+You can delete the DaemonSet if it is not required. It deletes the pods associated with the DaemonSet. 
+
+[root@k8s-master|/root/yaml]# kubectl delete ds myapp-ds
+daemonset.apps "myapp-ds" deleted
+
+Let us next test your understanding on Kubernetes DaemonSet.
+
+Q/A
+Q1
+Which of the following are the best suited scenarios to use DaemonSet in Kubernetes? [Choose 2 options]
+Log collection 
+Monitoring 
+Common uses of a DaemonSet are,
+1. running a cluster storage daemon on every node
+2. running a logs collection daemon on every node
+3. running a node monitoring daemon on every node.
+Common uses of a DaemonSet are,
+1. running a cluster storage daemon on every node
+2. running a logs collection daemon on every node
+3. running a node monitoring daemon on every node.
+
+Q2
+In a Kubernetes cluster environment, there are 3 nodes being used to deploy the web application. Due to the high demand on the application over the period, now you need to add few more nodes in the cluster to ensure consistency service.
+As part of the web application, there is a log collection instance running in the existing nodes through DaemonSet. You need to collect the logs from the new instances as well that you will add.
+Which of the following statement is TRUE with respect to log collection instance on the new nodes?
+It will be automatically created in the new nodes 
+
+
+ConfigMap
+
+Assume that you have various micro services such as frontend (Python), backend (MySQL), in-memory database (Redis), etc. in your application. There are many variables that need to be passed to all these (pods) containers while composing it to run the application. If few variables are there in each pod then it can be defined in the pod definition itself using "env" property as shown below.
+It is not a recommended method if the number of variables for each pod is huge as it makes the pod definition file lengthy and complex. In this scenario, you can define all the variables in a ConfigMap definition and add it in a pod definition as shown below.
+You can store this information in a central location and reference this from an application. When you want to change the configuration, simply change it in the file and you are good to go. You need not search every location where the data is referenced.
+
+If confidential values need to be passed such SSH key, database password, you can use Kubernetes Secret. ConfigMap is used to store non-confidential data in key-value pairs.
+
+Let us understand more about ConfigMap.
+A ConfigMap is an API object used to store non-confidential data in key-value pairs and allow other objects (Pod) to use. Pods can consume ConfigMaps in the below 3 methods. 
+
+As an environment variables
+Command-line arguments
+Configuration files in a volume
+When to use ConfigMap:
+Use a ConfigMap for setting configuration data separately from application code.
+How to define ConfigMap object:
+Unlike most Kubernetes objects that have a "spec", a ConfigMap has a "data" section to store items (keys) and their values. ConfigMap can be created in either imperative or declarative method.
+Note: ConfigMap does not provide secrecy or encryption. If the data you want to store are confidential, use a Secret rather than a ConfigMap, or use additional (third party) tools to keep your data private.
+
+Let us next see the demo on how to create a ConfigMap and use it in a Pod.
+
+Follow the steps mentioned below to create a ConfigMap using imperative method.
+
+Step 1: Create a ConfigMap using "kubectl create config" command
+
+[root@k8s-master|/root/yaml]# kubectl create configmap \
+> mysqlp-config --from-literal=db_name=prod_ret \
+> --from-literal=port=3306 \
+> --from-literal=max_allowed_packet=256M
+configmap/mysqlp-config created
+mysql-config -> name of the configmap
+
+--from-literal -> use it to specify each key-value pairs
+
+You can also define these variables in a file and use the it through "--from-file" option in the above command.
+
+Step 2: View the ConfigMap created
+
+[root@k8s-master|/root/yaml]# kubectl get configmap
+NAME            DATA   AGE
+mysqlp-config   3      109s
+
+Step 3: Describe the ConfigMap to view the key-value pairs as shown below
+
+[root@k8s-master|/root/yaml]# kubectl describe cm
+Name:         mysqlp-config
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+Data
+====
+port:
+----
+3306
+db_name:
+----
+prod_ret
+max_allowed_packet:
+----
+256M
+Events:  <none>
+Let us see the next demo to create a ConfigMap using declarative method.
+
+Follow the steps mentioned below to create a ConfigMap using declarative method.
+
+Step 1: Create a ConfigMap definition file named "mysql-config" to store mysql environment related variables with the value as shown below
+
+[root@k8s-master|/root/yaml]# cat mysql-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+data:
+  db_name: prod_ret
+  port: "3306"
+  max_allowed_packet: "256M"
+
+Step 2: Run the "kubectl create" command to create a ConfigMap
+
+[root@k8s-master|/root/yaml]# kubectl create -f mysql-config.yaml
+configmap/mysql-config created
+
+You can also use "kubectl apply" command.
+
+Step 3: View the ConfigMap created, it has 3 variables
+
+[root@k8s-master|/root/yaml]# kubectl get cm
+NAME           DATA   AGE
+mysql-config   3      6s
+
+Step 4: Describe the ConfigMap to view the variable details
+
+[root@k8s-master|/root/yaml]# kubectl describe cm
+Name:         mysql-config
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+Data
+====
+db_name:
+----
+prod_ret
+max_allowed_packet:
+----
+256M
+port:
+----
+3306
+Events:  <none>
+Let us next see how to use the ConfigMap with the Pod.
+
+To use the ConfigMap in pod, both ConfigMap and Pod must be in the same namespace. Follow the steps mentioned below to use the ConfigMap variables as an environment variables inside a pod.
+
+Step 1: Refer the ConfigMap "mysql-config" that is created already in a Pod using "envFrom" property
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-prod
+  labels:
+    environment: prod
+    app: backend
+spec:
+  containers:
+  - name: mysql-cont
+    image: mysql
+    ports:
+    - containerPort: 80
+    envFrom:
+    - configMapRef:
+        name: mysql-config
+Step 2: Run "kubectl" to create a pod as shown below
+
+[root@k8s-master|/root/yaml]# kubectl create -f prod_mysql_pod.yaml
+pod/mysql-prod created
+
+Step 3: View the pod that is running
+
+[root@k8s-master|/root/yaml]# kubectl get pods
+NAME            READY   STATUS    RESTARTS   AGE
+mysql-prod      1/1     Running   0          29s
+
+Step 4: Connect to the pod and run the "env" command as shown below. Observe that all 3 ConfigMap variables are added in the environment variables
+
+[root@k8s-master|/root/yaml]# kubectl exec -it mysql-prod sh
+# env
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+HOSTNAME=mysql-prod
+PHP_APACHE_PORT_80_TCP=tcp://10.102.217.138:80
+HOME=/root
+db_name=prod_ret
+max_allowed_packet=256M
+TERM=xterm
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+NGINX_VERSION=1.13.12-1~stretch
+PHP_APACHE_SERVICE_HOST=10.102.217.138
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+port=3306
+
+You can also check this as a command-line argument as shown below.
+
+[root@k8s-master|/root/yaml]# kubectl exec -it mysql-prod -- /bin/sh -c 'echo "$db_name\n$port\n$max_allowed_packet"'
+prod_ret
+3306
+256M
+
+In this example, all the variables have been injected into the container environment. Also, the name of the container variable is same as ConfigMap variable. If required, you can inject few ConfigMap variables in the container and change the name of the variable as well. 
+
+Let us next see how to customize the ConfigMap variables in the container command-line argument.
+
+In the previous demo, If you wish to change the name of the variable while accessing it through the Pod, then you can customize the name of the ConfigMap variables. 
+
+Follow the steps mentioned below to use the ConfigMap variables as a command-line arguments inside a pod.
+
+Step 1: Refer the ConfigMap "mysql-config" that is created already in a Pod using "env" property
+
+[root@k8s-master|/root/yaml]# cat prod_mysql_pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-prod
+  labels:
+    environment: prod
+    app: backend
+spec:
+  containers:
+  - name: mysql-cont
+    image: mysql
+    ports:
+    - containerPort: 80
+    env:
+    - name: MYSQL_DB_NAME
+      valueFrom:
+        configMapKeyRef:
+          name: mysql-config
+          key: db_name
+    - name: MYSQL_DB_PORT
+      valueFrom:
+        configMapKeyRef:
+          name: mysql-config
+          key: port
+In the above pod definition, only db_name and port variables have injected from the ConfigMap "mysql-config". Also, ConfigMap variables db_name and port have been changed into MYSQL_DB_NAME and MYSQL_DB_PORT respectively.
+
+Step 2: Run "kubectl" to create a pod as shown below
+
+[root@k8s-master|/root/yaml]# kubectl create -f prod_mysql_pod.yaml
+pod/mysql-prod created
+
+Step 3: View the pod that is running
+
+[root@k8s-master|/root/yaml]# kubectl get pods
+NAME         READY   STATUS    RESTARTS   AGE
+mysql-prod   1/1     Running   0          2s
+
+Step 4: Connect to the pod and access the ConfigMap variables with the new name as a command-line argument as shown below. Only 2 variables have injected in the pod
+
+[root@k8s-master|/root/yaml]# kubectl exec -it mysql-prod -- /bin/sh -c 'echo "$MYSQL_DB_NAME\n$MYSQL_DB_PORT"'
+prod_ret
+3306
+
+Let us next see how to use the ConfigMap variables as a volume in a pod.
+
+Follow the steps mentioned below to use the ConfigMap variables as a volume inside a pod.
+
+Step 1: Refer the ConfigMap "mysql-config" that is created already in a Pod using volume properties as shown below
+
+[root@k8s-master|/root/yaml]# cat prod_mysql_pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-prod
+  labels:
+    environment: prod
+    app: backend
+spec:
+  containers:
+  - name: mysql-cont
+    image: mysql
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: "config-volume"
+      mountPath: "/root/config"
+  volumes:
+  - name: "config-volume"
+    configMap:
+      name: mysql-config
+name of the volumeMounts and volumes must be same. You can mount the variables as a file in the volume mouthPath "/root/config".
+
+Step 2: Run "kubectl" to create a pod as shown below
+
+[root@k8s-master|/root/yaml]# kubectl create -f prod_mysql_pod.yaml
+pod/mysql-prod created
+
+Step 3: View the pod that is running
+
+[root@k8s-master|/root/yaml]# kubectl get pods
+NAME         READY   STATUS    RESTARTS   AGE
+mysql-prod   1/1     Running   0          2m46s
+
+Step 4: Connect to the pod as shown below 
+
+[root@k8s-master|/root/yaml]# kubectl exec -it mysql-prod sh
+#
+Step 5: Move to the respective mount path and list the files and it's content as shown below
+
+# cd /root/config
+# ls
+db_name  max_allowed_packet  port
+# cat db_name
+prod_ret
+# cat port
+3306
+# cat max_allowed_packet
+256M
+# exit
+
+ConfigMap variables are mapped as a volume files in a Pod.
+
+Let us next test your understanding on Kubernetes ConfigMap.
+
+Q/A
+Q1
+You are using ConfigMap to store the environment details that are related to web application. 
+Which of the following are best suited info that can be stored using ConfigMap? [Choose 2 options]
+
+Application properties 
+Database configurations except password 
+(Assuming application properties as non-confidential, it can be stored using ConfigMap.
+Assuming application properties as non-confidential, it can be stored using ConfigMap.)
+
+Q2
+You have created a ConfigMap to store application and database related properties in key-value pairs. Now, you need to refer few ConfigMap variables in the Pod definition and use it in a container as a command-line argument.
+Which of the following properties should be defined in the Pod definition to use the variables as a command-line argument? [Choose 3 options]
+
+env 
+configMapKeyRef 
+valueFrom 
+(It can be used to inject ConfigMap as command-line argument.
+It can be used to inject ConfigMap as command-line argument.
+It can used to inject ConfigMap as command-line argument.)
+
+Q3
+You have stored the database properties in a ConfigMap named "mysql-config". Below is the pod definition file in which you inject the ConfigMap as a Volume.
+[root@k8s-master|/root/yaml]# cat prod_mysql_pod.yaml
+apiVersion: v1
+kind: Pod
+.....
+spec:
+.....
+    volumeMounts:
+    - name: "config-vol"
+      mountPath: "/root/config"
+  volumes:
+  - name: "config-volume"
+    configMap:
+      name: mysql-config
+What will be the OUTPUT of the above pod definition file?
+
+It returns the error "Not found: config-vol" 
+("name" property in volumeMounts and volumes should be same.)
+
+
+Secrets
+There are many confidential details configured with a container image such as OS credential, SSH keys, tokens, web server, application server and database server login passwords, etc. You need to maintain such sensitive details safe. Secret in Kubernetes helps to store the confidential information safer and more flexible than putting it as a plain text in a Pod definition or in a container image.
+
+You can create a secret in 2 ways.
+
+using "kubectl create secret" command (imperative method)
+using secret definition file (declarative method) 
+Once the secret is created, it can be injected into a Pod in 2 ways.
+
+As a volume in a Pod
+As container variables in a Pod
+Let us see how to create a secret using kubectl command.
+
+In this example, a MongoDB database connection string consists of a username and password. Follow the steps mentioned below to create a secret.
+
+Step 1: You can store the username in a file db_username.txt and the password in a file db_password.txt on your local machine
+
+[root@k8s-master|/root/yaml]# echo -n 'db_username=app_admin' > db_username.txt
+[root@k8s-master|/root/yaml]# echo -n 'db_password=Infy@123+' > db_password.txt
+
+ 
+
+Step 2: Create a secret named "mongodb-user-pass" using "kubectl create secret generic" command as shown below
+
+[root@k8s-master|/root/yaml]# kubectl create secret generic mongodb-user-pass --from-file=db_username.txt --from-file=db_password.txt
+secret/mongodb-user-pass created
+
+Rather than storing these details in a file, you can also directly mention it in the kubectl command using "--from-literal" with key-value pair.
+
+[root@k8s-master|/root/yaml]# kubectl create secret generic db-user-pass --from-literal=db_username=app_admin --from-literal=db_password=Infy@123+
+
+ 
+
+Step 3: View the secrets created by running the below command
+
+root@k8s-master|/root/yaml]# kubectl get secrets
+NAME                  TYPE                                  DATA   AGE
+mongodb-user-pass     Opaque                                2      2m15s
+
+Opaque -> means it stores the data in the key-value pair. 
+
+ 
+
+Step 4: You can view a description of the secret as shown below
+
+[root@k8s-master|/root/yaml]# kubectl describe secret mongodb-user-pass
+Name:         mongodb-user-pass
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+Type:  Opaque
+Data
+====
+db_password.txt:  9 bytes
+db_username.txt:  9 bytes
+
+The commands kubectl get and kubectl describe avoid showing the contents of a secret by default. This is to protect the secret from being exposed accidentally to an onlooker, or from being stored in a terminal log. However, here you can view the plain text stored as is using the files. 
+
+Let us see how to store the sensitive information in a encoded form.
+
+The Secret contains two maps, data and stringData. The data field is used to store arbitrary data, encoded using base64. The stringData field is provided for convenience, and allows you to provide secret data as unencoded strings.
+
+For example, to store mongodb username and password, convert the string to base64 (data) as follows.
+
+[root@k8s-master|/root/yaml]# echo -n 'app_admin' | base64
+YXBwX2FkbWlu
+[root@k8s-master|/root/yaml]# echo -n 'Infy@123+' | base64
+SW5meUAxMjMr
+
+If you need to view the database credentials in an unencoded form, decode it (stringData) as shown below.
+
+[root@k8s-master|/root/yaml]# echo -n 'YXBwX2FkbWlu' | base64 --decode
+app_admin
+[root@k8s-master|/root/yaml]# echo -n 'SW5meUAxMjMr' | base64 --decode
+Infy@123+
+
+Let us next see the demo to create a secret using Secret definition file (declarative method).
+
+If few strings need to be secured, you can use the kubectl command to store in a Secret. However there are chances for the onlooker to view the secrets using terminal log using this method. Hence, it is not a recommended method. You can store the sensitive information in the encoded form in a secret (kind) definition file if there are many secrets.
+
+Follow the steps mentioned below to create a secret in a declarative method and configure it with the pod.
+
+Step 1: Create a secret definition file as shown below using the kind Secret
+
+[root@k8s-master|/root/yaml]# cat mongodb-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb-user-pass
+type: Opaque
+data:
+  db_username: YXBwX2FkbWlu
+  db_password: SW5meUAxMjMr
+For some reason, if you wish to store both data and stringData, you can add "stringData" field in the above yaml file. 
+
+ 
+
+Step 2: Run kubectl command to create a secret "mongodb-secret" 
+
+[root@k8s-master|/root/yaml]# kubectl apply -f mongodb-secret.yaml
+secret/mongodb-user-pass created
+ 
+
+Step 3: View the secret created as shown below
+
+[root@k8s-master|/root/yaml]# kubectl get secret
+NAME                  TYPE                                  DATA   AGE
+mongodb-user-pass     Opaque                                2      3s
+
+ 
+
+Step 4: Once the secret is created, it can be injected (referred) using a container variable "envFrom" in the pod definition as shown below
+
+[root@k8s-master|/root/yaml]# cat qa_nginx_pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: label-demo-qa
+  labels:
+    environment: quality
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+    envFrom:
+      - secretRef:
+          name: mongodb-user-pass
+
+ 
+
+Step 5: Run the pod
+
+[root@k8s-master|/root/yaml]# kubectl create -f qa_nginx_pod.yaml
+pod/label-demo-qa created
+
+ 
+
+Step 6: View the pod created
+
+[root@k8s-master|/root/yaml]# kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+label-demo-qa               1/1     Running   0          6s
+
+ 
+
+Step 7: You can access the secret data inside the container as shown below
+
+[root@k8s-master|/root/yaml]# kubectl exec -i -t label-demo-qa -- /bin/sh -c 'echo "$db_username\n$db_password"'
+app_admin
+Infy@123+
+Let us next see how to inject the secret in a pod.
+
+In the previous demo, secret named "mongodb-secret" is created and it contains mongodb username and password in the data (encoded) form. If these data needs to be mapped to a volume inside the container, you can mount the secret as a volume. Follow the below steps to create a secret using volume.
+
+Step 1: Create a secret definition file as shown below using the kind Secret and refer the secret "mongodb-secret" through volume
+
+[root@k8s-master|/root/yaml]# cat dev_nginx_pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: label-demo-dev
+  labels:
+    environment: development
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: "mongodb-secret"
+      mountPath: "/root/mongodb-volume"
+      readOnly: true
+  volumes:
+  - name: "mongodb-secret"
+    secret:
+      secretName: mongodb-user-pass
+name -> name of the volumeMounts and volumes must be similar
+
+mountPath -> path that will container the secrets inside the container
+
+secretName -> name of the secret that is already created
+
+ 
+
+Step 2: Run the pod using this yaml file
+
+[root@k8s-master|/root/yaml]# kubectl apply -f dev_nginx_pod.yaml
+pod/label-demo-dev created
+ 
+
+Step 3: View the pod that is created
+
+[root@k8s-master|/root/yaml]# kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+label-demo-dev              1/1     Running   0          5s
+
+ 
+
+Step 4: Connect to the container 
+
+[root@k8s-master|/root/yaml]# kubectl exec -i -t label-demo-dev -- /bin/bash
+root@label-demo-dev:/# 
+ 
+
+Step 5: View the volume path and files inside it with the content
+
+root@label-demo-dev:/# ls /root/mongodb-volume/
+db_username  db_password
+root@label-demo-dev:/# cat /root/mongodb-volume/db_username
+app_admin
+root@label-demo-dev:/# cat /root/mongodb-volume/db_password
+Infy@123+
+
+ 
+
+Let us now see how to inject the Secret as container variables.
+
+You can inject the Secret as container environment variables as shown below.
+
+[root@k8s-master|/root/yaml]# cat dev_nginx_pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: label-demo-dev
+  labels:
+    environment: development
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+    envFrom:
+    - secretRef:
+        name: mongodb-secret
+ 
+
+You can also define a container environment variable with data from a single Secret or multiple Secrets. Refer Kubernetes documentation to know more details on this.
+
+ 
+
+Let us next test your understanding on Kubernetes Secrets.
+
+Q/A
+
+Q1 
+You want to store the environment details that are related to web application. 
+Which of the following are best suited details that can be stored using Secrets? [Choose 2 options]
+
+Database password 
+Host credentials 
+(Credentials are stored in encrypted format in Secrets.
+Credentials are stored in encrypted format in Secrets.)
+
+Q2 You got a file from development team in which the encrypted database username and password are stored. As part of testing the application, you need to view the decrypted username and password. 
+Which of the following function you can use to view the same as a plain text?
+
+base64 --decode 
+("base64 --decode" decrypts the encrypted string.)
+
+Q3
+You have created a Secret to store host and database credentials. Now, you need to inject those details in the Pod definition and use it in a container as an environment variables.
+Which of the following properties should be defined in the Pod definition file to use the variables as an environment variables? [Choose 2 options]
+
+envFrom 
+secretRef 
+(It can be used to inject Secrets as an environment variables.
+It can be used to inject Secrets as an environment variables.)
+
+
+
+Playground:
+
+kubeadm init --pod-network-cidr=10.244.0.0/16 --kubernetes-version=1.8.5 --skip-preflight-checks
+
+make a note of kubernetes join command
+
+systemctl status kubelet
+
+configure required directories
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):(id -g) $HOME/.kube/config
+
+kubectl get nodes
+
+kubectl apply -f kube-flannel.yml
+
+on worker node join command
+kubeadm join --token <token> <ip>:port --discovery-token-ca-cert-hash sha256:<number> --skip-preflight-checks
+
+
+service:
+(master)kubectl run simplesrv --image=mhausenblas/simpleservice:0.5.0 --port=9876
+
+kubectl get pods
+
+kubectl describe pod <simplesrv-podid>
+
+kubectl logs <pod-id>
+
+
+label exercise
+
+kubectl create -f label-pod.yaml
+
+kubectl get pods --selector env=development
+
+kubectl label pods labelex owner=michael
+
+kubectl get pods --show-labels
+
+kubectl label pods labelex status=published testing=done
+
+kubectl get pods -l 'env in (production, development)'
+
+
+replication and replication controler
+kubectl create -f rc-rc.yaml
+kubectl get rc
+kuberctl scale --replicas=3 rc/rcex replicationcontroller "rcex" scaled
+kubectl get pods -l app=sise -o wide -w

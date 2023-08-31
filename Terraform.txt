@@ -1,0 +1,257 @@
+Terraform is an Infrastructure as Code(IaC) tool developed by HashiCorp which enables you to provision, automate and manage your infrastructure, platform as well as services. Terraform does all these things using a declarative configuration language called as HashiCorp configuration language instead of procedural language. When the user invokes Terraform on a resource, it performs CRUD actions on behalf of the user to achieve the desired required state of the infrastructure.
+
+Houssem dellai
+
+terrform init -> terraform plan (out tfplan) -> terraform apply (tfplan)
+
+
+init will check provider (aws/azure or on-prem): will install some plugins at you folder. eg .terraform\plugins and in it registry.terraform.io , selections.json.
+
+main.tf file 
+variable.tf file
+variablestfvars file
+and some modules.
+
+life cycle of steps followed
+1. Compare (main to state file)
+2. Create Plan (main to tfplan, tfplan will hold changes [add,edit or delete])
+3. Deploy (deploy to cloud/on-prem)
+4. Update (tfplan will update state, state file holds current configuration)
+
+sample file to deploy a resource group
+main.tf
+
+provider "azurerm"{
+	features {}
+}
+terraform{
+	required_providers {
+	source = "hashicorp/azurerm"
+	version = "=2.40.0"
+	}
+}
+}
+
+
+---
+ex1:
+
+provider "azurerm"{
+        version = "=2.40.0"
+	features {}
+}
+resource "azurerm_resource_group" "rg" {
+	name = "myFirstResourceGroup"
+	location = "westeurope"
+}
+
+---
+
+az login is required to connect to subscription.
+
+terraform init
+terraform plan (what resources to be deployed or planned)
+terraform apply 
+terraform destroy (to delete)
+
+terraform.tfstate is key file
+terraform.tfstate.backup history of resources deployed to provider
+---
+
+terraform validate verifies the template and provide a correct suggestion.
+
+terraform fmt : this commands format your file to remove spaces and put it in correct indentation. format document in standard style.
+
+Terraform command to preview the infra changes before deploying them : $terraform plan -out tfplan
+
+---
+
+deploy webapplication to azure cloud.
+azurerm is azure terraform provider, it helps in syntax.
+
+azure_app_service
+has  resources[resource group, app service plan and app service]
+
+app_service_plan should have a resource group pre-created to work with.
+app-service should have a app service plan pre-created to work with.
+
+---
+variables.tf
+
+it can have variables for different env to be called and used. keyword var is used in main file to call it.
+
+eg file
+variable "resource_group_name" {
+	default ="example-resources"
+	type = string
+	description = "RG name in azure"
+}
+
+variable "resource_group_location" {
+	default ="West Europe"
+	type = string
+	description = "RG location name in azure"
+}
+
+in main file to use variables.
+var.resource_group_name
+var.resource_group_location
+
+---
+
+over ride variables in terraform using .tfvars
+also you can change in cli (terraform plan -var "<rg>=<name>")
+
+---
+output variables
+outputs.tf
+output "webapp_url" {
+	value=azurerm_app_service.example.default_site_hostname
+}
+
+
+this helps in having outputs during execution of apply.
+
+to get plan output, terraform plan -out tfplan. here tfplan will have all planned changes(create/destroy) in json format.
+
+terraform show -json tfplan >> tfplan.json 
+to view output in json format
+
+terraform apply tfplan
+
+---
+tfstate file is store at central repo to keep track and work accordingly. use blob storage(azure) or s3 (aws).
+from main.tf you can connect to your storage.
+
+in backend.tf have your storage acct details. 
+this helps to implemplent state lock mechanism.
+---
+terraform.state comares the planned changes from main file( fplan).
+---
+dev/test/prod env
+1)modules
+2)pointers 
+3)workspaces(USED IN PROJECT)
+
+1) Modules. each env has different folders[dev,testand prod]
+dev.tfvars for dev.
+
+terraform plan -out .\dev\dev.tfplan -state .\dev\dev.tfstate -var-file .\dev\dev.tfvars
+
+terraform apply -state .\dev\dev.tfstate .\dev\dev.tfplan
+
+terraform workspace list
+terraform workspace new dev (creates a new workspace named dev)
+terraform plan -out dev.tfplan (uses dev workspace)
+terraform apply dev.tfplan (apply for dev workspace)
+
+all state files will be stored at terraform.tfstate.d (has all workspace in it with seprate state files)
+----
+we can use a system assigned managed identity SAMI to deploy from terraform, but to deploy from CI/CD pipelines SPN(service principal) is used. SPN is recommended to deploy/provision resources.
+---
+
+Webapp and sql server( with database) deployemnt
+
+AKS with ACR deployment
+
+ACS deployment
+
+Key-vault and scerets
+key-vault with RBAC allows to access specific scerets only. in key-vault under access policies change it to rbac
+
+vm deployment [Resource group, vnet, subnet, public ip, NSG, nic, network interface security grp association, storage acct(unique name), SSH key, linux VM and os disk and image and admin ssh_key other details.  ]
+
+vm with bastion host (both will have seprate subnet bu twill be in one same vnet) VM custon script extention (or terraform remote-exec) can be used to run scripts inside a vm
+
+** if a feature or a product is not supported by terraform , deploy using ARM templates or azure cli inside terraform 
+
+you can also create users and groups with terraform : provider will be azuread
+you can also create policies on terraform (policity to json and then to azure)
+
+---
+
+terraform module : re-usable templates (.modules/vnet) resource=module 
+terraform registry holds already created modules.
+implicit and explicit dependeny on modules. in implicit it refers to other module (module.xyx.abc). explicit (depends_on) waits for other module to execute first.
+
+---
+
+terraform import: command terraform import <rg> <RG id> will import details to terraform.tfstate file. need to import resources one by one.
+
+other way to import resources is azure terrafy  (aztfy)
+aztfy -o <name of folder> <name of RG>
+---
+
+to get data from external sources
+terraform http, get local-exec, remote-exec
+
+http: only works with GET.
+api can be used to get data from sources.
+
+local-exec
+to run commands from local
+
+remote-exec
+to run commands from a external machine
+
+---
+dynamic key work: to nested work(eg:for loop)
+dynamic{
+	content{
+		}
+	}
+---
+
+enable or disable 
+
+
+---
+
+Kubernetes
+
+terraform -> AKS cluster (AAD-admin and RBAC)
+pod, deployment, service and namespace files ( and provider.tf, aks.tf, serviceprincipal.tf, kubernetes-pod.tf,kubernetes-deployment.tf, kubernetes-service.tf and  kubernetes-namespace.tf)
+kube login to auth with SPN (or Managed identity)
+
+also deployment with helm-charts.tf
+---
+Aks monitoring through prometheus and grafana
+on AKS install azure monitoring agent or prometheus agent to pull metric to a DB. get metrics from DB with RBAC managed identity and plot it over azure grafana dashboards.
+---
+rover to visualize graphs of resources. (.svg file)
+---
+
+terratest to test terraform template.
+
+checkov to detect misconfigurations. a cli to install and use
+checkov -d .   [command]
+checkov -d . -o json
+
+---
+
+Terraform multilayer arch: 
+level 0: launch pad
+	create SPN for terraform
+	create storage file for state file
+	create subscriptions
+level 1: security and compliance
+	RBAC
+	Monitioring
+	shared services
+level 2: Hub and spokes
+	multi env
+	backup, DR
+level 3: Application infra (landing zone)
+	deploying into spokes
+	creating paas services (AKS, FireWall, AppGW, ACR,KV)
+level 4:Application
+	deploy container
+	microservices
+
+---
+
+azure app service domain via terraform
+---
+azure devops
+github actions
+---

@@ -1,0 +1,208 @@
+Event (triggers) -> Workflow (Contains) -> Jobs(Uses) -> Actions.
+
+Workflows are written in YAML and live within a GitHub repository, at the location .github/workflows.
+
+Workflows include several standard syntax elements.
+Name: is the name of the workflow. It's optional but is highly recommended. It appears in several places within the GitHub UI.
+On: is the event or list of events that will trigger the workflow.
+Jobs: is the list of jobs to be executed. Workflows can contain one or more jobs.
+Runs-on: tells Actions which runner to use.
+Steps: It's the list of steps for the job. Steps within a job execute on the same runner.
+Uses: tells Actions, which predefined action needs to be retrieved. For example, you might have an action that installs node.js.
+Run: tells the job to execute a command on the runner. For example, you might execute an NPM command.
+
+on:
+    schedule:
+
+        - cron: '0 8-17 * * 1-5'
+
+Cron schedules are based on five values:
+
+Minute (0 - 59)
+Hour (0 - 23)
+Day of the month (1 - 31)
+Month (1 - 12)
+Day of the week (0 - 6)
+
+Aliases for the months are JAN-DEC and for days of the week are SUN-SAT.
+
+A wild card means any. (* is a special value in YAML, so the cron string will need to be quoted)
+
+So, in the example above, the schedule would be 8 AM - 5 PM Monday to Friday.
+
+
+on:
+    [push, pull_request]
+
+
+
+on:
+    pull_request:
+        branches:
+
+            - develop
+
+
+
+Webhook events
+Workflows can be executed when a GitHub webhook is called.
+
+YAML
+
+Copy
+on:
+    gollum
+
+
+External events
+Events can be on repository_dispatch. That allows events to fire from external systems.
+
+Jobs with dependencies
+By default, if a workflow contains multiple jobs, they run in parallel.
+
+YAML
+
+Copy
+jobs:
+  startup:
+    runs-on: ubuntu-latest
+    steps:
+
+      - run: ./setup_server_configuration.sh
+  build:
+    steps:
+
+      - run: ./build_new_server.sh
+
+
+Sometimes you might need one job to wait for another job to complete.
+
+You can do that by defining dependencies between the jobs.
+
+YAML
+
+Copy
+jobs:
+  startup:
+    runs-on: ubuntu-latest
+    steps:
+
+      - run: ./setup_server_configuration.sh
+  build:
+    needs: startup
+    steps:
+
+      - run: ./build_new_server.sh
+
+
+ the maximum duration of a job is 6 hours, and for a workflow is 72 hours.
+
+ a Docker container can be used. Now, the Docker container support is only Linux-based.
+
+
+Self-hosted runners
+If you need different configurations to the ones provided, you can create a self-hosted runner.
+
+GitHub has published the source code for self-hosted runners as open-source, and you can find it here: https://github.com/actions/runner.
+
+It allows you to customize the runner completely. However, you then need to maintain (patch, upgrade) the runner system.
+
+Self-hosted runners can be added at different levels within an enterprise:
+
+Repository-level (single repository).
+Organizational-level (multiple repositories in an organization).
+Enterprise-level (multiple organizations across an enterprise).
+
+
+Release Management for Actions
+While you might be happy to retrieve the latest version of the action, there are many situations where you might want a specific version of the action.
+
+You can request a specific release of action in several ways:
+
+Tags
+Tags allow you to specify the precise versions that you want to work.
+
+YAML
+
+Copy
+
+steps:
+    -uses: actions/install-timer@v2.0.1
+SHA-based hashes
+You can specify a requested SHA-based hash for an action. It ensures that the action hasn't changed. However, the downside to this is that you also won't receive updates to the action automatically either.
+
+YAML
+
+Copy
+steps:
+    -uses: actions/install-timer@327239021f7cc39fe7327647b213799853a9eb98
+
+Branches
+A common way to request actions is to refer to the branch you want to work with. You'll then get the latest version from that branch. That means you'll benefit from updates, but it also increases the chance of code-breaking.
+
+YAML
+
+Copy
+steps:
+    -uses: actions/install-timer@develop
+
+
+-----------------
+
+udemy
+
+tools to automate workflows
+write individual tasks called actions and combine them to create a custom workflow.
+
+workflow: is a custom automated process that you can set up in your repo to build, test, package, release or deploy any code project on github.
+
+on a repo events happens(push, pull req, issue[open/close,created..], corn job, any external event).
+
+workflow run on vm/github server. job is run on it.
+a job  has steps , each step has some actions/commands. job have multiple steps.
+in workflow you have multiple jobs.
+
+example:
+a workflow has three jobs. job 1 is windows vm to build a android version od an app. job 2 macos to build an ios version of an app. job3 linux vm to test code.
+
+a runner: is any machine with github actions runner app installed (github hosted/ your own).
+github hosted has linux, macos, windows with commonly used pre-installed software / tools[curl, git,npm,yarn,pip etc].languages[python, ruby, nodejs, java], android sdk and xcode
+self hosted runner is managed by you.(github runner installed), you control hardware etc for larger jobs.
+
+workflows are written in yaml format.
+indentation is done with spaces (2,4) not tabs.
+
+to debug ACTIONS_RUNNER_DEBUG, ACTIONS_STEP_DEBUG to true in secrets of github.
+
+---
+on: 
+events run workflow. push, pull_request
+pull_request:
+  types: [closed, assigned, opened, reopened]
+a corn schedule, issues,  etc there a many ways to make a event
+
+token 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
+
+repository dispatch is used to trigger a workflow through api calls* used in production projects etc.
+
+on:
+  push:
+    branches:
+      - master
+      - 'feature/*'  # matches feature/feaA
+      - 'feature/**' #matches feature/fesA/dec
+      - '!feature/feaC' #ignores this branch
+     branches-ignore:
+       - null
+
+also it works with tags as it does with branches.
+    tags:
+      - v1.*
+also with paths
+    paths:
+      - "**.js"
+      - "!filename.js'"
+    paths-ignore:
+      - 'docs/**'
+
+feature/feat[ABC] This will include all branches under feature(featA, featB, featC)

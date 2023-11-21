@@ -17,3 +17,6 @@ Build output (.jar, .exe, .zip etc)
 
 Build Pipeline			Release Pipeline
 code - steps - artifact  	test - staging - production
+
+---
+sample file for ci-cd

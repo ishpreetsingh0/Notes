@@ -29,30 +29,23 @@ Aliases for the months are JAN-DEC and for days of the week are SUN-SAT.
 A wild card means any. (* is a special value in YAML, so the cron string will need to be quoted)
 
 So, in the example above, the schedule would be 8 AM - 5 PM Monday to Friday.
-
-
+---
 on:
     [push, pull_request]
-
-
-
+---
 on:
     pull_request:
         branches:
 
             - develop
-
-
-
+---
 Webhook events
 Workflows can be executed when a GitHub webhook is called.
 
 YAML
-
 Copy
 on:
     gollum
-
 
 External events
 Events can be on repository_dispatch. That allows events to fire from external systems.
@@ -73,10 +66,8 @@ jobs:
     steps:
 
       - run: ./build_new_server.sh
-
-
+---
 Sometimes you might need one job to wait for another job to complete.
-
 You can do that by defining dependencies between the jobs.
 
 YAML
@@ -86,15 +77,12 @@ jobs:
   startup:
     runs-on: ubuntu-latest
     steps:
-
       - run: ./setup_server_configuration.sh
   build:
     needs: startup
     steps:
-
       - run: ./build_new_server.sh
-
-
+---
  the maximum duration of a job is 6 hours, and for a workflow is 72 hours.
 
  a Docker container can be used. Now, the Docker container support is only Linux-based.
@@ -149,6 +137,47 @@ steps:
 
 -----------------
 
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and Deploy Angular app to Azure Web App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: '18.x'
+
+      - name: npm install, build, and test
+        env:
+          intakeID: ${{secrets.INTAKE_ID}}
+          intakeURL: ${{vars.INTAKE_URL}}
+        run: |
+          npm install
+          npm run build --prod
+
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'name-app'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: ./folder/<name>
+
+-----------------
 udemy
 
 tools to automate workflows

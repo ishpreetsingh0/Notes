@@ -75,6 +75,36 @@ Kubernetes schedules pods to nodes
 Based on load Kubernetes distributes traffic.
 Kubernetes does auto scaling of pods.
 --------------------------------------------------------------------------------
+OCI open contaijner initiative:
+Open Container Initiative (OCI)
+The OCI is an organization backed by the Linux Foundation which manages the three primary specifications with which all modern container runtimes must comply:
+The actual container image specification
+How a container runtime can retrieve a container image
+How an image is unpacked, layered mounted and executed
+These specifications are all based on Docker’s pioneering work. Docker donated them to the initiative because they saw the value in having an open and interoperable ecosystem.
+
+Runtime Process
+The basic steps of the container lifecycle as defined by the OCI runtime specification are as follows:
+The container runtime is asked to create a new container instance with a reference to where the container image can be retrieved as well as a unique identifier.
+The container runtime reads and validates the container image’s configuration.
+Next, the namespace and mount points are created, and any quotas are applied while unpacking and merging the container image layers. This way, the container’s file system is in place and ready to go.
+Then the start is issued, which launches a new process with its root filesystem set to the mount point that was created in the previous step so that the container can only see those specific files and can only operate within the specified quotas and security policies.
+At this point, a stop can be issued to shut down the running container instance.
+The final step that can be performed is to delete the container instance, which will remove all references to the container and clean up the file system.
+Rarely does anyone directly interact with these low-level commands. Most people typically use an orchestration platform (like Kubernetes) or a high-level container runtime that provides a more user-friendly experience.
+
+ 1)Low-Level Container Runtimes
+Any container engine that implements the OCI runtime specification is considered to be a low-level container runtime. These are the basic building blocks that make containers possible and do the actual unpacking, creating, starting, and stopping of the container instances:
+(a)runC was created by Docker and donated to the OCI. It is the default container runtime that is used almost universally on Linux hosts.
+(b)crun is an OCI-compliant runtime focused on being extremely small and efficient (with a binary size of about 300KB).
+runhcs is a fork of runC created by Microsoft and used on Windows to run Windows containers.
+(c)containerd is on the line between low-level and high-level. It actually leans more toward a high-level container runtime because it provides an API layer on top of an OCI-compatible runtime, but we will include it here because you don’t really interact with it directly. There’s always an external layer that you use to interact with it, such as a CLI (like nerdctl or ctr) or CRI on Kubernetes.
+ 2)High-Level Container Runtimes
+(a)Docker is probably still the best-known container runtime platform in the mainstream. In reality, it is a nice set of tools that make developers’ lives easier. It’s wrapped around containerd, which is used to manage the actual container images and instances. Docker also has tooling that can interact with Kubernetes instead of directly with containerd if developers prefer to work that way.
+(b)Podman was built by Red Hat to offer a more secure model than Docker’s original implementation. Podman (along with Buildah and Skopeo) aims to provide the same high-quality developer experience as the Docker toolset. Unlike Docker, Podman does not require a daemon and allows users to run containers without root privileges.
+(c)CRI-O is a purpose-built runtime that is designed to adhere to the Kubernetes CRI (Container Runtime Interface) specification. It receives the CRI requests and can communicate with any OCI-compliant runtime (like runC).
+
+--------------------------------------------------------------------------------
 
 Kubernetes has just five basic components:
 Three Master Components :

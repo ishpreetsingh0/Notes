@@ -108,12 +108,12 @@ runhcs is a fork of runC created by Microsoft and used on Windows to run Windows
 
 Kubernetes has just five basic components:
 Three Master Components :
-API Server
-Controller manager
-Scheduler
+(1)API Server
+(2)Controller manager
+(3)Scheduler
 Two Node Components :
-Kubelet
-Proxy
+(1)Kubelet
+(2)Proxy
 The Master Node's
 The Kubernetes logic is a collection of services:
 The API server (our point of entry to everything!)
@@ -131,7 +131,9 @@ kubelet(the "node agent")
 kube-proxy (it's a necessary but not a suﬃcient network component for nodes)
 Nodes were formerly called  as "minions"
 It is always recommended to not run applications on the node's that run master components (Except when you are using small development clusters)
-
+***
+4 components of control plane nodes are: controller manager,API Server, ETCD and Scheduler.
+***
 What do kubernetes components do?
 API Server
 It provides a forward facing REST interface into the kubernetes control plane and datastore.
@@ -229,7 +231,14 @@ Q/A
 Which of the following are Kubernetes node components?
 Kubelet (Its an node agent.)
 Kube-proxy (Its a networking component)
-
+***
+Networking Plugins option in AKS:
+(1)Kubenet - basic networking. it is default mode for aks, pod CIDR, and internal network. nodes get ip addrs from azure virtual network subnet (v-net->subnet).pods recieve logically different ip addrs to that of nodes.NAT network address translation is then configured so that pods can reach resources on vnet. the source iop addrs of traffic is NAT'd to the nodes primary addrs, this reduces the no. of ip addr that you will need to reserve in your n/w space for pods to use.
+(2)Azure CNI - advance networking . it is dynamic ip allocation, and overlay mode.
+(3) Cilium
+(4)BYO- bring your own eg calico CNI
+1 and 2nd are available on portal, but for 3rd and 4th are available during azure cli and terrafrom.
+***
 What is the job of Scheduler?
 Make sure that Pods are mapped to the Nodes. 
 

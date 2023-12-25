@@ -233,11 +233,14 @@ Kubelet (Its an node agent.)
 Kube-proxy (Its a networking component)
 ***
 Networking Plugins option in AKS:
-(1)Kubenet - basic networking. it is default mode for aks, pod CIDR, and internal network. nodes get ip addrs from azure virtual network subnet (v-net->subnet).pods recieve logically different ip addrs to that of nodes.NAT network address translation is then configured so that pods can reach resources on vnet. the source iop addrs of traffic is NAT'd to the nodes primary addrs, this reduces the no. of ip addr that you will need to reserve in your n/w space for pods to use.
+(1)Kubenet - basic networking. it is default mode for aks, pod CIDR, and internal network. nodes get ip addrs from azure virtual network subnet (v-net->subnet).pods recieve logically different ip addrs to that of nodes.NAT network address translation is then configured so that pods can reach resources on vnet. the source iop addrs of traffic is NAT'd to the nodes primary addrs, this reduces the no. of ip addr that you will need to reserve in your n/w space for pods to use. this has max limit of 400 routes in a UDR, so you can't have a cluster larger than 400 nodes . you need to add hop which will provide latency to pod communication. kubenet doesn't support aks virtual node, windows node pool, azure network policies (you can use calico network policies with kubenet). CIDR/24-> 251 nodes with 110 pods per node max.
 azure cli to do this: 
 >>az group create --name rg-aks-cni --location westeurope
 >>az aks create -g rg-aks-cni -n aks-cni --network-plugin kubenet
-(2)Azure CNI - advance networking . it is dynamic ip allocation, and overlay mode.
+(2)Azure CNI - advance networking . it is dynamic ip allocation, and overlay mode. every pod get ip from subnet and can be accessed directly. IP addr must be unique accross the n/w space and must be planned in adv. each node has configuration parameter to define how many pods it can hold. the equivalent no. of ip addr per node are then reversed up front for that node. this needs more planning and might get ip addrs exaustation(can be solved Azure CNI overlay) or need to rebuild clusters as demand grow. PODs IPs are from subnet. no POD cidr=null, there is service CIDR that is different from subnet CIDR.CIDR/24-> max 8 node and 30 pods per node max. 
+azure cli to do this: 
+>>az group create --name rg-aks-cni --location westeurope
+>>az aks create -g rg-aks-cni -n aks-cni --network-plugin azure
 (3) Cilium
 (4)BYO- bring your own eg calico CNI
 1 and 2nd are available on portal, but for 3rd and 4th are available during azure cli and terrafrom.
@@ -354,7 +357,10 @@ kube-system   kube-controller-manager-k8s-master.pod6.example.com   1/1     Runn
 kube-system   kube-proxy-gnrkb                                      1/1     Running   0          7d20h
 kube-system   kube-scheduler-k8s-master.pod6.example.com            1/1     Running   0          7d20h
 We see that the Master is in “NotReady” state and that the k8s cluster DNS is in “Pending” status. Let us check the /var/log/message to find the reason.
-
+***
+(pod may reuse same ip addrs as that of its node or host, and here kube-system is assigned namespace for system pods. 
+if you create pods/containers by yourself, ip will be assigned from pod CIDR not from subnet CIDR. each node will have its own CIDR from which it will provide addrs space to pods)
+**
 $ tail /var/log/messages
 #output
 k8s-master kubelet: E1101 21:53:04.753158 9291 kubelet.go:2187] Container runtime network not ready:
@@ -550,7 +556,9 @@ serviceaccount/dashboard-admin created
 clusterrolebinding.rbac.authorization.k8s.io/dashboard-admin created
 
 Checking if the service is created.
-
+***
+svc ie service has also its CIDR , every service created will be assigned a ip addrs to communicate.
+***
 [root@k8s-master|/root/Kubernetes-1.16.2/yamls-for-1.16.2]# kubectl -n kubernetes-dashboard get svc
 NAME                        TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)         AGE
 dashboard-metrics-scraper   ClusterIP   10.108.45.67   <none>        8000/TCP        9d
@@ -628,14 +636,12 @@ Let us understand these objects further. Let us begin with Kubernetes Namespaces
 
 You will create Kubernetes objects such as pods, services, deployments for various applications and for different purposes (development, testing and production). You can logically isolate all these objects according to the your logical categorization with in a namespace (like a house). Especially when you use the Kubernetes system to manage your enterprise application, you can create your own namespace to isolate (scope) the objects, define access policy and limit resource allocation. 
 
- 
-
 Namespaces provide a scope for Kubernetes object names. Many objects such as pods, services and deployments are namespaces, while some (like nodes) are not.
 
- 
-
 When a Kubernetes cluster is initialized, it has three implicit namespaces: kube-system, kube-public and default.
-
+***
+pods don't communicate directly they use UDR user defined routing and ip forwarding is used for communication between pods accoss nodes. the source ip addrs is NAT'd  to node's primary Ip addrs. PODs from different nodes communicate through node route table.
+***
 [root@k8s-master|/root/yamls]# kubectl get namespace
 NAME                   STATUS   AGE
 default                Active   27h

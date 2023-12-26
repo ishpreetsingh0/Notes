@@ -237,10 +237,15 @@ Networking Plugins option in AKS:
 azure cli to do this: 
 >>az group create --name rg-aks-cni --location westeurope
 >>az aks create -g rg-aks-cni -n aks-cni --network-plugin kubenet
+
 (2)Azure CNI - advance networking . it is dynamic ip allocation, and overlay mode. every pod get ip from subnet and can be accessed directly. IP addr must be unique accross the n/w space and must be planned in adv. each node has configuration parameter to define how many pods it can hold. the equivalent no. of ip addr per node are then reversed up front for that node. this needs more planning and might get ip addrs exaustation(can be solved Azure CNI overlay) or need to rebuild clusters as demand grow. PODs IPs are from subnet. no POD cidr=null, there is service CIDR that is different from subnet CIDR.CIDR/24-> max 8 node and 30 pods per node max. 
 azure cli to do this: 
 >>az group create --name rg-aks-cni --location westeurope
 >>az aks create -g rg-aks-cni -n aks-cni --network-plugin azure
+CNI overlay: only cluster nodes are assigned ips from subnet. pods recieve ips from private CIDR that is provided at time of cluster creation. each node is assigned (ip addr from subnet and /24 from pod-CIDR to assign to its pods). there is no need to provision custom routes on the cluster subnet or use an encapsulation method to route traffic between pods. it promises connectivity performace between pods. endpoints outside the cluster can't connect to a pod directly. max pods per node 250.
+azure cli to do this:
+>>az group create --name rg-aks-cni --location westeurope (az group create -n rg-aks-cni -l westeurope)
+>>az aks create -g rg-aks-cni -n aks-cni --network-plugin azure --network-plugin-mode overlay --pod-cidr 192.168.0.0/16
 (3) Cilium
 (4)BYO- bring your own eg calico CNI
 1 and 2nd are available on portal, but for 3rd and 4th are available during azure cli and terrafrom.

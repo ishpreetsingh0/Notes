@@ -8,7 +8,6 @@ The solution for this is container orchestration.
 
 Container orchestration is about managing the containers lifecycle, mainly for large scale deployments. Some of the popular container orchestration tools are Kubernetes, Docker Swarm, and Apache Mesos. Most of administrators and developers go with container orchestration.
 
-
 Kubernetes is an open source and production-ready container orchestration platform, with accumulated experience of Google, that is combined with best of the ideas from various communities.
 
 The solution for this is Kubernetes and containers. They provide tools that we need to move quickly and along with that it provides high availability. This is accomplished by their features like Immutability,Declarative configuration and self healing capability. 
@@ -21,19 +20,15 @@ To understand this approach better let us take a scenario, Assume there is a tas
 , Infrastructure Abstraction  
 When the applications are built by developers in terms of container images and are deployed in terms of portable Kubernetes APIs, applications transfer between environments is just a matter of sharing declarative configuration.,
 
-
  Decoupling 
 Here in decoupling, the components are separated from each other by service load balancers and defined APIs. Isolation of each part of a system is done by load balancers and APIs.
 Easier scaling of programs in a service is done via load balancers and APIs help in scaling development teams, because APIs between microservices limits the communication overhead between teams., 
 
-
 Self-Healing When kubernetes receives the desired state configuration, it will not match current state to desired state in one go. There will be continuous actions to ensure that desired state is matched. Since the action is taken continuously, if there is system failure it will ensure that it's resolved and desired state is attained. 
  ,
-
  Immutability 
 If we see the traditional software systems they have mutable infrastructure. Here in this case any changes or updates are applied as incremental updates.In case of mutable infrastructure the current state will not be represented as single artifact, it will be represented as accumulation of updates and changes. Here once we make changes or any updates to the system, it becomes very difficult to rollback.
 Now if we consider immutable architecture, here whenever there is a change or  an update a complete new image is built. we are just creating new image and not changing anything in the existing one, so if the change or update is not successful you can always go back to your previous image. , 
-
 
 Container Orchestration
 Container orchestration is about managing the containers lifecycle, mainly for large scale deployments. Some of the popular Container orchestration tools are Kubernetes, Docker Swarm, and Apache Mesos. Most of administrators and developers go with containeWhat is a Deployment?
@@ -49,11 +44,9 @@ If there is a change in Deployment's Pod template, automatically new pods are cr
 Creating Deployments
 Deployments can be created using following commands.
 
-kubectl run
-
-kubectl apply
-
-kubectl create 
+>>kubectl run
+>>kubectl apply
+>>kubectl create 
 
 Kubernetes features that supports automatic management of deployed software’s/applications:
 Self Healing: Kubernetes Restarts the containers that fail, for containers that don't respond to user defined health checks it kills them, when nodes die it replaces and reschedules the container.

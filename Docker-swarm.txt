@@ -1,0 +1,9 @@
+Docker-Swarm
+cluster of docker conatiners are managed by docker swarm.
+manage application to stay up and running.
+In Docker-swarm multiple docker hosts run in swarm mode, some work as master and some work as worker.
+A single machine can work as master as well as worker. Master will remain the state and instruct to maintain number of replicas. 
+Minimum of 3 manager nodes (has election within them to make a leader) the data remain in sync between them by raft consensus algorithm.
+Number of masters are in odd numbers = (n-1)/2  n is number of nodes required.
+Worker node always requires a master node, where as master can work independently. Every workers has an agent installed which tells current state to master.
+Master and worker works with secure communication ie TLS (Transport Layer Security) and Certificate Authority. Worker has a token to communicate with master.

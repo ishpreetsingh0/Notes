@@ -7,3 +7,4 @@ Minimum of 3 manager nodes (has election within them to make a leader) the data 
 Number of masters are in odd numbers = (n-1)/2  n is number of nodes required.
 Worker node always requires a master node, where as master can work independently. Every workers has an agent installed which tells current state to master.
 Master and worker works with secure communication ie TLS (Transport Layer Security) and Certificate Authority. Worker has a token to communicate with master.
+

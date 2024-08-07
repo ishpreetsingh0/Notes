@@ -8,3 +8,17 @@ Number of masters are in odd numbers = (n-1)/2  n is number of nodes required.
 Worker node always requires a master node, where as master can work independently. Every workers has an agent installed which tells current state to master.
 Master and worker works with secure communication ie TLS (Transport Layer Security) and Certificate Authority. Worker has a token to communicate with master.
 
+all nodes should ne in one cluster (Network)
+>>docker should be enable on each node (master and worker)
+>>docker --version
+>>service docker start
+>>service docker status
+>>docker info | head -50 (swarm will be inactive)
+>>docker swarm init (to initialize docker swarm)
+this above command will also provide token command for workers to join.
+>>docker node ls (to check nodes in cluster as worker/master)
+>>docker swarm join-token manager (to add managers to a cluster)
+>>docker swarm join-token worker (to generate new token to add workers)
+>>docker swarm leave (to come out of cluster)
+>>docker info | less (to check status of swarm)
+>>docker node rm -f <nodename> (to remove worker/manager from cluster)

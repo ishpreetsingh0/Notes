@@ -22,3 +22,25 @@ this above command will also provide token command for workers to join.
 >>docker swarm leave (to come out of cluster)
 >>docker info | less (to check status of swarm)
 >>docker node rm -f <nodename> (to remove worker/manager from cluster)
+>>docker node inspect <node name> | less (details of node)
+>>docker node promote <node name> (to promote node to master *managers are in odd numbers*)
+>>docker node demote <node name>
+
+>>docker run container run -it alpine 192.168.25.10 (eg to run a container and get ping on one node cluster but below is for swarm)
+>>docker service (on master run commands only)
+>>watch docker container ls (to see running container state after 2 sec)
+>>docker service create -d alpine ping <master ip>
+>>docker service ls
+>>docker service inspect <service id> | less
+>>docker service logs <service id>
+>>docker service create -d --replicas 4 alpine (4 number of containers will be created in this service, container will be distributed among master and workers)
+>>docker service ps <service id> (will tell you details tasks in service)
+>>docker container rm -f <container id/ first 2 digits of id>
+* DOcker manager maintains desire state of service/containers.
+>>docker service scale <service id>=<number> (to scale up/dowm to desire number)
+>>docker service create -d -p 8090:80 nginx
+*(service can be accessed from all nodes master/worker IP:port)
+
+Docker swarm visualizer : to have better visualization of services and nodes work
+
+>>docker service create mode=global alpine ping 8.8.8.8 (mode global make sure that the service is present on all nodes eg antivirus, monitoring service)

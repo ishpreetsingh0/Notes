@@ -44,3 +44,30 @@ this above command will also provide token command for workers to join.
 Docker swarm visualizer : to have better visualization of services and nodes work
 
 >>docker service create mode=global alpine ping 8.8.8.8 (mode global make sure that the service is present on all nodes eg antivirus, monitoring service)
+>>docker service create --replicas=<number> --constraint="node.role==<worker/manager> alpine ping 8.8.8.8 
+to add label in docker swarm: docker node update --help | grep label (--label-add list)
+>>docker node update --label-add="ssd=true" <nodename>
+>>docker service create --constraint="node.labels.ssd==true" --replicas=3 -d alpine ping <any node IP>
+
+node label vs engine label(at engine level)
+to add a label got to "/etc/docker" dir and create or gor to daemon.json file on node where you want to add label. restart docker service on that.
+>>docker service create --constraint="engine.labels.name==ishpreetnode" --replicas=3 -d alpine ping 8.8.8.8
+Node availability (active/drain/pause)
+Active: the worker node is ready to take work from manager.
+Pause: the worker node already has work on it and it cannot take more work on it.
+Drain: the worker node already has running container and required os patch or some work on it, so it requires work to be shifted to other nodes and thus in drain state.
+>>docker node update --availability=pause <nodename>
+
+*Reserve cpu/memory usage for a container
+--reserve-cpu decimal : Reserves CPUs
+--reserve-memory bytes : Reserves Memory 
+*limit cpu/memory usage 
+--limit-cpu decimal : Limit CPUs
+--limit-memory bytes : Limit Memory
+*Update 
+--update-delay duration : Delay between updates (ns|us|ms|s|m|h) (default 0s)
+--update-failure-action string : Action on update failure (default='pause', 'continue', 'rollback')
+--update-max-failure-ratio float : Failure rate to tolerate during an update (default=0)
+--update-monitor duration : Duration after each task update to monitor (ns|us|ms|s|m|h) (default 5s)
+--update-order string : Update order ('start-first', 'stop-first') default=stop-first
+--update-parallelism unit : Maximum number of task updated simultaneously  (0 to update all task at once) default=1

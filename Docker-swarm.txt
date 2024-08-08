@@ -75,4 +75,16 @@ Drain: the worker node already has running container and required os patch or so
 Docker Secret
 >>docker secret create dbpass - 
 (provide input and press Enter and Ctrl+D)
+>>docker secret ls
+>>docker secret inspect
+>>docker secret create <secret name> <file name> (you can create you secret based on file like ssh key/db password/tsl certificates/API keys)
+>>docker service create -d  --secret <secret name> alpine ping 8.8.8.8
+in running container the secret is store in "/run/secret/<secret name>"
+>>docker service create -d --secret <secret name> -e MYSQL_ROOT_PASSWORD_FILE=/run/secret/<secret name> mysql
+>>docker container exec -it <container id> bash
+>>mysql -u root -p<secret name>  (to access mysql service inside container)
+
+Overlay Network spreads over Hosts for network and easy access for containers to each other. Overlay network should have enough address space to allocate ip to containers.
+it's a docker network driver (bridge, overlay, host). Overlay doesnot suport windows networking. 
+Ingress network : Docker swarm automatically use ingress network which has in-built load balancer to divide traffic and use same port of host. when we have more replicas of same container this helps for host port to remain same and utilize it. to redirect traffic to required container automatically.
 

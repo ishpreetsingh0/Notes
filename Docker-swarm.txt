@@ -101,3 +101,12 @@ ingress n/w routing
 >> cd /usr/share/nginx/html (add content to index.html)
 to check if really ingress is being used.
 >>docker service create -d --network <name> --replicas <number>  -p 9000:80 <image> (the container will be attached to this n/w as well as ingress n/w automatically by default) 
+---
+docker compose is for single node but we use docker stack for clusters
+>>docker stack deploy -c <yaml file> <stack name>
+deploy: deploy a new stack or update a existing
+ls: list stacks
+ps: list task in stack
+rm: remove one or more stack
+services: list the services in stack
+---

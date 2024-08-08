@@ -87,4 +87,17 @@ in running container the secret is store in "/run/secret/<secret name>"
 Overlay Network spreads over Hosts for network and easy access for containers to each other. Overlay network should have enough address space to allocate ip to containers.
 it's a docker network driver (bridge, overlay, host). Overlay doesnot suport windows networking. 
 Ingress network : Docker swarm automatically use ingress network which has in-built load balancer to divide traffic and use same port of host. when we have more replicas of same container this helps for host port to remain same and utilize it. to redirect traffic to required container automatically.
-A docker bridge network is connected to every container which is connected to overlay network
+A docker bridge network is connected to every container which is connected to overlay network. *by default bridge and overlay (ingress) are created*
+>>docker network create -d overlay <name>
+>>docker service create -d --network <name> <image> 
+>>docker network create -d overlay --attachable <name> (to create a network on master)
+>>docker container run -d --network=<name> <image> (to create a container on worker node and attached to a network)
+eth0 is connected to overlay n/w
+eth1 is connected to bridge n/w (gw bridge)
+---
+ingress n/w routing
+>>docker service create -d --replicas 2 -p 9000:80 nginx (by default ingress)
+>>docker container exec -it <container id> bash
+>> cd /usr/share/nginx/html (add content to index.html)
+to check if really ingress is being used.
+>>docker service create -d --network <name> --replicas <number>  -p 9000:80 <image> (the container will be attached to this n/w as well as ingress n/w automatically by default) 

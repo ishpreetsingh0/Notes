@@ -71,3 +71,8 @@ Drain: the worker node already has running container and required os patch or so
 --update-monitor duration : Duration after each task update to monitor (ns|us|ms|s|m|h) (default 5s)
 --update-order string : Update order ('start-first', 'stop-first') default=stop-first
 --update-parallelism unit : Maximum number of task updated simultaneously  (0 to update all task at once) default=1
+
+Docker Secret
+>>docker secret create dbpass - 
+(provide input and press Enter and Ctrl+D)
+

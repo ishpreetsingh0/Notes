@@ -110,3 +110,7 @@ ps: list task in stack
 rm: remove one or more stack
 services: list the services in stack
 ---
+>>docker events
+>>docker events since '<date time>'untill '<date time>'
+>>docker events --filter 'event=create'
+>>docker events --filter 'container=<container id>'

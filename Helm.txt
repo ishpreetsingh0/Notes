@@ -15,3 +15,10 @@ Charts : Helm uses a packaging format called charts. A chart is a collection of 
 >>helm repo add bitnami https://charts.bitnami.com/bitnami
 >>helm install <name> bitnami/mysql (here name can be sql)
 >>helm uninstall mysql (to remove this completely)
+
+>>helm show values <name/chartname>
+>>helm show values <name/chartname> | grep -i password
+**we can provide custom values during installation(--set)** or **helm upgrade <name/chartname> (--set)**
+to access the value parent.child=<value> eg: --set grafana.adminPassword=admin
+>>kubectl edit svc monitoring-grafana(type: NodePort, nodePort: 30001) to get it access from external
+>>helm upgrade monitoring prom-repo/kube-prometheus-stack --set grafana.adimPassword=admin --set grafana.service.type=NodePort (or update helm chart yaml file directly and refer --values=<file>.yaml)

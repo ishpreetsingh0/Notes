@@ -1,6 +1,7 @@
 HELM
 (>>minikube delete && minikube start, >>kubectl get po --all-namespaces ,download helm.exe )
 
+>>helm version
 package manager for yaml file(kubernetes) and distributing them into public/private repo.
 database app, monitoring apps(ELK stack), 
 helm can have a common blue print of yml file (template file: which can take values from external configuration[.Values.conatiner.name])

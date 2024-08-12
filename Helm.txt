@@ -1,4 +1,5 @@
 HELM
+(>>minikube delete && minikube start, >>kubectl get po --all-namespaces ,download helm.exe )
 
 package manager for yaml file(kubernetes) and distributing them into public/private repo.
 database app, monitoring apps(ELK stack), 
@@ -24,3 +25,7 @@ to access the value parent.child=<value> eg: --set grafana.adminPassword=admin
 >>helm upgrade monitoring prom-repo/kube-prometheus-stack --set grafana.adimPassword=admin --set grafana.service.type=NodePort (or update helm chart yaml file directly and refer --values=<file>.yaml)
 
 snowflake server: a server on which people can work and install services on it. people might forget things which all installations have been done. this requires regulary upgrades to get compliant/vulnerability. to avoid this use PHOENIX SERVER a server which is configure entirely by some scripting mechanism a configuration management tool is used to implement this. 
+
+>>helm pull <repo/chartname> (download the repo/chart but not install it)
+>>helm pull --help
+you can download repo to install it later and thw folder will have values.yaml file for reference make a new <file>.yaml later and upgrade helm accordingly.

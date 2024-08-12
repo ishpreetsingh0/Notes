@@ -1381,7 +1381,7 @@ Example 2:
 Now, if wish to generate the yaml configuration file alone for deployment without creating it, use the below two options in combination to generate a resource definition file quickly, then modify and create resources as required, instead of creating the files from scratch.
 
 --dry-run By default as soon as the command is run, the resource will be created. If you simply want to test your command, then use the --dry-run option. This will not create the resource, instead, tell you whether the resource can be created and if your command is right
--o yaml This will output the resource definition in YAML format on screen
+-o yaml This will output the resource definition in YAML format on screen (kubectl create deployment --image=nginx nginx --dry-run=client -o yaml)
 Below command shows the yaml configuration file for deployment on the screen.
 
 [root@k8s-master|/root/yaml]# kubectl create deployment --image=nginx ngix-dev-deploy --dry-run -o yaml

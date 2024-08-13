@@ -52,6 +52,29 @@ to refer values use
 {{ .Values.<name>.<variable name> }} 
 name is name in template
 
+Function : {{ function .Values.<name> }} check template function list in helm. {{ default "value" .Values.<name> }} . lower, upper etc are some fucntions
+pipeline function: is used to pass multiple value options in a single line. {{ .Values.dockerreponame | default "ISHPREET" | upper }}
+{{ if eq .Values.environment "dev"}}-dev{{ end }} in value.yaml use to refer this value as environment: dev
+{{ if eq .Values.development true}}-dev{{ else }}-prod{{ end }} in value.yaml use to refer this value as development true/false
+
+Named Templates
+define named templates in one file, and then use them elsewhere. A named template (sometimes called a partial or a subtemplate) is simply a template defined inside of a file, and given a name.
+start a file name with _ (underscore) eg _sample.tpl (.tpl is used as extention of these files ie template)
+{{- define "mychart.labels" }}
+  labels:
+    generator: helm
+    date: {{ now | htmlDate }}
+{{- end }}
+to used above refer vaules use include or template(are global) in configuration yaml files. to use it {{- template "mychart.labels" . }}
+
+{{- define "mychart.app" -}}
+app_name: {{ .Chart.Name }}
+app_version: "{{ .Chart.Version }}"
+{{- end -}}
+to use include in main config file use {{- include ""mychart.labels" . | indent <numeric value for spaces eg 6> }}  
+
+under metadata name, use belo notation to add release name before using helm install
+{{ .Release.Name }}-<name>
 Semantic Versioning 2.0.0
 MAJOR.MINOR.PATCH, increment the:
 MAJOR version when you make incompatible API changes

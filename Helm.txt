@@ -23,6 +23,7 @@ Charts : Helm uses a packaging format called charts. A chart is a collection of 
 **we can provide custom values during installation(--set)** or **helm upgrade <name/chartname> (--set)**
 to access the value parent.child=<value> eg: --set grafana.adminPassword=admin
 >>kubectl edit svc monitoring-grafana(type: NodePort, nodePort: 30001) to get it access from external
+>>minikube ip (use this ip:30001 to access grafana dashboard)
 >>helm upgrade monitoring prom-repo/kube-prometheus-stack --set grafana.adimPassword=admin --set grafana.service.type=NodePort (or update helm chart yaml file directly and refer --values=<file>.yaml)
 
 snowflake server: a server on which people can work and install services on it. people might forget things which all installations have been done. this requires regulary upgrades to get compliant/vulnerability. to avoid this use PHOENIX SERVER a server which is configure entirely by some scripting mechanism a configuration management tool is used to implement this. 
@@ -30,3 +31,30 @@ snowflake server: a server on which people can work and install services on it. 
 >>helm pull <repo/chartname> (download the repo/chart but not install it)
 >>helm pull --help
 you can download repo to install it later and thw folder will have values.yaml file for reference make a new <file>.yaml later and upgrade helm accordingly.
+
+Generate yaml file from helm charts for easy deployment
+>>helm template monitoring ./kube-prometheus-stack/ --values =./kube-prometheus-stack/myvalues.yaml > monitoring-stack.yaml
+>>kubectl apply -f monitoring-stack.yaml
+
+yaml files are static in nature, most projects required dynamic yaml files to work with.
+
+if you create a empty helm chart by
+>>helm create ishpreet (it will contains chart.yaml , charts , templates , values.yaml)
+ishpreet is a template and to upgrade it
+>>helm template .  (will give you output of yaml file in console from template folder)
+multiple yaml files in template folder are input files for a text processer
+GO is used to implement helm charts. use {{values}} this in yaml templates to be recognize by go.
+eg:
+hello:
+  world: {{ printf "true" }}
+
+to refer values use
+{{ .Values.<name>.<variable name> }} 
+name is name in template
+
+Semantic Versioning 2.0.0
+MAJOR.MINOR.PATCH, increment the:
+MAJOR version when you make incompatible API changes
+MINOR version when you add functionality in a backward compatible manner
+PATCH version when you make backward compatible bug fixes
+Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.

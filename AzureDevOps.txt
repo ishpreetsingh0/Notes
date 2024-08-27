@@ -20,3 +20,41 @@ code - steps - artifact  	test - staging - production
 
 ---
 sample file for ci-cd
+---
+Azure pipelines : Develpo, test and deploy CI/CD workflos that are compatible with any language, platform, and cloud. Automating builds and deployments with pipelines can save time, giving scope for innovation.
+For every pipeline:
+Stage: Each Stage contains one or more jobs. stage can have agent and jobs.
+Job: A stage can contain one or more jobs. Each job runs on agent. It represents an execution boundary of a steps. step can have a script in it to be executed.
+Step: it is the smallest building block of pipeline. which can have tasks.
+Agent and agent pols: an agent is an installable software thatruns one job at a time.
+
+pipeline design methods:
+1. classsic view UI: create and configure pipelines in the azure devops web portal with the classsic user interface editor.
+2. YAML view scripting: edit your azure-pipelines.yml file to define your build.
+
+yaml file are added directly to root of repository. 
+it is case sensitive. 
+spaces are allowed.
+
+block format uses hyoen (-) and space ( ) to begin with new item in specified list.
+- India
+- UK
+- USA
+
+comments can be added by starting with # 
+
+associative arrays are represented by colon (:)
+
+block sequences in collections indicate each enry with a dash and space (- )
+
+example:
+trigger:  (define trigger info manual or automatic)
+- master
+pool:  (Agent info MS/Local)
+  vmImage: ubuntu-latest
+stages:  (Stages is an array )
+- stage: A (Stage is an item)
+  jobs:  (jobs is an array)
+    - job: A  (job is an item)
+      steps: (steps is an array)
+        -script: echo "A" (script is an item)

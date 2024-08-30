@@ -5,6 +5,12 @@ The solution for this is container orchestration.
 Container orchestration is about managing the containers lifecycle, mainly for large scale deployments. Some of the popular container orchestration tools are Kubernetes, Docker Swarm, and Apache Mesos. Most of administrators and developers go with container orchestration.
 Kubernetes is an open source and production-ready container orchestration platform, with accumulated experience of Google, that is combined with best of the ideas from various communities.
 The solution for this is Kubernetes and containers. They provide tools that we need to move quickly and along with that it provides high availability. This is accomplished by their features like Immutability,Declarative configuration and self healing capability. 
+Kubernetes takes care of following:
+1. Automatic deployemnt of containerized applications accross all servers.
+2. Distrubution of load accross multiple servers.
+3. Auto scaling of deployed applications.
+4. Monitoring and health check of containers.
+5. Replacement of failed containers.
 Declarative configuration (Declarative configuration) 
  Imperative configuration, here the desired state of the system is achieved by executing a series of instructions. Imperative commands define the action.
 In case of declarative configuration there is declaration of desired state. Basically in declarative configuration we define desired state.
@@ -14,7 +20,6 @@ Declarative
 This method is recommended for production infrastructure and is commonly used in CI/CD pipelines and Helm charts. Declarative methods are useful for reproducible deployments and version-controlled configurations. They're also a key strength of Kubernetes because they allow the use of Git pull requests to manage infrastructure provisioning and software deployment. 
 Imperative
 This method is good for learning and interactive experiments, and is commonly used to create YAML manifests and objects on the go. Imperative commands allow for easy ad-hoc management. 
-
 
 , Infrastructure Abstraction  
 When the applications are built by developers in terms of container images and are deployed in terms of portable Kubernetes APIs, applications transfer between environments is just a matter of sharing declarative configuration.,
@@ -37,12 +42,10 @@ Kubernetes Deployments:
 Containerized applications can be deployed on top of Kubernetes cluster, we have to create a Kubernetes Deployment configuration for that. How to create and update instances of the application are instructed by Deployment. Once the deployment is created, Kubernetes schedules the application that are in the deployment and these applications run on individual nodes. Kubernetes Deployment controller manages Deployments. Deployments uses pod template.
 
 Pod template will have specification for the pods and it determines how the pod should look like, what application should run inside the containers and much more.
-
 If there is a change in Deployment's Pod template, automatically new pods are created one at a time.
 
 Creating Deployments
 Deployments can be created using following commands.
-
 >>kubectl run
 >>kubectl apply
 >>kubectl create 

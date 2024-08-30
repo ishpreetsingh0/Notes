@@ -1,17 +1,10 @@
 KUBERNETES
-
 As more and more number of applications move to cloud, the architecture and distributions of these applications evolve. This requires a proper set of tools and skills to manage them. Managing micro-services across virtual machines and each of them having multiple containers will become complicated quickly.
-
 How do we reduce this complexity?
-
 The solution for this is container orchestration.
-
 Container orchestration is about managing the containers lifecycle, mainly for large scale deployments. Some of the popular container orchestration tools are Kubernetes, Docker Swarm, and Apache Mesos. Most of administrators and developers go with container orchestration.
-
 Kubernetes is an open source and production-ready container orchestration platform, with accumulated experience of Google, that is combined with best of the ideas from various communities.
-
 The solution for this is Kubernetes and containers. They provide tools that we need to move quickly and along with that it provides high availability. This is accomplished by their features like Immutability,Declarative configuration and self healing capability. 
-
 Declarative configuration (Declarative configuration) 
  Imperative configuration, here the desired state of the system is achieved by executing a series of instructions. Imperative commands define the action.
 In case of declarative configuration there is declaration of desired state. Basically in declarative configuration we define desired state.

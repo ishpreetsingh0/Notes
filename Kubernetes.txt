@@ -40,9 +40,10 @@ Deployments represents a set of multiple pods that are identical,with no unique 
 
 Kubernetes Deployments:
 Containerized applications can be deployed on top of Kubernetes cluster, we have to create a Kubernetes Deployment configuration for that. How to create and update instances of the application are instructed by Deployment. Once the deployment is created, Kubernetes schedules the application that are in the deployment and these applications run on individual nodes. Kubernetes Deployment controller manages Deployments. Deployments uses pod template.
+kubernetes cluster consists of nodes, nodes can be a server (bare metal/ virtual). Node consists pods. Pod can have conatiner/containers ,shared ip address, volumes. one container per pod is most common used case senario. 
 
 Pod template will have specification for the pods and it determines how the pod should look like, what application should run inside the containers and much more.
-If there is a change in Deployment's Pod template, automatically new pods are created one at a time.
+If there is a change in Deployment's Pod template, automatically new pods are created one at a time. 
 
 Creating Deployments
 Deployments can be created using following commands.
@@ -99,6 +100,7 @@ runhcs is a fork of runC created by Microsoft and used on Windows to run Windows
 (b)Podman was built by Red Hat to offer a more secure model than Docker’s original implementation. Podman (along with Buildah and Skopeo) aims to provide the same high-quality developer experience as the Docker toolset. Unlike Docker, Podman does not require a daemon and allows users to run containers without root privileges.
 (c)CRI-O is a purpose-built runtime that is designed to adhere to the Kubernetes CRI (Container Runtime Interface) specification. It receives the CRI requests and can communicate with any OCI-compliant runtime (like runC).
 
+All containers inside a pod share namespaces of that pod. like volumes and network IP address. 
 --------------------------------------------------------------------------------
 
 Kubernetes has just five basic components:
@@ -109,7 +111,9 @@ Three Master Components :
 Two Node Components :
 (1)Kubelet
 (2)Proxy
-The Master Node's
+common services for master and worker node(kubelet, kube-proxy and container runtime).
+master only (API server), worker ()
+The Master Node's 
 The Kubernetes logic is a collection of services:
 The API server (our point of entry to everything!)
 Core services like the scheduler and controller manager
@@ -130,7 +134,7 @@ It is always recommended to not run applications on the node's that run master c
 4 components of control plane nodes are: controller manager,API Server, ETCD and Scheduler.
 ***
 What do kubernetes components do?
-API Server
+*API Server (main point of communication between different nodes. )
 It provides a forward facing REST interface into the kubernetes control plane and datastore.
 Interaction of kubernetes with all  the clients and other applications is strictly through the API Server.
 Four APIs are exposed through API server:
@@ -142,14 +146,15 @@ These components are used for communicating with the Kubernetes cluster and for 
 The API Server is the only component that connects to etcd server.
 Every other component to work with cluster state or access, must go through the API Server.
 It handles authentication and authorization, admission control, mutation and request validation in addition it acts as front-end to the backing data store. It is like a gatekeeper to the cluster.
-Scheduler
+*Scheduler (planning and distribution of load between nodes in cluster)
 The responsibility of Scheduler is to monitor the resource utilization of each node and scheduling the containers according to resource availability.
 Default scheduler uses bin packing.
 Requirements can include: general hardware requirements, labels, affinity/anti-affinity, and various other custom resource requirements.
-Controller Manager
+*KUBECTL : API server uses kubectl (a CLI) which allows you to connect to specific k8s cluster and manage it remotely. uses REST API service to connect to kubernetes API server of master node. Uses https for this. 
+*Controller Manager (controls everything in k8s cluster and controls what happens on each node in cluster)
 Serves as the primary daemon which manages all the core component control loops.
 Through the API server, it monitors the current state of the applications  that are deployed on Kubernetes and it makes sure that desired state is met.
-etcd
+*etcd (stores locks related operations as key-value pairs)
 Its a distributed, consistent key-value store and released as an open source by CoreOS.
 Its used for:
 Configuration management,
@@ -157,7 +162,7 @@ service discovery
 coordinating distributed work
 Kubernetes uses etcd as the persistence storage of all of its API objects (what nodes exist in the cluster, what pods should be running, which nodes they are running on, etc).
 Etcd implements a watch feature, it provides an event-based interface for monitoring changes to keys asynchronously. Through these systems clients are allowed to perform a lightweight subscription for the changes to parts of the key namespace. Once a key is changed, “watchers” get notified immediately. In the context of Kubernetes, this is a crucial feature as the API Server component relies heavily on this to get notified and calls the appropriate business logic components in order to move the current state towards the desired state.
-Kubelet
+*Kubelet
 It Acts as the node agent  and manages the lifecycle of every pod on its host.
 It uses of the pod specification in order to create containers and manage them.
 Kubelet understands YAML container manifests which it can read from several sources:
@@ -165,7 +170,7 @@ File path
 HTTP Endpoint
 etcd watch acting on any changes
 HTTP Server mode accepting container manifests over a simple API.
-Kube-proxy
+*Kube-proxy (for network communication inside and between nodes)
 It runs in each node and manages the network rules on each node.
 Performs load balancing or connection forwarding for Kubernetes cluster services.
 It uses proxy modes rules for doing simple load balancing, TCP, UDP stream forwarding and round robin TCP, UDP forwarding.
@@ -174,7 +179,7 @@ Userspace
 Iptables
 IP Virtual Server  (ipvs) - default if supported
 
-What is Etcd?
+*What is Etcd?
 Etcd is an open-source distributed key-value store.
 For many of the distributed systems it serves as the backbone. It is used to store and manage the critical information that is needed to keep distributed systems running. Prominently it manages the configuration data, metadata and state data.
 Containerized environments have complex data management requirements, as we scaleup the complexity increases further more. Kubernetes makes the process simple by coordinating tasks such as configuration, load balancing, health monitoring, deployment, service discovery and job scheduling across cluster. In order to achieve this coordination, there is a need of data store that provides the  true status of the system, clusters, pods and all the application instances that are within them at any given point of time. Etcd is the data store that fulfills this requirement.

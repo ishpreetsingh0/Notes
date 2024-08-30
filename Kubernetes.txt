@@ -16,6 +16,12 @@ Declarative configuration (Declarative configuration)
  Imperative configuration, here the desired state of the system is achieved by executing a series of instructions. Imperative commands define the action.
 In case of declarative configuration there is declaration of desired state. Basically in declarative configuration we define desired state.
 To understand this approach better let us take a scenario, Assume there is a task of creating two replicas of an application. If we go by Imperative configuration, it would say "run app1, run app2" whereas Declarative configuration would be "replicas=2".
+Both imperative and declarative methods are used in Kubernetes, and the best method to use depends on the situation: 
+Declarative
+This method is recommended for production infrastructure and is commonly used in CI/CD pipelines and Helm charts. Declarative methods are useful for reproducible deployments and version-controlled configurations. They're also a key strength of Kubernetes because they allow the use of Git pull requests to manage infrastructure provisioning and software deployment. 
+Imperative
+This method is good for learning and interactive experiments, and is commonly used to create YAML manifests and objects on the go. Imperative commands allow for easy ad-hoc management. 
+
 
 , Infrastructure Abstraction  
 When the applications are built by developers in terms of container images and are deployed in terms of portable Kubernetes APIs, applications transfer between environments is just a matter of sharing declarative configuration.,

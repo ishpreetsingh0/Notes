@@ -226,7 +226,14 @@ Kubernetes Nodes – Masters and Nodes (after K8S install)
 Kubernetes Cluster Capacity is basically summation  of capacity of each worker-node in Kubernetes cluster. 
 Kubernetes High Level Architecture: 10000 Feet:
 Here we can see that request will come to Kubernetes cluster through API calls/CLI/UI from end user. Based on the requests, API will store the user data and other details in the form of key-value pair in ETCD database in master and based on the resource availability in the nodes, scheduler will schedule the pods in appropriate nodes according to information received from API . Controller manager will make sure the desired amount of pods is up, that is it matches desired state to current state. Kubelet (node agent) ensures the containers described in the PodSpecs are running and healthy in the nodes.
- 
+
+*
+to get inside a minikube (--driver=virtualbox)
+ssh docker@<minikubeip>
+username:docker
+pswd:tcuser
+
+*
 Q/A
 Which of the following are Kubernetes node components?
 Kubelet (Its an node agent.)

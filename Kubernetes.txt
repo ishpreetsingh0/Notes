@@ -232,7 +232,7 @@ to get inside a minikube (--driver=virtualbox)
 ssh docker@<minikubeip>
 username:docker
 pswd:tcuser
-
+>>kubectl cluster-info (information of cluster)
 *
 Q/A
 Which of the following are Kubernetes node components?

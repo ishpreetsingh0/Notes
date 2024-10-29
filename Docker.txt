@@ -1247,3 +1247,10 @@ Docker volumes continue to stay even if the container gets removed.
 
 Docker is responsible for logging, monitoring, and backup of the volumes.
 
+Non - Persistent volume : when you create any file in docker container, this file/data will remain there even if you stop the container but if you delete/remove the container the file/data will be lost. below is path.
+/var/lib/docker/overlay2/<container unique id>
+
+Restart policy
+1. always : simplest, when container stops-start it again (--restart always)
+2. unless-stopped : 
+3. on-failed

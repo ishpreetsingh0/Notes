@@ -1,0 +1,14 @@
+powershell cmds
+az login
+Get-AzSubscription
+to set a subscription:>> az account set --subscription "<name>"
+to list all RG in a subscription:>>az group list --output table 
+to set a resource group:>>az config set defaults.group=<RG name>
+to initiate an empty list>>$List_demo = @()
+
+to work with for loop
+foreach ($items in $List_demo){
+echo $items}
+
+az resource list -g <RG name> --subscription <Subscription name> --query '[].{Name: name,Type: type}' -o json | ConvertFrom-Json | Export-Csv -Path .\<name>.csv
+az resource list -g <RG name> --subscription <Subscription name> --query '[].{Name: name,Type: type}' -o json | ConvertFrom-Json | Out-File -FilePath .\<name>.txt

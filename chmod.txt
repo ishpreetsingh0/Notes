@@ -1,0 +1,41 @@
+The chmod (change mode) command in Unix/Linux is used to change the permissions of files or directories. These permissions determine who can read, write, or execute the file.
+🔐 Basic Permission Types:
+r – Read (4)
+w – Write (2)
+x – Execute (1)
+
+🧑‍🤝‍🧑 Three Types of Users:
+Owner (u) – the user who owns the file
+Group (g) – users who are in the file's group
+Others (o) – everyone else
+
+📌 Numeric (Octal) Mode
+Each permission level gets a number:
+r = 4
+w = 2
+x = 1
+  
+You add them to get a total:
+7 = rwx
+6 = rw-
+5 = r-x
+4 = r--
+0 = ---
+  
+Ex: 
+>>chmod 755 filename
+Breakdown:
+7 (owner) = rwx
+5 (group) = r-x
+5 (others) = r-x
+
+✍️ Symbolic Mode
+You can also use letters and operators:
+chmod u+x filename   # Add execute permission to user
+chmod go-r filename  # Remove read permission from group and others
+chmod u=rw filename  # Set user permissions to read and write only
+
+🔄 Recursive Permissions
+To apply permissions to all files and subdirectories:
+chmod -R 755 myfolder/
+

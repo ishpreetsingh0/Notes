@@ -1,4 +1,4 @@
-HELM
+HELM : package manager for kubernetes
 A Helm chart is a package format used by Helm, the package manager for Kubernetes. It helps you define, install, and manage Kubernetes applications in a consistent and repeatable way.
 
 (>>minikube delete && minikube start, >>kubectl get po --all-namespaces ,download helm.exe )

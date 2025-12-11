@@ -3567,3 +3567,5 @@ kubectl create -f rc-rc.yaml
 kubectl get rc
 kuberctl scale --replicas=3 rc/rcex replicationcontroller "rcex" scaled
 kubectl get pods -l app=sise -o wide -w
+
+kubectl port-forward service/<service-name> -n <namespace> <local-port>:<service-port>

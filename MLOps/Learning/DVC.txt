@@ -39,7 +39,16 @@ Commands.
 <wine-sample>.csv.dvc (.dvc)file is created which holds the meta data of actual csv files. This .dvc file is uploaded to git repo. 
 And actual sample data is stored in remote storage.
 
+>>dvc add <wine-sample>.csv
+  When ever you have changed the .csv file you need to run >>dvc add file-name. This will update the .dvc file for updated csv file,   which can later pushed to git repo.
 
+To Push remote storage (S3):
+1. Create a s3 bucket.
+2. Add this remote bucket. 
+  >>aws configure ( to add s3 to push dataset)
+  >>python3 -m pip install dvc_s3 (a dependency for s3)
+  >>dvc add -d wineremote s3://<name of s3 bucket>
+  >>dvc push
 
 
 

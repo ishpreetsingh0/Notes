@@ -3,7 +3,7 @@ Data Version Control (DVC) [s3, Blog, GCP storage]
   2. Verioning
   3. Cheap
   4. Durable
-Data Versioning : [.dvc file and dvc config created when dvc commands runs] These two files are pointed to the actual dataset which is stored in Cloud storage.
+Data Versioning : [.dvc file and dvc config (.dvc/config) created when dvc commands runs] These two files are pointed to the actual dataset which is stored in Cloud storage.
 We cannot use GIT for Data Versioning because:
   1. Large size (GB, or more ~TB).
   2. Slow on large files.
@@ -14,7 +14,7 @@ GIT hosts:
   1. python scripts
   2. api scripts
   3. .dvc file
-  4. dvc config
+  4. dvc config (.dvc/config)
 
 CSV files are stored in remote location or storage.
 Feature Engineering is done on CSV files.
@@ -35,7 +35,7 @@ Commands.
 >>python3 -m pip install dvc
 >>git init
 >>dvc init
-
+>>vim .dvc/config ( Holds your data for remote cloud storage)
 <wine-sample>.csv.dvc (.dvc)file is created which holds the meta data of actual csv files. This .dvc file is uploaded to git repo. 
 And actual sample data is stored in remote storage. .dvc file is created (e.g., data.csv.dvc) that acts as a pointer to the cached data, containing a unique MD5 hash (checksum) of the data file's content.
 

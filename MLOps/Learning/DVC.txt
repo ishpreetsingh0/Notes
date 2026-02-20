@@ -30,7 +30,7 @@ Commands.
   2. dvc push
   3. dvc pull
 
-
+(Pyhton is a pr-requiste for this)
 >>python3 -m venv .venv
 >>python3 -m pip install dvc
 >>git init

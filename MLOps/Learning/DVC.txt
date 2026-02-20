@@ -1,0 +1,16 @@
+Data Version Control (DVC)
+Data Versioning
+We cannot use GIT for Data Versioning because:
+  1. Large size (GB, or more ~TB).
+  2. Slow on large files.
+  3. Cost inefficient for ORG.
+
+CSV files are stored in remote location or storage.
+Feature Engineering is done on CSV files.
+
+For a Data Scientist:
+1. Data
+2. Algorithm and Training Process.
+  Python Scripts (Stored in GIT repo) by DS or ML Engg: for Auditing, Versioning, RBAC for control.
+  GIT implemnent Versiong for above scripts.
+  

@@ -1,16 +1,24 @@
-Data Version Control (DVC)
+Data Version Control (DVC) [s3, Blog, GCP storage]
+  1. Large Files
+  2. Verioning
+  3. Cheap
+  4. Durable
 Data Versioning
 We cannot use GIT for Data Versioning because:
   1. Large size (GB, or more ~TB).
   2. Slow on large files.
   3. Cost inefficient for ORG.
+  If we use GIT for this, GIT hosted on a VM will use local storage of that VM. Large files on GIT ie on local Disc, which is not      cost effective.
 
 CSV files are stored in remote location or storage.
 Feature Engineering is done on CSV files.
 
 For a Data Scientist:
-1. Data
+1. Data (DVC) : An S3 bucket, Azure Blob or GCP storage. Remote cloud storage.
 2. Algorithm and Training Process.
   Python Scripts (Stored in GIT repo) by DS or ML Engg: for Auditing, Versioning, RBAC for control.
   GIT implemnent Versiong for above scripts.
-  
+
+Commands.
+
+

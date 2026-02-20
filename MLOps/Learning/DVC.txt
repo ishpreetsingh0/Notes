@@ -30,10 +30,11 @@ Commands.
   2. dvc push
   3. dvc pull
 
+
+>>python3 -m venv .venv
+>>python3 -m pip install dvc
 >>git init
 >>dvc init
->>python3 -m venv .venv
-
 
 
 

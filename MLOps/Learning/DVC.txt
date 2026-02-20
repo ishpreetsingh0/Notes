@@ -30,4 +30,13 @@ Commands.
   2. dvc push
   3. dvc pull
 
+>>git init
+>>dvc init
+>>python3 -m venv .venv
 
+
+
+
+
+
+Feature engineering is the process of using domain knowledge to extract, transform, and select relevant variables (features) from raw data to improve machine learning model performance. It involves techniques like handling missing values, encoding categorical data, scaling numerical data, and creating new features to better represent the underlying patterns.

@@ -1,0 +1,31 @@
+For Example a wine prediction model having an accuracy for 85%.
+For this various experiments have to be conducted with different different models.
+
+Experiment tracking is the process of recording and managing all details of ML experiments such as:
+-Model parameters (hyperparameters)
+-Training data version
+-Code version
+-Metrics (accuracy, loss, F1-score, etc.)
+-Model artifacts (saved models)
+-Environment details
+
+
+1. Random Forest (csv file)(on Windows) -> Model -> 67% (example)
+2. Logistic regression -> Model -> 79%
+3. XGBoost (on linux) -> Model -> 89%
+.
+.
+.
+.
+25th Experiment -> Model -> 81%
+
+
+📌 What Do We Track?
+Category:	Examples
+Parameters:	Learning rate, batch size, epochs
+Metrics:	Accuracy, Precision, Recall, RMSE
+Artifacts:	Model file (.pkl, .pt), plots
+Code version:	Git commit ID
+Data version:	Dataset v1, v2
+Environment:	Python version, library versions
+System Information: Linux, Windows

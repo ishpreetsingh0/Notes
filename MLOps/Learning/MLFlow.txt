@@ -1,0 +1,116 @@
+MLflow is an open-source platform for managing the complete Machine Learning lifecycle.
+MLflow is an open-source platform that manages the end-to-end machine learning lifecycle including experiment tracking, model packaging, model registry, and deployment.
+It provides experiment tracking, reproducibility, framework independence, model versioning, and easy deployment capabilities.
+
+It helps data scientists and ML engineers to:
+-Track experiments
+-Package ML code
+-Manage and version models
+-Deploy models to different environments
+Think of it like “Git + Jenkins + Docker + Model Registry” for Machine Learning.”
+
+MLflow has 4 major components:
+1️⃣ MLflow Tracking
+Logs parameters (learning rate, batch size)
+Logs metrics (accuracy, loss)
+Stores artifacts (models, plots)
+Tracks multiple experiment runs
+👉 Helps compare different model runs.
+2️⃣ MLflow Projects
+Packages ML code in a reusable format
+Ensures reproducibility
+Defines dependencies using Conda or Docker
+3️⃣ MLflow Models
+Standard format to save models
+Supports multiple frameworks (Sklearn, PyTorch, TensorFlow)
+Easy deployment
+4️⃣ MLflow Model Registry
+Central repository for models
+Version control for models
+Supports stages:
+Staging
+Production
+Archived
+🚀 Advantages of MLflow
+✅ 1. Experiment Tracking
+You can track:
+-Hyperparameters
+-Metrics
+
+Model artifacts
+
+Code version
+
+No more confusion like:
+
+“Which model gave 95% accuracy?”
+
+✅ 2. Reproducibility
+
+Tracks environment and dependencies
+
+Ensures same results when re-running experiment
+
+✅ 3. Framework Agnostic
+
+Works with:
+
+Scikit-learn
+
+PyTorch
+
+TensorFlow
+
+XGBoost
+
+And many others
+
+Not tied to a single ML framework.
+
+✅ 4. Model Versioning
+
+Each model version is stored
+
+Can rollback to older version
+
+Supports approval workflow
+
+✅ 5. Easy Deployment
+
+Models can be deployed to:
+
+Local server
+
+Docker
+
+REST API
+
+Cloud platforms like Azure Machine Learning
+
+✅ 6. Open Source & Lightweight
+
+Free to use
+
+Easy setup
+
+Can run locally or on cloud
+
+🏢 Industry Use Case
+
+Imagine you train 10 models with different learning rates.
+
+Without MLflow:
+
+Results stored in notebooks
+
+Hard to compare
+
+No model version control
+
+With MLflow:
+
+All runs visible in UI
+
+Best model automatically registered
+
+CI/CD pipeline can promote model to production

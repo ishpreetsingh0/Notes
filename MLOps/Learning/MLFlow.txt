@@ -85,3 +85,10 @@ Local hands-on
 >>python3 -m pip install mlflow
 >>mlflow ui --backend-store-uri sqlite:///mlflow.db --port 7006
 default port 5000
+
+On Kubernetes Hands-on
+>>helm repo add community-charts https://community-charts.github.io/helm-charts
+>>helm repo update
+>>helm install mlflow-community community-charts/mlflow
+>>kubectl get pods -w
+>>kubectl port-forward pod/<pod-name-mlflow> 7006:5000 --address 0.0.0.0

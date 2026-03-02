@@ -114,4 +114,5 @@ To connect
 >>::password::
 >>CREATE DATABASE mlflow;
 >>CREATE USER mlflowuser with PASSWORD '<password>';
->>GRANT ALL PRIVILAGES ON DATABASE mlflow TO mlflowuser;
+>>GRANT ALL PRIVILEGES ON DATABASE mlflow TO mlflowuser;
+>>GRANT ALL PRIVILEGES ON SCHEMA public to mlflowuser;

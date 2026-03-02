@@ -116,3 +116,16 @@ To connect
 >>CREATE USER mlflowuser with PASSWORD '<password>';
 >>GRANT ALL PRIVILEGES ON DATABASE mlflow TO mlflowuser;
 >>GRANT ALL PRIVILEGES ON SCHEMA public to mlflowuser;
+
+on local k8 installation via kind
+>>kind create cluster --name=production_mlflow_setup
+>>kubectl create ns mlflow
+>>helm install mlflow community-charts/mflow \
+--namespace mlflow \
+--set backendStore.databaseMigration=true \
+--set backendStore.postgres.enabled=true \
+--set backendStore.postgres.host=<Connection Endpoint of sql server> \
+--set backendStore.postgres.port=5432 \
+--set backendStore.postgres.database=mlflow \
+--set backendStore.postgres.user=mlflow_user \
+--set backendStore.postgres.password=<mlflow DB password> \

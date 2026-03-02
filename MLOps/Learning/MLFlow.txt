@@ -92,6 +92,26 @@ On Kubernetes Hands-on
 >>helm install mlflow-community community-charts/mlflow
 >>kubectl get pods -w
 >>kubectl port-forward pod/<pod-name-mlflow> 7006:5000 --address 0.0.0.0
+=> above is a stateless architecture which uses SQLiteDB that is running in side same kubernetes pod on which MLFlow server runs.
+
 
 ON Production Server:
-User---------->MLflow Server (On Kubernetes Cluster)---------->PostGre SQL DB
+User---------->MLflow Server (On Kubernetes Cluster)---------->Postgres SQL DB
+=> This is a statefull Architecture.
+-Database is maanged by AWS/Azure.(Robust)
+-other recommended approach  is setting up Postgres SQL as PV (Persistent Volume and Persistent Volume Claims) and PVC for this similar work.
+1. RDS -> Postgres SQL DB
+2. MLFlow DB on Above DB
+3. MLFlow Server on K8s cluster
+4. MLFlow user who has access on above DB and MLFlow Server on K8s cluster.
+Installation
+>>brew install postgresql@14
+>>brew services start postgresql
+>>psql --version
+or >>brew install pql
+To connect
+>>psql -h <Connection endpoint of sql server> -p 5432 -U postgres
+>>::password::
+>>CREATE DATABASE mlflow;
+>>CREATE USER mlflowuser with PASSWORD '<password>';
+>>GRANT ALL PRIVILAGES ON DATABASE mlflow TO mlflowuser;

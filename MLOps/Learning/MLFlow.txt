@@ -92,3 +92,6 @@ On Kubernetes Hands-on
 >>helm install mlflow-community community-charts/mlflow
 >>kubectl get pods -w
 >>kubectl port-forward pod/<pod-name-mlflow> 7006:5000 --address 0.0.0.0
+
+ON Production Server:
+User---------->MLflow Server (On Kubernetes Cluster)---------->PostGre SQL DB

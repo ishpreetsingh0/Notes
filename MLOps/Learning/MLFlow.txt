@@ -130,3 +130,28 @@ on local k8 installation via kind
 --set backendStore.postgres.user=mlflow_user \
 --set backendStore.postgres.password=<mlflow DB password> \
 >>kubectl -n mlflow port-forward pod/<mlflow-pod> 7001:5000 --address 0.0.0.0
+
+connect to mlflow server
+>>python3 -m venv .venv
+>>source .venv/bin/activate
+>>pyhton3 -m pip install mlflow
+>>python3
+  >>>import mlflow
+  >>>mlflow.set_tracking_uri("http://localhost:7006")
+  >>>mlflow.set_experiment("my_first_experiment_mlflow")
+(Train.py is updated with above commands to intergrate mlflow)
+
+Working on a project
+>>python3 -m venv .venv
+>>source .venv/bin/activate
+>>python3 -m pip install dvc
+>>git init
+>>dvc init
+>Clone git Repo
+>>aws configure ( to add s3 to push dataset)
+>>python3 -m pip install dvc_s3
+>>dvc pull
+>Update exisiting train.py
+>Update requirements.txt (for dependencies)
+>>python3 -m pip install -r requirements.txt
+>>python3 train.py

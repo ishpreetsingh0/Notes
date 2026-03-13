@@ -1,0 +1,3 @@
+
+To convert a json document to a bicep configuration file
+>>az bicep decompile --file main.json

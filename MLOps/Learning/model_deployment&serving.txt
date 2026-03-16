@@ -1,0 +1,11 @@
+Model Deployment and Serving
+
+Problem Defenition -> Data Collection -> Data Cleaning -> Feature Engineering ---->----->------>----->--
+                                                                                                        |
+Observe <- Deploying <- Hyper P-Tuning <- Model Evaluation <- Model Training <-  Model Selection <----<-
+
+1. Package the model (.pkl format or containers)
+2. Store the model (Registry) - Multiple versions
+3. Deploy (Vm or K8s pod)
+4. Model Serving (Run time env, Resources-CPU,GPU. , API(ingress,LB,API Gateway,CDN) - Model Server
+5.

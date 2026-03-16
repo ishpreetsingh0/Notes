@@ -8,4 +8,9 @@ Observe <- Deploying <- Hyper P-Tuning <- Model Evaluation <- Model Training <- 
 2. Store the model (Registry) - Multiple versions
 3. Deploy (Vm or K8s pod)
 4. Model Serving (Run time env, Resources-CPU,GPU. , API(ingress,LB,API Gateway,CDN) - Model Server
-5.
+
+Model Deployment Strategy:(DS->Model,Ml->API for model by flask or fast api or a backend service)
+1. VM servers: Artifacts -> Prediction ->  (api/predict) ML engineer sets wsgi, auto scaling, Load balancing in a VPC/V-net.
+2. Kubernetes: Containers -> Pods -> svc -> ingress
+3. Managed MLOps service : Amazon SageMaker (no infra cloud)
+4. KServe : Using K8s (CRDs Custom Resource Defenitions) -> MLOps -> yaml (Canary Model of Deployment.)

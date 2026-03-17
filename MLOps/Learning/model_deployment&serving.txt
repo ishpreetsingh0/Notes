@@ -14,3 +14,29 @@ Model Deployment Strategy:(DS->Model,Ml->API for model by flask or fast api or a
 2. Kubernetes: Containers -> Pods -> svc -> ingress
 3. Managed MLOps service : Amazon SageMaker (no infra cloud)
 4. KServe : Using K8s (CRDs Custom Resource Defenitions) -> MLOps -> yaml (Canary Model of Deployment.)
+
+WSGI (Web Server Gateway Interface) is a Python standard that acts as an interface between web servers and Python applications. It enables web servers like Nginx or Apache to communicate with Python frameworks such as Flask or Django using WSGI servers like Gunicorn or uWSGI.
+
+Client
+   |
+   v
+Nginx
+   |
+   v
+Gunicorn (WSGI)
+   |
+   v
+Flask API
+   |
+   v
+ML Model
+>>vim wsgi.py
+  from app import app
+  application = app
+>>vim requirements.txt
+  Flask
+  scikit-learn
+  joblib
+  pytest
+  gunicorn
+>>gunicorn --workers 3 --bind 127.0.0.1:6000 wsgi:app

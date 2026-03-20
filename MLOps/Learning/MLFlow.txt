@@ -92,7 +92,7 @@ On Kubernetes Hands-on
 >>helm install mlflow-community community-charts/mlflow
 >>kubectl get pods -w
 >>kubectl port-forward pod/<pod-name-mlflow> 7006:5000 --address 0.0.0.0
-=> above is a stateless architecture which uses SQLiteDB that is running in side same kubernetes pod on which MLFlow server runs.
+=> above is a stateless architecture which uses SQLiteDB that is running inside same kubernetes pod on which MLFlow server runs.
 
 
 ON Production Server:

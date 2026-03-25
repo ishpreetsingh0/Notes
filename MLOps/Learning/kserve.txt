@@ -1,0 +1,1 @@
+kserve: for model deployment, serving and inference (when api user sends requests, the model returns the response) ie prediction.

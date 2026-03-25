@@ -1,1 +1,2 @@
 kserve: for model deployment, serving and inference (when api user sends requests, the model returns the response) ie prediction.
+KServe is an open-source Kubernetes-based platform for deploying and serving machine learning models in production. It provides serverless inference, autoscaling, model versioning, and supports multiple ML frameworks.

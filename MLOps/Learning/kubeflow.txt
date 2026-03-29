@@ -101,10 +101,10 @@ Kubernetes Pods
 7️⃣ Kubeflow vs Traditional ML Workflow
 Feature	            Traditional ML	Kubeflow
 Pipeline automation	    ❌            	✔
-Reproducibility	        ❌            	✔
-Kubernetes integration	❌	            ✔
-Distributed training	  Limited	        ✔
-Production deployment	  Hard          	Easy
+Reproducibility	          ❌            	✔
+Kubernetes integration	    ❌	            ✔
+Distributed training	    Limited	            ✔
+Production deployment	    Hard          	Easy
 8️⃣ Kubeflow in Real Production
 Typical production stack:
 GitHub
@@ -148,8 +148,8 @@ What is Katib?
 A hyperparameter tuning system in Kubeflow.
 1️⃣1️⃣ Kubeflow vs Airflow (Important)
 Feature	          Kubeflow	   Airflow
-ML focused	         ✔	         ❌
-Kubernetes native	   ✔        	Limited
+ML focused	             ✔	         ❌
+Kubernetes native	       ✔         	Limited
 Experiment tracking	 ✔	         ❌
-Model deployment	   ✔    	     ❌
+Model deployment	       ✔    	   ❌
 

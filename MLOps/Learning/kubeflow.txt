@@ -1,0 +1,155 @@
+Kubeflow is an open-source machine learning platform built on top of Kubernetes to make developing, training, deploying, and managing ML workflows easier and scalable.
+It is widely used in MLOps platforms for running ML pipelines in production. 🚀
+1️⃣ What Kubeflow Is
+Kubeflow provides tools to run the entire machine learning lifecycle on Kubernetes.
+Typical ML lifecycle:
+Data → Training → Experiment Tracking → Pipelines → Model Serving → Monitoring
+Kubeflow helps manage all these steps.
+2️⃣ Why Kubeflow is Used
+Problems in ML production:
+❌ Training pipelines are hard to reproduce
+❌ Manual deployments
+❌ Difficult scaling for large datasets
+❌ No automation for ML workflows
+Kubeflow solves this by:
+✔ Creating reproducible ML pipelines
+✔ Automating training workflows
+✔ Running distributed training
+✔ Deploying models to Kubernetes
+✔ Managing ML experiments
+3️⃣ Key Components of Kubeflow
+1️⃣ Kubeflow Pipelines
+Creates ML workflows as pipelines (DAG).
+Example workflow:
+Data Preprocessing
+      ↓
+Model Training
+      ↓
+Model Evaluation
+      ↓
+Model Deployment
+Pipelines are usually written in Python SDK.
+2️⃣ Katib
+Used for AutoML and hyperparameter tuning.
+Example:
+Learning Rate = 0.001
+Batch Size = 32
+Optimizer = Adam
+Katib automatically finds the best parameters.
+3️⃣ KServe
+Used for model serving in production.
+👉 Model becomes an API endpoint.
+Example:
+POST /predict
+4️⃣ Notebooks
+Provides Jupyter notebooks for ML development.
+Uses:
+Data exploration
+Model training
+Experiments
+5️⃣ Training Operators
+Supports distributed training.
+Examples:
+TensorFlow Training
+PyTorch Training
+MPI Training
+4️⃣ Kubeflow Architecture
+Data Scientist
+      │
+      ▼
+Jupyter Notebook
+      │
+      ▼
+Kubeflow Pipelines
+      │
+      ▼
+Training Jobs (Kubernetes Pods)
+      │
+      ▼
+Model Registry / Storage
+      │
+      ▼
+KServe Deployment
+      │
+      ▼
+Prediction API
+5️⃣ Kubeflow Pipeline DAG
+In Kubeflow pipelines, workflows run as DAG (Directed Acyclic Graph).
+Example:
+Task A → Data preprocessing
+Task B → Model training
+Task C → Model evaluation
+Task D → Deployment
+Each task runs in separate Kubernetes Pods.
+Important interview concept: ⚡
+Pipeline Task → Container → Kubernetes Pod
+6️⃣ Example Kubeflow Pipeline (Python)
+from kfp import dsl
+@dsl.pipeline(
+    name="ML Training Pipeline"
+)
+def ml_pipeline():
+    preprocess = preprocess_data()
+    train = train_model(preprocess.output)
+    evaluate = evaluate_model(train.output)
+When executed:
+Python Pipeline
+      ↓
+YAML Workflow
+      ↓
+Kubernetes Pods
+7️⃣ Kubeflow vs Traditional ML Workflow
+Feature	            Traditional ML	Kubeflow
+Pipeline automation	    ❌            	✔
+Reproducibility	        ❌            	✔
+Kubernetes integration	❌	            ✔
+Distributed training	  Limited	        ✔
+Production deployment	  Hard          	Easy
+8️⃣ Kubeflow in Real Production
+Typical production stack:
+GitHub
+   │
+   ▼
+CI/CD Pipeline
+   │
+   ▼
+Docker Image
+   │
+   ▼
+Kubeflow Pipelines
+   │
+   ▼
+Training Job
+   │
+   ▼
+Model Registry
+   │
+   ▼
+KServe Deployment
+   │
+   ▼
+Prediction API
+9️⃣ Example Companies Using Kubeflow
+Spotify
+Uber
+Airbnb
+CERN
+They use it to run large-scale ML workloads.
+🔟 Important Interview Questions
+What is Kubeflow?
+Kubeflow is an ML platform built on Kubernetes for automating machine learning workflows.
+What is Kubeflow Pipeline?
+A workflow system for building ML pipelines as DAGs.
+How are Kubeflow tasks executed?
+Each pipeline step runs as a separate Kubernetes pod.
+What is the role of KServe in Kubeflow?
+KServe is used for model inference and deployment.
+What is Katib?
+A hyperparameter tuning system in Kubeflow.
+1️⃣1️⃣ Kubeflow vs Airflow (Important)
+Feature	          Kubeflow	   Airflow
+ML focused	         ✔	         ❌
+Kubernetes native	   ✔        	Limited
+Experiment tracking	 ✔	         ❌
+Model deployment	   ✔    	     ❌
+

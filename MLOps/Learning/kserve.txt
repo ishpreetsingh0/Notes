@@ -1,2 +1,72 @@
 kserve: for model deployment, serving and inference (when api user sends requests, the model returns the response) ie prediction.
 KServe is an open-source Kubernetes-based platform for deploying and serving machine learning models in production. It provides serverless inference, autoscaling, model versioning, and supports multiple ML frameworks.
+It was originally called KFServing and is widely used with Kubeflow.
+
+1️⃣ What KServe Does
+KServe helps teams serve trained ML models as APIs so applications can use them.
+Example:
+A trained fraud detection model → deployed with KServe → application sends request → KServe returns prediction.
+Typical flow:
+Model Training → Model Stored (S3/GCS/Azure Blob) → KServe Deployment → API Endpoint → Predictions
+
+2️⃣ Why KServe is Used
+Key problems it solves in MLOps:
+✔ Standard way to deploy ML models
+✔ Automatic scaling (including scale to zero)
+✔ Supports multiple frameworks
+✔ Serverless inference
+✔ Canary deployments for models
+✔ GPU support
+
+3️⃣ Supported ML Frameworks
+KServe has built-in model servers for many frameworks:
+TensorFlow
+PyTorch
+Scikit-learn
+XGBoost
+ONNX
+HuggingFace transformers
+Example:
+Framework	Server
+TensorFlow	TensorFlow Serving
+PyTorch	TorchServe
+SKLearn	SKLearn Server
+XGBoost	XGBoost Server
+
+4️⃣ Core KServe Architecture
+Main components:
+1. InferenceService
+Main CRD used to deploy models.
+Example YAML:
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: sklearn-model
+spec:
+  predictor:
+    sklearn:
+      storageUri: "gs://ml-models/sklearn-model"
+This creates:
+Kubernetes Deployment
+Pod
+Service
+Endpoint
+2. Predictor
+Responsible for running the model and generating predictions.
+3. Transformer (Optional)
+Used for:
+Request preprocessing
+Response postprocessing
+Example:
+Input request
+      ↓
+Transformer
+      ↓
+Predictor
+      ↓
+Response
+4. Explainer (Optional)
+Used for model explainability.
+Example tools:
+Alibi
+SHAP

@@ -1,8 +1,30 @@
-ssh-22
-DNS-53
-HHTP-80
-HTTPS-443
-MYSQL-3306
-RDP-3389
-Postgre-5432
-Redis-6379
+Well-Known ports 0-1023 are for standard protocalls and registered ports 1024-49151 for specific applications.
+
+Web and Core Infrastructure: these ports handle the foundational traffic of the internet and basic server access.
+ssh-22 : used for secure remote logins, file transfers (SFTP) and administrative tasks.
+DNS-53 : resolves human-readable domain names into IP addresses. 
+HHTP-80 : standard for unencrypted web traffic.
+HTTPS-443 : standard for secure, encrypted web traffic via SSL/TLS.
+RDP-3389 : Used for microsoft remote desktop protocalls connections.
+
+Databases: popular database systems used this registered ports to communicate with client applications.
+MYSQL-3306 : The default for mysql and mariaDB connections
+Postgre-5432 : Standard for postgres sql relation databases
+Redis-6379 : used for redis in-memnory datastore and caching
+sql-1433 : MS-SQL default for microsoft sql servers.
+MongoDB-27017 : the common port for mongo DB NOSQL databases
+
+DevOps Tools: these ports are essential for modern CI/CD, monitoring and container orchestration.
+Jenkins-8080 : widely used as the default web interface for jenkins and apache-tomcat
+Kubernetes API-6443 : the default port for kubernetes API server 
+Grafana-3000 : the standard port for accessing grafana dashboards
+Prometheus-9090 : default for prometheus monitoring and alerting services
+Docker-2375/2376 : used for docker engine API (unencrypted and encrypted, rsvp)
+
+Email Protocols: 
+SMTP-25 : used for routing emails between mail servers
+SMTP Submission-587 : modern, secure port for submitting email form client to server.
+POP3-110/995 : used to retrive emails (unencrypted vs encrypted over SSL)
+IMAP-143/993 : Used to manage and retrieve emails (unencrypted vs encrypted over SSL)
+
+

@@ -27,11 +27,11 @@ XGBoost
 ONNX
 HuggingFace transformers
 Example:
-Framework	Server
-TensorFlow	TensorFlow Serving
-PyTorch	TorchServe
-SKLearn	SKLearn Server
-XGBoost	XGBoost Server
+Framework -	Server
+TensorFlow - TensorFlow Serving
+PyTorch	- TorchServe
+SKLearn	- SKLearn Server
+XGBoost	- XGBoost Server
 
 4️⃣ Core KServe Architecture
 Main components:
@@ -70,3 +70,103 @@ Used for model explainability.
 Example tools:
 Alibi
 SHAP
+
+5️⃣ KServe Deployment Architecture
+Client Request
+      │
+      ▼
+Ingress Gateway
+      │
+      ▼
+KServe InferenceService
+      │
+ ┌───────────────┐
+ │ Transformer   │
+ └───────────────┘
+      │
+      ▼
+ ┌───────────────┐
+ │ Predictor     │
+ │ (Model)       │
+ └───────────────┘
+      │
+      ▼
+Prediction Response
+
+6️⃣ How Scaling Works
+KServe uses:
+Kubernetes + Knative
+Benefits:
+Auto scaling
+Scale to zero
+High concurrency
+Example:
+0 requests → Pods scale to 0
+1000 requests → Pods auto scale
+
+7️⃣ Model Storage Locations
+Models are stored in cloud storage:
+S3
+GCS
+Azure Blob
+PVC
+Example:
+s3://ml-models/fraud-model
+gs://ml-models/image-classifier
+KServe downloads the model when the pod starts.
+
+8️⃣ Real Production Workflow
+Typical MLOps pipeline:
+Data → Training → Model Registry
+            │
+            ▼
+        CI/CD Pipeline
+            │
+            ▼
+        KServe Deployment
+            │
+            ▼
+      REST/gRPC Endpoint
+            │
+            ▼
+         Application
+
+9️⃣ Example Prediction Request
+After deployment, prediction endpoint:
+POST /v1/models/sklearn-model:predict
+Request:
+{
+  "instances": [[6.8, 2.8, 4.8, 1.4]]
+}
+Response:
+{
+  "predictions": [1]
+}
+
+🔟 KServe vs Traditional Model Serving
+| Feature         | Traditional | KServe         |
+| --------------- | ----------- | -------------- |
+| Deployment      | Manual      | Kubernetes CRD |
+| Scaling         | Manual      | Auto           |
+| Scale to zero   | ❌           | ✔              |
+| Multi-framework | ❌           | ✔              |
+| Canary rollout  | ❌           | ✔              |
+
+1️⃣1️⃣ Interview Questions (Very Important)
+Q1 What is KServe?
+KServe is a Kubernetes-native model serving platform used to deploy ML models as scalable APIs.
+Q2 What is InferenceService?
+A Custom Resource Definition (CRD) used to deploy models in Kubernetes.
+Q3 How does KServe scale models?
+Using Knative autoscaling.
+Q4 What components exist in KServe?
+Predictor
+Transformer
+Explainer
+Q5 Where are models stored?
+Cloud storage like S3, GCS, Azure Blob.
+How Kubernetes pods are created when an InferenceService YAML is applied.?
+How KServe internally creates Pods from YAML?
+Complete KServe architecture in Kubernetes?
+Difference between KServe vs Seldon vs BentoML?
+End-to-end MLOps pipeline using Kubeflow + KServe?

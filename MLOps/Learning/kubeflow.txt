@@ -149,7 +149,7 @@ A hyperparameter tuning system in Kubeflow.
 1️⃣1️⃣ Kubeflow vs Airflow (Important)
 Feature	          Kubeflow	   Airflow
 ML focused	             ✔	         ❌
-Kubernetes native	       ✔         	Limited
+Kubernetes native	       ✔             Limited
 Experiment tracking	 ✔	         ❌
 Model deployment	       ✔    	   ❌
 

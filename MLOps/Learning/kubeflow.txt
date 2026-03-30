@@ -19,7 +19,7 @@ Kubeflow solves this by:
 ✔ Managing ML experiments
 3️⃣ Key Components of Kubeflow
 1️⃣ Kubeflow Pipelines
-Creates ML workflows as pipelines (DAG).
+Creates ML workflows as pipelines (DAG) Directed Acyclic Graph.
 Example workflow:
 Data Preprocessing
       ↓

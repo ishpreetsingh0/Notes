@@ -22,3 +22,41 @@ Subdomain               : An Optical further subdivision of domain              
 Hostname                : Identifies a specifies host or service within the domain                                                                     : www
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+The structure typically looks like : 
+[hostname].[domain name].[TLD]
+* mail.google.com : is a mailing server
+* www.google.com : web server
+* server1.localdomain.net : internal server
+
+** FQDN Importance :
+FQDN are fundamental for internet infrastructure and server critical functions:
+i) DNS resolution : they allow DNS to reliably translate the human-readable computer to locate each other.
+ii) Unique identification : An FQDN provides an unambiguous address, ensuring that every resource (server, device, service) is uniquely identified across entire internet. 
+iii) Security-FQDN are essential for issuing SSL/TLS certificates, which bind the certificate to specific, unique FQDN to secure communication. 
+iv) Email routing : Mail server require FQDN's for correct email addressing and routing.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+A Record and CNAME Record are two most common types of DNS records.
+Difference is :
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Feature                      |    A Record Address Record                                                     | CName Canonical name record
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Points to                    :    A specific IPv4                                                             : Another domain Name example.com
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Function                     :  Provides a direct address of a server for a domain/subdomain                  : Creates an alias for a domain name 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Common use                   : Mapping a root domain or a service that require a fixed IP                     : Mapping subdomain www.mydomain.com
+                              ( like mail service MX record)                                                   or blog.mydomain.com to main domain
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Flexibility                  : Use flexible, if IP address changes, you must manually update ARecord.         : More flexible if target domain IP changes, the CNAME record                                                                                                                  automatically follows the change 
+                                                                                                                (because it just looks up the target domain's ARecord. 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A Record (When to use)
+i) You are setting up the root/apex domain
+ii) you need to point directly to a server's IPv4
+iii) you are setting up other critical records like MX (Mail Exchange) records, which often must point to an A Record not CNAME.
+
+CNAME (When to use)
+i) you want multiple subdomains (eg www, blog, store) to point to same destination domain)
+ii) you are pointing to an external service (like a CDN or a third party host) that might change it's IP address and you want to avoid manual updates.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -4,11 +4,21 @@ The "fully qualified" part means it include every level of the DNS domain hierar
 >>hostname -f 
 FQDN structure : A FQDN is typically written as a list of domain labels seprate by dots, following a hierarchy structure read from right to left.
 [hostname].[subdomain(optional)].[second-level domain].[top-level domain].[root]
-components of an FQDN:
-Component               |                         Description                                                                                                |      Example
-Root                    :  The Highest level of the DNS hierarchy, often represented by a trailing dot (.) . it is usually omitted by web browser.           :  www.example.com
-                                                                                                                                                                the final .
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Top-level Domain        : The highest level visible to the public                                                                                            :  com
-TDL
+                                       Components of an FQDN:
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Component               |                         Description                                                                                         |      Example
+Root                    :  The Highest level of the DNS hierarchy, often represented by a trailing dot (.) . it is usually omitted by web browser.    :  www.example.com
+                                                                                                                                                           the final .
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Top-level Domain        : The highest level visible to the public                                                                                      :  com
+(TDL)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Second-level Domain     : The registered name representing an org or website                                                                           : example
+(SLD)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Subdomain               : An Optical further subdivision of domain                                                                                     : www.blog.example.com
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Hostname                : Identifies a specifies host or service within the domain                                                                     : www
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+

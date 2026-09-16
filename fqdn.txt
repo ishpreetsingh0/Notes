@@ -1,0 +1,14 @@
+Fully Qualified Domain Name is a complete, unambiguous domain name that specifies the exact location of a network resource, such as a server or website, within the Domain Name System hierarchy.
+It is some times called absolute domain name.
+The "fully qualified" part means it include every level of the DNS domain hierarchy from the host name all the way to top-level domain and implied root-zone.
+>>hostname -f 
+FQDN structure : A FQDN is typically written as a list of domain labels seprate by dots, following a hierarchy structure read from right to left.
+[hostname].[subdomain(optional)].[second-level domain].[top-level domain].[root]
+components of an FQDN:
+Component               |                         Description                                                                                                |      Example
+Root                    :  The Highest level of the DNS hierarchy, often represented by a trailing dot (.) . it is usually omitted by web browser.           :  www.example.com
+                                                                                                                                                                the final .
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Top-level Domain        : The highest level visible to the public                                                                                            :  com
+TDL
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

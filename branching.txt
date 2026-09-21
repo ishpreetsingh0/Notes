@@ -10,9 +10,12 @@ Here are the primary commands you will use to manage branches day-to-day.
 3. Switching Branchesgit switch <branch-name>  (Recommended)Switches your working directory to the specified branch.git checkout <branch-name>The older, traditional command used to switch branches.
 4. The Short-Cut (Create & Switch)git switch -c <branch-name> or git checkout -b <branch-name>Creates a brand new branch and immediately hooks your environment into it so you can start working right away.
 5. Merging Changes BackOnce you have finished making changes in your isolated branch and have committed your work, you will want to pull those changes back into your primary branch (usually main or master):
-    Move back to your destination branch: git switch mainMerge the feature branch: git merge <branch-name>
-6. Deleting a Branchgit branch -d <branch-name>Deletes the branch locally. 
-    Git will safely block this if the changes haven't been merged yet.git branch -D <branch-name>Forces deletion of the branch, throwing away any unmerged work.
+    Move back to your destination branch: git switch main
+    Merge the feature branch: git merge <branch-name>
+6. Deleting a Branch
+    git branch -d <branch-name>Deletes the branch locally. 
+    Git will safely block this if the changes haven't been merged yet.
+    git branch -D <branch-name>Forces deletion of the branch, throwing away any unmerged work.
 
 🗺️ Common Branching StrategiesDepending on how your team collaborates, you will typically follow a structured workflow to keep the code clean:
 1. Feature Branching: Every new piece of work (like a login page or an analytical button) gets its own temporary branch. Once tested and approved via code review, it is merged into the main line and deleted.

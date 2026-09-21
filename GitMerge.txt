@@ -31,3 +31,16 @@ Handling Merge Conflicts
 If you and a teammate modify the exact same line of code in the same file on different branches, Git won't know which version to keep. 
 It will pause the merge and flag a merge conflict.
 
+When this happens, Git leaves markers directly inside the affected files:
+<<<<<<< HEAD
+code from the branch you are currently on
+=======
+code from the branch you are trying to merge in
+>>>>>>> feature-branch
+
+To finish the merge, you must open the file, choose which code to keep, delete the conflict markers, save, and commit the resolution. 
+If you ever get overwhelmed during a conflict, you can safely undo the entire attempt by running git merge --abort.
+
+
+
+

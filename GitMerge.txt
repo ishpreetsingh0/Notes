@@ -1,0 +1,33 @@
+Git Merge
+A Git merge is a core operation that combines the history and changes from two different branches into a single branch. 
+It is the ultimate convergence point in parallel development, allowing you to integrate a completed feature or bug fix back into the project's primary codebase 
+(usually main or develop).
+
+How a Git Merge WorksWhen you run a merge, Git identifies the common ancestor (the point where the two branches originally split). 
+It then looks at the changes made on both branches since that split and attempts to combine them automatically.
+
+ A---B---C  (main)
+           \
+            D---E  (feature)
+
+If you merge feature into main, Git combines the work from both lines of development into a new state.
+
+🔄 The Three Types of Merges
+Depending on how your branch history looks, Git will perform one of three primary merge types:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Merge Type                      |                                  What It Does                                              |                Best Use Case
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Fast-Forward Merge              :   Git simply moves the target branch pointer forward to the tip of the source branch.   :  When the main branch hasn't received any new commits since you created your feature branch.
+                                          No new "merge commit" is created.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Three-Way (Recursive) Merge     :  Git ties the two branches together by creating a brand-new "merge commit"              : When both branches have diverged (i.e., someone else added code to main while you were working on feature).
+                                      that has two parent commits.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Squash Merge                    :  Condenses all the individual commits from your feature branch into a single,           :  When you want to keep the main branch history strictly linear and free of experimental "in-progress" commits.
+                                      clean commit on the target branch.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Handling Merge Conflicts
+If you and a teammate modify the exact same line of code in the same file on different branches, Git won't know which version to keep. 
+It will pause the merge and flag a merge conflict.
+
